@@ -80,3 +80,7 @@ Names only are sourced here; benchmark scores, costs, and effort variants remain
 Le Chaton remains a separate meme entry, not a verified release.
 
 Neuron counts are a fictional leaderboard metric, not parameter counts or published architecture measurements. Engineers show 86B; management ranges down to zero; Le Chaton-fat has 10²⁴. Counts are shown compactly with the full value on hover and are not used in scoring.
+
+## Bonus arcade
+
+The original five environments remain the scored leaderboard suite. Three extra games are playable from the catalog and selector: Plug In a USB (orientation, dust, power, disguised executable), Save Past the Goose (peas, nest, bell, save), and Finish the Update (an intentionally unwinnable sandbox with endless phases and an End session button). Local wins count the seven solvable games only. All timers start on the first action; retry clears game state.

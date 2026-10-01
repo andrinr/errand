@@ -223,9 +223,9 @@ test('virus desktop: fake antivirus spawns bounded extra warnings and app window
   f.close();
 });
 
-test('all five games have launch cards and hints, with no dad references in shipped copy', () => {
+test('all eight games have launch cards and hints, with no dad references in shipped copy', () => {
   const f = fixture(4);
-  assert.equal(f.d.querySelectorAll('#game-select option').length, 5);
+  assert.equal(f.d.querySelectorAll('#game-select option').length, 8);
   f.d.querySelector('#hint-button').click(); assert.match(f.d.querySelector('#game-hint').textContent, /Updatr/);
   const source = html + gameCode + fs.readFileSync('site/app.js', 'utf8'); assert.doesNotMatch(source, /\bdad\b/i);
   f.close();
@@ -235,16 +235,16 @@ test('closing cancels the timer and scores stay separate by difficulty', () => {
   const f = fixture(1);
   wireProjector(f); f.check('Automatically switch to newly detected sources', false);
   f.click('Read EDID / negotiate signal'); f.step(2.1); calibrateProjector(f); f.click('Go live'); f.won();
-  assert.match(f.d.querySelector('#game-progress').textContent, /1 \/ 5 practice/);
+  assert.match(f.d.querySelector('#game-progress').textContent, /1 \/ 7 practice/);
   const difficulty = f.d.querySelector('#difficulty'); difficulty.value = 'cursed'; difficulty.dispatchEvent(new f.w.Event('change'));
-  assert.match(f.d.querySelector('#game-progress').textContent, /0 \/ 5 cursed/);
+  assert.match(f.d.querySelector('#game-progress').textContent, /0 \/ 7 cursed/);
   f.click('Connect cable'); f.d.querySelector('#game-dialog').close(); const before = f.d.querySelector('#game-time').textContent;
   f.step(200); assert.equal(f.d.querySelector('#game-time').textContent, before); assert.ok(!f.d.querySelector('.failure')); f.close();
 });
 
 test('removed games are absent from the playable catalog and runtime', () => {
   const f = fixture(0); f.w.eval(fs.readFileSync('site/app.js', 'utf8'));
-  assert.equal(f.d.querySelectorAll('#benchmarks article').length, 5);
+  assert.equal(f.d.querySelectorAll('#benchmarks article').length, 8);
   for (const name of ['Cancel My Gym', 'Return the Parcel', 'Make It One Page', 'Find the Attachment']) {
     assert.ok(!f.d.querySelector('#benchmarks').textContent.includes(name));
     assert.ok(!f.d.querySelector('#game-select').textContent.includes(name));
@@ -406,4 +406,29 @@ test('printer and HDMI progressively reveal controls and restart in their simple
   h.check('Automatically switch to newly detected sources', false); h.click('Read EDID / negotiate signal'); h.step(2.1);
   assert.equal(tabs[2].hidden, false);
   h.d.querySelector('#start-game').click(); assert.ok([...h.d.querySelectorAll('.hdmi-stage')].every(stage => stage.hidden)); h.close();
+});
+
+test('bonus USB and goose puzzles are solvable in both difficulties and recover from traps', () => {
+  for (const mode of ['practice', 'cursed']) {
+    const u = fixture(5, mode); u.step(150); assert.match(u.d.querySelector('#game-time').textContent, /ready/);
+    u.click('Insert USB'); u.click('Flip USB'); u.click('Insert USB'); assert.ok(!u.d.querySelector('.success'));
+    u.click('Remove dust bunny'); u.click('Power the hub'); u.click('Insert USB');
+    u.click('report.txt.exe'); u.click('report.txt'); assert.ok(!u.d.querySelector('.success'));
+    u.closeErrors(); u.click('report.txt'); u.won(); u.close();
+    const g = fixture(6, mode); g.click('Save'); g.click('Offer bread'); g.closeErrors();
+    g.click('Ring dinner bell'); assert.ok(!g.d.querySelector('.success'));
+    g.click('Offer peas'); g.click('Create /tmp/nest'); g.click('Ring dinner bell'); g.click('Save'); g.won(); g.close();
+  }
+});
+
+test('update sandbox has bounded dialogs, endless phases, no win, and clean retries', () => {
+  const f = fixture(7, 'cursed'); f.step(200); assert.match(f.d.querySelector('#game-time').textContent, /ready/);
+  f.click('Start update'); f.step(10); assert.match(f.d.querySelector('.hdmi-diagnostics').textContent, /phases discovered/);
+  for (let i = 0; i < 5; i++) f.click('Skip to 100%');
+  assert.equal(f.d.querySelectorAll('.office-error').length, 1);
+  f.click('Restart updater'); assert.equal(f.d.querySelectorAll('.office-error').length, 0);
+  f.click('Cancel update'); f.click('Resolve dependency'); f.click('End session');
+  assert.ok(!f.d.querySelector('.success')); assert.match(f.d.querySelector('#game-progress').textContent, /0 \/ 7/);
+  f.d.querySelector('#start-game').click(); assert.match(f.d.querySelector('#game-time').textContent, /ready/);
+  f.click('Start update'); f.step(91); assert.ok(f.d.querySelector('.result-overlay')); assert.ok(!f.d.querySelector('.success')); f.close();
 });

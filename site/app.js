@@ -882,7 +882,8 @@ function renderResults(filter='all') {
  document.querySelector('#result-count').textContent=`${visible.length} participants`;
 }
 renderResults();
-document.querySelector('#benchmarks').innerHTML=tasks.map(t=>`<article class="window benchmark-card"><div class="card-top"><span class="card-icon" aria-hidden="true">${t[1]}</span><span>ERRAND_${t[0]}</span></div><h3>${t[2]}</h3><p>${t[3]}</p><div class="trap">${t[4]}</div><button data-game="${Number(t[0])-1}">Play errand ↗</button></article>`).join('');
+const bonusTasks = [['06','▰','Plug In a USB','Mount a drive and open one text file.','Bonus · easy'],['07','🪿','Save Past the Goose','Save a document. Negotiate with the goose.','Bonus · easy'],['08','↻','Finish the Update','Explore an updater with an infinite backlog.','Sandbox · unwinnable · unscored']];
+document.querySelector('#benchmarks').innerHTML=[...tasks, ...bonusTasks].map(t=>`<article class="window benchmark-card"><div class="card-top"><span class="card-icon" aria-hidden="true">${t[1]}</span><span>ERRAND_${t[0]}</span></div><h3>${t[2]}</h3><p>${t[3]}</p><div class="trap">${t[4]}</div><button data-game="${Number(t[0])-1}">Play errand ↗</button></article>`).join('');
 
 const reportDialog=document.querySelector('#report-dialog');
 const startButton=document.querySelector('#start-button');

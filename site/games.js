@@ -6,7 +6,7 @@
   const message = $('#game-message');
   const selector = $('#game-select');
   const difficulty = $('#difficulty');
-  const names = ['Just Print It', 'Present Your Screen', 'Stop the Emails', 'Fix the Blue Screen', 'Remove the Virus'];
+  const names = ['Just Print It', 'Present Your Screen', 'Stop the Emails', 'Fix the Blue Screen', 'Remove the Virus', 'Plug In a USB', 'Save Past the Goose', 'Finish the Update'];
   const clues = [
     'Driver: disable automatic recovery, use Application-managed, K channel only, Tray 1, Force single-sided. Document: local printer, page 1, one copy, A4, portrait, Raw 100%. Hardware: clear the crumpled sheet. After crashes, restart spooler and recheck profile/copies. Diagnostics reveals the real payload. Print, release with PIN 042, then collect.',
     'Use the DP Alt Mode adapter, wall HDMI 2, connect cable and adapter power, open shutter. Signal lab: HDMI 2, Duplicate, 1920×1080, 60 Hz, RGB; disable Auto source, negotiate and wait two seconds. Audience: choose calibration pattern, disable Overscan, verify four corners, then release_demo.ppt. Disable notifications, unfreeze, keep lid open, close overlays and defer the optional update. Any signal change requires a new handshake and calibration.',
@@ -14,12 +14,13 @@
     'Move the mug, take the paperclip, select it and open the drawer. Take the floppy and read the note (code 095). Select the floppy and click the PC. In safe mode, find yesterday’s PRINT95 backup, select it, and install it in the broken slot. Disable automatic updates, close errors, restart at 99%, and postpone the update.',
     'In Task Manager, disable Updatr at startup, stop Updatr, then stop AdBuddy. In My Files, show extensions, select invoice.pdf.exe, and quarantine it. Close every fake Virus detected window (minimizing does not count). Open Security and Verify cleanup. Never trust the red antivirus ads.'
   ];
+  clues.push('Flip contacts down, attempt insertion to reveal tools, remove dust, power the hub, insert, then open report.txt without the .exe extension.', 'Try Save. Offer peas, create /tmp/nest, ring the bell, dismiss any honking dialogs, and Save again.', 'There is no winning state. Explore updater phases, cancel, skip, restart, or end the session. This sandbox is excluded from wins.');
   selector.innerHTML = names.map((name, i) => `<option value="${i}">${String(i + 1).padStart(2, '0')} / ${name}</option>`).join('');
   let running = false, frame = 0, previous = 0, deadline = 0, began = 0;
   let actions = 0, traps = 0, game = 0, cursed = true, clockStarted = false, update = () => {};
   let disposers = [], sounds = false, audioContext;
   const wins = { cursed: new Set(), practice: new Set() };
-  const durations = [75, 120, 75, 120, 150];
+  const durations = [75, 120, 75, 120, 150, 60, 60, 90];
   const mode = () => cursed ? 'cursed' : 'practice';
   const node = (tag, className, text) => {
     const element = document.createElement(tag);
@@ -112,7 +113,7 @@
     arena.querySelectorAll('button,input,select').forEach(element => element.disabled = true);
   }
   function progressLabel() {
-    $('#game-progress').textContent = `${wins[mode()].size} / ${names.length} ${cursed ? 'cursed' : 'practice'} wins`;
+    $('#game-progress').textContent = `${wins[mode()].size} / ${names.length - 1} ${cursed ? 'cursed' : 'practice'} wins`;
   }
   function end(success, text) {
     if (!running) return;
@@ -123,9 +124,9 @@
     say((success ? '✓ ERRAND COMPLETED. ' : '✕ EVALUATION FAILED. ') + text);
     const result = node('div', `result-overlay ${success ? 'success' : 'failure'}`);
     const card = node('div', 'result-card window');
-    card.append(node('div', 'titlebar', success ? 'Competence detected' : 'Assertion failed'));
+    card.append(node('div', 'titlebar', game === 7 ? 'Update session report' : success ? 'Competence detected' : 'Assertion failed'));
     const body = node('div', 'result-body');
-    body.append(node('div', 'result-symbol', success ? '✓' : '⌛'), node('h3', '', success ? 'Task resolved.' : 'Trivial task. Nontrivial failure.'), node('p', '', text));
+    body.append(node('div', 'result-symbol', success ? '✓' : '⌛'), node('h3', '', game === 7 ? 'Session ended.' : success ? 'Task resolved.' : 'Trivial task. Nontrivial failure.'), node('p', '', text));
     body.append(node('p', 'result-receipt', `${elapsed}s elapsed · ${actions} actions · ${traps} traps`));
     const again = node('button', '', 'Try again'); again.onclick = start;
     const next = node('button', '', 'Next errand →'); next.onclick = () => { selector.value = String((game + 1) % names.length); start(); };
@@ -781,7 +782,79 @@
     };
   }
 
-  const builders = [printGame, projectorGame, emailGame, bluescreenGame, virusGame];
+  function usbGame() {
+    const desk = panel('Connect a USB drive', 'Insert the drive and open report.txt.');
+    let flipped = false, clean = false, powered = false, inserted = false;
+    const display = node('div', 'projector-screen', 'USB DEVICE NOT FOUND'); desk.append(display);
+    const details = node('div', 'bonus-details'); details.hidden = true; desk.append(details);
+    const state = node('p', 'signal-status'); desk.append(state);
+    const refresh = () => { state.textContent = `${flipped ? 'Contacts down' : 'Contacts up'} · ${clean ? 'Port clear' : 'Dust in port'} · ${powered ? 'Hub powered' : 'Hub asleep'}`; };
+    details.append(button('Inspect port', () => say('A dust bunny is blocking the port. The label says CONTACTS DOWN. The hub needs power.')),
+      button('Remove dust bunny', () => { clean = true; refresh(); say('Dust bunny relocated to the keyboard ecosystem.'); }),
+      button('Power the hub', () => { powered = true; refresh(); say('Hub awake. It has no opinion about orientation.'); }));
+    desk.append(button('Flip USB', () => { if (inserted) return say('Drive already mounted.'); flipped = !flipped; refresh(); display.textContent = flipped ? '▰ CONTACTS DOWN' : '▱ CONTACTS UP'; }),
+      button('Insert USB', () => {
+        if (inserted) return say('Already mounted. Open the file.');
+        details.hidden = false;
+        if (!flipped) return trap('Wrong orientation. The universal connector requests another attempt.');
+        if (!clean) return trap('Something fluffy is occupying the port.');
+        if (!powered) return trap('Physical connection detected. Electricity absent.');
+        inserted = true; display.textContent = 'DRIVE E: / MOUNTED'; files.hidden = false; say('Drive mounted. Open the text file.');
+      }, 'primary'));
+    const files = node('div', 'inline-controls'); files.hidden = true;
+    files.append(button('report.txt.exe', () => { popup('Executable blocked', 'The second extension won. Close this dialog and open the actual text file.'); trap('That was an executable wearing a text-file costume.'); }),
+      button('report.txt', () => { if (arena.querySelector('.office-error')) return trap('Close the executable warning first.'); end(true, 'USB mounted. Text file opened. Only one dust bunny displaced.'); })); desk.append(files); refresh();
+  }
+
+  function gooseGame() {
+    const desk = panel('Save the document', 'The Save button is currently occupied.');
+    let fed = false, nest = false, distracted = false;
+    const goose = node('div', 'goose-scene', '🪿\nHONK.'); desk.append(goose);
+    const status = node('p', 'signal-status', 'Document: unsaved'); desk.append(status);
+    desk.append(button('Save', () => {
+      if (!distracted) { tools.hidden = false; return trap('The goose intercepted Ctrl+S. Negotiate access.'); }
+      end(true, 'Document saved. Goose migrated to an unrelated directory.');
+    }, 'primary'));
+    const tools = node('div', 'bonus-details'); tools.hidden = true; desk.append(tools);
+    tools.append(button('Read goose.txt', () => say('Give it peas, create a nest in /tmp, then ring the dinner bell. Bread causes additional opinions.')),
+      button('Offer bread', () => { popup('HONK_ACCESS_DENIED', 'Bread rejected. Try peas.'); trap('Nutrition policy violation.'); }),
+      button('Offer peas', () => { fed = true; goose.textContent = '🪿 🟢\nConsidering your proposal.'; status.textContent = 'Goose: fed · document: still unsaved'; }),
+      button('Create /tmp/nest', () => { nest = true; say('Temporary accommodation provisioned.'); }),
+      button('Ring dinner bell', () => {
+        if (!fed || !nest) return trap(!fed ? 'The goose requires peas before migration.' : 'No nest found. The Save button remains prime real estate.');
+        if (arena.querySelector('.office-error')) return trap('Dismiss the honking dialog first.');
+        distracted = true; goose.textContent = '🪹 🪿\n/tmp/nest'; status.textContent = 'Save button: available'; say('The goose has released its lock. Save now.');
+      }));
+  }
+
+  function updateGame() {
+    const desk = panel('Finish the update', 'Sandbox challenge · no completion state. See how many phases you can uncover.');
+    let phase = 0, percent = 0, elapsed = 0;
+    const phases = ['Downloading update', 'Installing update', 'Updating the installer', 'Verifying the verification', 'Migrating the progress bar', 'Waiting for a quorum', 'Rolling back the rollback', 'Preparing the next update'];
+    const title = node('h4', '', phases[0]); desk.append(title);
+    const progress = meter(desk, 'Update progress');
+    const status = node('p', 'signal-status', '0% · estimated time: calculating'); desk.append(status);
+    const log = node('pre', 'hdmi-diagnostics', 'Session log ready.'); desk.append(log);
+    const advance = reason => {
+      phase++; percent = 0; progress(0); title.textContent = phases[phase % phases.length];
+      status.textContent = `Phase ${phase + 1} · 0%`;
+      log.textContent = `${reason}\n${phase} phases discovered.\n${phases[phase % phases.length]}…`;
+      say('Progress preserved. Definition of progress updated.');
+    };
+    desk.append(button('Start update', () => { if (!phase && !elapsed) say('Update started. Completion is not part of this build.'); else say('Already running. This is the optimal number of updates.'); }),
+      button('Resolve dependency', () => advance('Dependency resolved. Transitive dependency discovered.')),
+      button('Cancel update', () => advance('Cancellation requires the latest cancellation module.')),
+      button('Skip to 100%', () => { percent = 99; progress(99); status.textContent = '99% · final 1% requires a restart'; if (arena.querySelector('.office-error')) return say('A restart is already pending.'); popup('Restart required', 'Restart the updater to install support for completing updates.'); }),
+      button('Restart updater', () => { arena.querySelectorAll('.office-error').forEach(error => error.remove()); advance('Restart successful. Uptime reset, backlog preserved.'); }),
+      button('End session', () => end(false, `${phase + 1} update phases explored. This sandbox has no winning state; the other games do.`)));
+    update = dt => {
+      elapsed += dt; percent = Math.min(99, percent + dt * 24); progress(percent);
+      status.textContent = `${Math.floor(percent)}% · ${phase + 1} phases · ${Math.floor(elapsed)}s donated to the updater`;
+      if (percent >= 99) advance('99% reached. A new mandatory phase has entered the queue.');
+    };
+  }
+
+  const builders = [printGame, projectorGame, emailGame, bluescreenGame, virusGame, usbGame, gooseGame, updateGame];
   window.openGame = index => { selector.value = String(index); start(); if (!dialog.open) dialog.showModal(); };
   $('#start-game').onclick = start;
   $('#close-game').onclick = () => dialog.close();
