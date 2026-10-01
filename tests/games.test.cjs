@@ -318,7 +318,7 @@ test('management invoices include luxury spending and fit the cursed scale', () 
   f.d.querySelector('[data-filter="human"]').click();
   assert.equal(f.d.querySelectorAll('#results tr').length, 10);
   const picker = f.d.querySelector('#plot-participant');
-  picker.value = [...picker.options].find(o => o.textContent === 'Chief Executive Bottleneck').value;
+  picker.value = [...picker.options].find(o => o.textContent === 'Chief Executive Officer').value;
   picker.dispatchEvent(new f.w.Event('change'));
   assert.match(f.d.querySelector('#plot-detail').textContent, /\$186999\.00 total/);
   {
@@ -357,5 +357,18 @@ test('model effort lines join the correct points in preset order on the cursed s
   picker.dispatchEvent(new f.w.Event('change'));
   assert.equal(f.d.querySelector('[data-family="GPT-5.4"]').getAttribute('stroke-width'), '3.5');
   assert.equal(f.d.querySelectorAll('#effort-legend span').length, 8);
+  f.close();
+});
+
+test('human roles credit only hands-on engineers and include their AI assistance costs', () => {
+  const f = fixture(0);
+  f.w.eval(fs.readFileSync('site/app.js', 'utf8'));
+  f.d.querySelector('[data-filter="human"]').click();
+  const rows = [...f.d.querySelectorAll('#results tr')];
+  assert.equal(rows.length, 10);
+  const successful = rows.filter(row => Number(row.querySelector('.score b').textContent) > 0);
+  assert.deepEqual(successful.map(row => row.querySelector('.participant').textContent), ['Staff Software Engineer', 'Site Reliability Engineer', 'Legacy Systems Engineer']);
+  assert.equal(rows.filter(row => /assisted|AI-generated|multi-agent/.test(row.querySelector('.participant-type').textContent)).length, 8);
+  for (const row of successful.slice(0, 2)) assert.doesNotMatch(row.querySelector('.invoice-total .participant-type').textContent, /Compute \$0\.00/);
   f.close();
 });

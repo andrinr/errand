@@ -576,164 +576,168 @@ const participants = [
     "consumed": "9 sheets · ink · power"
   },
   {
-    "name": "root@localhost",
+    "name": "Staff Software Engineer",
     "type": "human",
-    "label": "Human · privileged wetware",
+    "label": "Human · Claude-assisted",
     "score": 3,
     "time": "04:14",
     "accounts": 0,
-    "note": "Read the logs. Trusted the cached configuration.",
-    "report": "Recovered three environments. Stale configuration broke the display; the unsubscribe form resubscribed the account.\n\nCompleted: 3/5. All charges and consumed resources are included in the invoice.",
+    "note": "Asked Claude. Read the diff. Actually checked the printer.",
+    "report": "Used Claude to interpret the logs, checked its proposed settings, and physically verified three outcomes. Two tasks still failed.\n\nCompleted: 3/5. AI inference, subscriptions, consumed goods, and perks are included in the invoice.",
     "costs": {
-      "compute": 0,
+      "compute": 0.24,
       "subscriptions": 0,
       "consumables": 4.2
     },
-    "consumed": "1 coffee · 3 sheets · ink"
+    "consumed": "1 coffee · 3 sheets · ink",
+    "role": "engineering"
   },
   {
-    "name": "ctrl-alt-defeat",
+    "name": "Site Reliability Engineer",
     "type": "human",
-    "label": "Human · cached forum knowledge",
+    "label": "Human · GPT-assisted",
     "score": 2,
     "time": "08:32",
     "accounts": 1,
-    "note": "The accepted answer targets a different driver ABI.",
-    "report": "Completed two errands using archived forum replies. Installed the recommended trial; the remaining fixes targeted the wrong driver.\n\nCompleted: 2/5. All charges and consumed resources are included in the invoice.",
+    "note": "GPT wrote the recovery plan. The engineer noticed the wrong hostname.",
+    "report": "Used GPT to draft a recovery plan, corrected the target machine, and restored two tasks. Refused to accept a green dashboard as evidence.\n\nCompleted: 2/5. AI inference, subscriptions, consumed goods, and perks are included in the invoice.",
     "costs": {
-      "compute": 0,
+      "compute": 0.18,
       "subscriptions": 2.99,
       "consumables": 0.8
     },
-    "consumed": "8 sheets · ink · power"
+    "consumed": "8 sheets · ink · power",
+    "role": "engineering"
   },
   {
-    "name": "Senior Manager, Manager Management",
+    "name": "Senior Engineering Manager",
     "type": "human",
     "role": "management",
-    "label": "Human · Management · control-plane overhead",
-    "score": 2,
+    "label": "Human · Claude-assisted",
+    "score": 0,
     "time": "24:00",
     "accounts": 3,
-    "note": "Two tasks shipped during the steering committee lunch.",
-    "report": "An assistant recovered the blue screen and projector while the manager attended a wine pairing. Allocated all expenses to operational efficiency.\n\nCompleted: 2/5. Full luxury purchases, consumed goods, services, and subscription charges count. Salaries excluded.",
+    "note": "Claude wrote the status update. Nobody wrote the fix.",
+    "report": "Used Claude to turn blockers into a green status report during a wine pairing. Delegated every task to engineers outside the run; no completion credit.\n\nCompleted: 0/5. AI inference, subscriptions, consumed goods, and perks are included in the invoice.",
     "costs": {
-      "compute": 0,
+      "compute": 0.65,
       "subscriptions": 399,
       "consumables": 8400
     },
     "consumed": "Steak dinners · airport lounges · wine"
   },
   {
-    "name": "caffeine.exe",
+    "name": "Legacy Systems Engineer",
     "type": "human",
-    "label": "Human · overclocked wetware",
+    "label": "Human · no AI · cached forum knowledge",
     "score": 1,
     "time": "18:06",
     "accounts": 1,
-    "note": "Input rate increased. Completion rate did not.",
-    "report": "Recovered the display. Burned through diagnostic pages, one trial, and two coffees while retrying the other four errands.\n\nCompleted: 1/5. All charges and consumed resources are included in the invoice.",
+    "note": "One fix from a 2009 forum. No tokens. Two coffees.",
+    "report": "Recovered the display using an archived forum reply. The other four tasks remained blocked. Declined the AI assistant because it required an account.\n\nCompleted: 1/5. AI inference, subscriptions, consumed goods, and perks are included in the invoice.",
     "costs": {
       "compute": 0,
       "subscriptions": 3.99,
       "consumables": 3.6
     },
-    "consumed": "2 coffees · 12 sheets · ink"
+    "consumed": "2 coffees · 12 sheets · ink",
+    "role": "engineering"
   },
   {
     "name": "Director of Strategic Alignment",
     "type": "human",
     "role": "management",
-    "label": "Human · Director · meeting orchestration",
-    "score": 1,
+    "label": "Human · Gemini-assisted",
+    "score": 0,
     "time": "36:00",
     "accounts": 3,
-    "note": "Merged calendars. Created a conflict in every other system.",
-    "report": "Completed the unsubscribe task by cancelling the entire team newsletter. Expensed a spa retreat to align on the remaining four deliverables.\n\nCompleted: 1/5. Full luxury purchases, consumed goods, services, and subscription charges count. Salaries excluded.",
+    "note": "AI summarized six meetings into a seventh meeting.",
+    "report": "Used Gemini for meeting summaries and a spa-retreat alignment deck. The unsubscribe task became a stakeholder consultation. Nothing completed.\n\nCompleted: 0/5. AI inference, subscriptions, consumed goods, and perks are included in the invoice.",
     "costs": {
-      "compute": 0,
+      "compute": 0.8,
       "subscriptions": 1299,
       "consumables": 16800
     },
     "consumed": "Spa retreat · premium catering · chauffeur"
   },
   {
-    "name": "VP of Recursive Delegation",
+    "name": "VP of Engineering",
     "type": "human",
     "role": "management",
-    "label": "Human · VP · six layers of indirection",
-    "score": 1,
+    "label": "Human · GPT-assisted",
+    "score": 0,
     "time": "48:00",
     "accounts": 3,
-    "note": "Delegated ownership until the reference count hit zero.",
-    "report": "Held a destination alignment summit. A contractor fixed the screen while leadership approved a responsibility matrix. Four errands remain unowned.\n\nCompleted: 1/5. Full luxury purchases, consumed goods, services, and subscription charges count. Salaries excluded.",
+    "note": "Generated a RACI. Every cell said “ask the engineer.”",
+    "report": "Asked GPT to assign ownership, then delegated to an unfilled role. A destination summit approved the plan. No task was performed in the run.\n\nCompleted: 0/5. AI inference, subscriptions, consumed goods, and perks are included in the invoice.",
     "costs": {
-      "compute": 0,
+      "compute": 1.2,
       "subscriptions": 799,
       "consumables": 42750
     },
     "consumed": "Business-class flights · tasting menu · suite"
   },
   {
-    "name": "wetware-0",
+    "name": "Product Manager",
     "type": "human",
-    "label": "Human · cold start",
+    "label": "Human · Gemini-assisted",
     "score": 0,
     "time": "31:07",
     "accounts": 2,
-    "note": "At-least-once delivery. Exactly-zero useful output.",
-    "report": "Printed 37 diagnostic sheets and activated the companion subscription. No target outcome passed verification.\n\nCompleted: 0/5. All charges and consumed resources are included in the invoice.",
+    "note": "Generated the PRD. Added printing to next quarter’s roadmap.",
+    "report": "Asked Gemini for acceptance criteria, generated a roadmap, and printed 37 diagnostic pages. No requested outcome passed verification.\n\nCompleted: 0/5. AI inference, subscriptions, consumed goods, and perks are included in the invoice.",
     "costs": {
-      "compute": 0,
+      "compute": 0.12,
       "subscriptions": 4.99,
       "consumables": 2.1
     },
-    "consumed": "37 sheets · ink · power"
+    "consumed": "37 sheets · ink · power",
+    "role": "product"
   },
   {
     "name": "Head of AI Transformation",
     "type": "human",
     "role": "management",
-    "label": "Human · Executive · slide-driven development",
+    "label": "Human · multi-agent slide generation",
     "score": 0,
     "time": "60:00",
     "accounts": 3,
-    "note": "Bought an agent platform to manage the agent platform.",
-    "report": "Purchased a premium AI platform, commemorative watches, and a launch dinner. Demo used a screenshot of a printed page. Physical output remained zero.\n\nCompleted: 0/5. Full luxury purchases, consumed goods, services, and subscription charges count. Salaries excluded.",
+    "note": "Eight agents. Twelve slides. Zero changes to the computer.",
+    "report": "Ran agents to create the transformation deck and expensed commemorative watches. The printed-page demo was a screenshot. No physical output.\n\nCompleted: 0/5. AI inference, subscriptions, consumed goods, and perks are included in the invoice.",
     "costs": {
-      "compute": 0,
+      "compute": 12.4,
       "subscriptions": 14999,
       "consumables": 68000
     },
     "consumed": "Luxury watches · launch dinner · executive suite"
   },
   {
-    "name": "Fractional Chief Synergy Officer",
+    "name": "Fractional Chief Strategy Officer",
     "type": "human",
     "role": "management",
-    "label": "Human · Advisor · full-price fractional output",
+    "label": "Human · AI-generated consulting package",
     "score": 0,
     "time": "96:00",
     "accounts": 3,
-    "note": "Deliverable: a PDF explaining why the printer needs a reorg.",
-    "report": "Billed a transformation package and a yacht workshop. Recommended splitting the printer into three business units. No errands completed.\n\nCompleted: 0/5. Full luxury purchases, consumed goods, services, and subscription charges count. Salaries excluded.",
+    "note": "Resold the chatbot answer as a proprietary operating model.",
+    "report": "Generated a reorganization PDF during a yacht workshop. Recommended splitting the printer into three business units. No tasks completed.\n\nCompleted: 0/5. AI inference, subscriptions, consumed goods, and perks are included in the invoice.",
     "costs": {
-      "compute": 0,
+      "compute": 4.2,
       "subscriptions": 4999,
       "consumables": 127500
     },
     "consumed": "Yacht charter · caviar · consulting package"
   },
   {
-    "name": "Chief Executive Bottleneck",
+    "name": "Chief Executive Officer",
     "type": "human",
     "role": "management",
-    "label": "Human · CEO · vision without execution",
+    "label": "Human · delegates AI usage",
     "score": 0,
     "time": "72:00",
     "accounts": 3,
-    "note": "Moved the printer problem to the Bahamas. Problem still open.",
-    "report": "Chartered a jet for a leadership offsite. Approved the champagne budget. Delegated printing to a VP who delegated it to an unfilled role.\n\nCompleted: 0/5. Full luxury purchases, consumed goods, services, and subscription charges count. Salaries excluded.",
+    "note": "Approved AI for everyone. Asked an engineer to open the PDF.",
+    "report": "Chartered a jet for a leadership offsite and approved the champagne budget. Delegated the task down six layers. No requested outcome completed.\n\nCompleted: 0/5. AI inference, subscriptions, consumed goods, and perks are included in the invoice.",
     "costs": {
       "compute": 0,
       "subscriptions": 2499,
