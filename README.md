@@ -28,7 +28,7 @@ Shared feedback includes optional synthesized sound, animated errors, progress b
 
 ## Cost vs. performance
 
-The interactive scatter plot uses hand-authored fictional costs and scores. It marks the nondominated cost/score Pareto frontier. The leaderboard and plot share one invoice: compute, accidental subscription charges, and consumables are always included, including failed attempts. Triggered subscription charges count in full; consumables include paper, ink, power, and coffee. Labor and hardware are excluded. Fictional AI participants complete more tasks than every human participant; ranking uses the combined level-and-speed score followed by lowest total cost. Point selection shows an invoice breakdown; an accessible data table includes all values. This is parody data, not real model pricing or performance.
+The interactive scatter plot uses hand-authored fictional costs and scores. It marks the nondominated cost/score Pareto frontier. The leaderboard and plot share one invoice: compute, accidental subscription charges, and consumables are always included, including failed attempts. Triggered subscription charges count in full; consumables include paper, ink, power, and coffee. Labor and hardware are excluded. Two AI-assisted engineers share the leading completion and speed results; ranking uses the combined level-and-speed score followed by lowest total cost. Point selection shows an invoice breakdown; an accessible data table includes all values. This is parody data, not real model pricing or performance.
 
 ## Validation
 

@@ -253,7 +253,7 @@ test('removed games are absent from the playable catalog and runtime', () => {
   f.close();
 });
 
-test('leaderboard and Pareto plot always include every invoice component, with AI ahead', () => {
+test('leaderboard and Pareto plot always include every invoice component, with engineers in the top three', () => {
   const f = fixture(0);
   f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
   assert.equal(f.d.querySelector('#include-subscriptions'), null);
@@ -275,10 +275,11 @@ test('leaderboard and Pareto plot always include every invoice component, with A
     assert.equal(Math.round((values[0] + values[1] + values[2]) * 100), Math.round(values[3] * 100));
     assert.equal(row.querySelector('.invoice-total b').textContent, cells[5].textContent);
     assert.ok(row.querySelector('.consumed').textContent.length > 0);
-    assert.match(row.querySelector('.participant-type').textContent, i < 36 ? /LLM/ : /Human/);
+    assert.match(row.querySelector('.participant-type').textContent, /LLM|Human/);
   });
   const scores = rows.map(row => Number(row.querySelector('.score b').textContent.split('/')[0]));
-  assert.ok(Math.min(...scores.slice(0, 36)) > Math.max(...scores.slice(36)));
+  assert.deepEqual(rows.slice(0, 3).map(row => row.querySelector('.participant').textContent), ['Le Faton Large / low', 'Site Reliability Engineer', 'Staff Software Engineer']);
+  assert.deepEqual(scores, [...scores].sort((a, b) => b - a));
   const picker = f.d.querySelector('#plot-participant');
   picker.value = [...picker.options].find(o => o.textContent === 'Grok 4.7 / unhinged').value;
   picker.dispatchEvent(new f.w.Event('change'));
@@ -371,7 +372,7 @@ test('human roles credit only hands-on engineers and include their AI assistance
   const rows = [...f.d.querySelectorAll('#results tr')];
   assert.equal(rows.length, 3);
   const successful = rows.filter(row => Number(row.querySelector('.score b').textContent) > 0);
-  assert.deepEqual(successful.map(row => row.querySelector('.participant').textContent), ['Staff Software Engineer', 'Site Reliability Engineer', 'Legacy Systems Engineer']);
+  assert.deepEqual(successful.map(row => row.querySelector('.participant').textContent), ['Site Reliability Engineer', 'Staff Software Engineer', 'Legacy Systems Engineer']);
   assert.equal(rows.filter(row => /assisted|AI-generated|multi-agent/.test(row.querySelector('.participant-type').textContent)).length, 2);
   for (const row of successful.slice(0, 2)) assert.doesNotMatch(row.querySelector('.invoice-total .participant-type').textContent, /Compute \$0\.00/);
   f.close();
