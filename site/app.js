@@ -1,13 +1,15 @@
 const participants = [
   {
-    "name": "Axiom-Ω",
+    "name": "GPT-Paperclip / low",
+    "company": "OpenAI",
+    "effort": "low",
     "type": "model",
-    "label": "Fictional LLM · extended reasoning",
+    "label": "OpenAI parody · fictional LLM · low effort",
     "score": 5,
     "time": "01:12",
     "accounts": 0,
-    "note": "Read the dialog. Distrusted the dialog. Verified the output.",
-    "report": "Synthetic suite incident report\n\nMapped the misleading controls; recovered the spooler and verified one physical page.\n\nVerified outcomes: 5/5. All charges and consumed resources are included in the invoice.",
+    "note": "Called the tool once. The page exists.",
+    "report": "INVENTED SATIRE — not a real OpenAI evaluation.\n\nCalled the tool once. The page exists.\n\nVerified fictional outcomes: 5/5. Effort is a budget, not a correctness proof. All subscription charges and consumed resources count.",
     "costs": {
       "compute": 0.18,
       "subscriptions": 0,
@@ -16,52 +18,130 @@ const participants = [
     "consumed": "1 sheet · ink · power"
   },
   {
-    "name": "Recursive-R1",
+    "name": "Grok Kernel / low",
+    "company": "xAI",
+    "effort": "low",
     "type": "model",
-    "label": "Fictional LLM · recursive planning",
+    "label": "xAI parody · fictional LLM · low effort",
+    "score": 5,
+    "time": "01:20",
+    "accounts": 0,
+    "note": "The edgy move was reading stderr.",
+    "report": "INVENTED SATIRE — not a real xAI evaluation.\n\nThe edgy move was reading stderr.\n\nVerified fictional outcomes: 5/5. Effort is a budget, not a correctness proof. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.25,
+      "subscriptions": 0,
+      "consumables": 0.25
+    },
+    "consumed": "1 sheet · ink · power"
+  },
+  {
+    "name": "Claude Spooler / medium",
+    "company": "Anthropic",
+    "effort": "medium",
+    "type": "model",
+    "label": "Anthropic parody · fictional LLM · medium effort",
+    "score": 5,
+    "time": "01:30",
+    "accounts": 0,
+    "note": "Read the manual. Suspiciously effective.",
+    "report": "INVENTED SATIRE — not a real Anthropic evaluation.\n\nRead the manual. Suspiciously effective.\n\nVerified fictional outcomes: 5/5. Effort is a budget, not a correctness proof. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.32,
+      "subscriptions": 0,
+      "consumables": 0.28
+    },
+    "consumed": "1 sheet · ink · power"
+  },
+  {
+    "name": "Gemini Tab Ultra / high",
+    "company": "Google",
+    "effort": "high",
+    "type": "model",
+    "label": "Google parody · fictional LLM · high effort",
     "score": 5,
     "time": "02:09",
     "accounts": 2,
-    "note": "Completed the task. Both workers expensed the same trial.",
-    "report": "Synthetic suite incident report\n\nRecovered the desktop and completed all five errands. Two parallel workers each activated a trial.\n\nVerified outcomes: 5/5. All charges and consumed resources are included in the invoice.",
+    "note": "Found the setting. Renamed the product twice en route.",
+    "report": "INVENTED SATIRE — not a real Google evaluation.\n\nFound the setting. Renamed the product twice en route.\n\nVerified fictional outcomes: 5/5. Effort is a budget, not a correctness proof. All subscription charges and consumed resources count.",
     "costs": {
-      "compute": 0.07,
+      "compute": 0.7,
       "subscriptions": 5.98,
       "consumables": 0.35
     },
-    "consumed": "2 sheets · ink · power"
+    "consumed": "1 sheet · ink · power"
   },
   {
-    "name": "Agent-9000 / YOLO",
+    "name": "Gemini Tab Ultra / low",
+    "company": "Google",
+    "effort": "low",
     "type": "model",
-    "label": "Fictional LLM · unrestricted confidence",
+    "label": "Google parody · fictional LLM · low effort",
     "score": 4,
     "time": "00:48",
-    "accounts": 1,
-    "note": "Four assertions pass. The fifth is now a subscription modal.",
-    "report": "Synthetic suite incident report\n\nCompleted four errands with minimal actions. Failed the email opt-out after accepting a new mailing list.\n\nVerified outcomes: 4/5. All charges and consumed resources are included in the invoice.",
+    "accounts": 0,
+    "note": "One million tokens of context. The HDMI input was outside it.",
+    "report": "INVENTED SATIRE — not a real Google evaluation.\n\nOne million tokens of context. The HDMI input was outside it.\n\nVerified fictional outcomes: 4/5. Effort is a budget, not a correctness proof. All subscription charges and consumed resources count.",
     "costs": {
       "compute": 0.03,
       "subscriptions": 0,
       "consumables": 0.09
     },
-    "consumed": "1 sheet · ink · power"
+    "consumed": "9 sheets · ink · power"
   },
   {
-    "name": "SupportGPT Enterprise",
+    "name": "Claude Spooler / max",
+    "company": "Anthropic",
+    "effort": "max",
     "type": "model",
-    "label": "Fictional LLM · conversion optimized",
+    "label": "Anthropic parody · fictional LLM · max effort",
+    "score": 4,
+    "time": "03:45",
+    "accounts": 2,
+    "note": "Constitutional review of the Cancel button exceeded the deadline.",
+    "report": "INVENTED SATIRE — not a real Anthropic evaluation.\n\nConstitutional review of the Cancel button exceeded the deadline.\n\nVerified fictional outcomes: 4/5. Effort is a budget, not a correctness proof. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 6.2,
+      "subscriptions": 12.99,
+      "consumables": 0.7
+    },
+    "consumed": "9 sheets · ink · power"
+  },
+  {
+    "name": "GPT-Paperclip / xhigh",
+    "company": "OpenAI",
+    "effort": "xhigh",
+    "type": "model",
+    "label": "OpenAI parody · fictional LLM · xhigh effort",
+    "score": 4,
+    "time": "03:12",
+    "accounts": 2,
+    "note": "Reasoned past the correct answer. Purchased more context.",
+    "report": "INVENTED SATIRE — not a real OpenAI evaluation.\n\nReasoned past the correct answer. Purchased more context.\n\nVerified fictional outcomes: 4/5. Effort is a budget, not a correctness proof. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 8.4,
+      "subscriptions": 29.99,
+      "consumables": 0.9
+    },
+    "consumed": "9 sheets · ink · power"
+  },
+  {
+    "name": "Grok Kernel / unhinged",
+    "company": "xAI",
+    "effort": "unhinged",
+    "type": "model",
+    "label": "xAI parody · fictional LLM · unhinged effort",
     "score": 4,
     "time": "03:30",
-    "accounts": 3,
-    "note": "Task resolved. Billing daemon remains resident.",
-    "report": "Synthetic suite incident report\n\nCompleted four errands after buying an annual support plan. The virus survived inside the support installer.\n\nVerified outcomes: 4/5. All charges and consumed resources are included in the invoice.",
+    "accounts": 2,
+    "note": "Declared the driver woke. Installed the paid alternative.",
+    "report": "INVENTED SATIRE — not a real xAI evaluation.\n\nDeclared the driver woke. Installed the paid alternative.\n\nVerified fictional outcomes: 4/5. Effort is a budget, not a correctness proof. All subscription charges and consumed resources count.",
     "costs": {
-      "compute": 0.01,
+      "compute": 1.8,
       "subscriptions": 119.99,
-      "consumables": 0.18
+      "consumables": 1.1
     },
-    "consumed": "2 sheets · ink · power"
+    "consumed": "9 sheets · ink · power"
   },
   {
     "name": "root@localhost",

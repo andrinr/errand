@@ -214,24 +214,48 @@ test('leaderboard and Pareto plot always include every invoice component, with A
   f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
   assert.equal(f.d.querySelector('#include-subscriptions'), null);
   const frontier = [...f.d.querySelectorAll('.plot-point.efficient')].map(el => Number(el.dataset.point)).sort();
-  assert.deepEqual(frontier, [0, 2]);
-  assert.match(f.d.querySelector('#frontier-summary').textContent, /Agent-9000 \/ YOLO → Axiom-Ω/);
+  assert.deepEqual(frontier, [0, 4]);
+  assert.match(f.d.querySelector('#frontier-summary').textContent, /Gemini Tab Ultra \/ low → GPT-Paperclip \/ low/);
   const rows = [...f.d.querySelectorAll('#results tr')];
   const costs = [...f.d.querySelectorAll('#cost-data tr')];
-  assert.equal(rows.length, 8);
-  assert.equal(costs.length, 8);
+  assert.equal(rows.length, 12);
+  assert.equal(costs.length, 12);
   rows.forEach((row, i) => {
     const cells = costs[i].querySelectorAll('td');
     const values = [...cells].slice(2).map(cell => Number(cell.textContent.slice(1)));
     assert.equal(Math.round((values[0] + values[1] + values[2]) * 100), Math.round(values[3] * 100));
     assert.equal(row.querySelector('.invoice-total b').textContent, cells[5].textContent);
     assert.ok(row.querySelector('.consumed').textContent.length > 0);
-    assert.match(row.querySelector('.participant-type').textContent, i < 4 ? /Fictional LLM/ : /Human/);
+    assert.match(row.querySelector('.participant-type').textContent, i < 8 ? /fictional LLM/ : /Human/);
   });
   const scores = rows.map(row => Number(row.querySelector('.score b').textContent.split('/')[0]));
-  assert.ok(Math.min(...scores.slice(0, 4)) > Math.max(...scores.slice(4)));
-  f.d.querySelector('[data-point="3"]').dispatchEvent(new f.w.MouseEvent('click', { bubbles: true }));
-  assert.match(f.d.querySelector('#plot-detail').textContent, /\$120\.18 total/);
-  assert.match(f.d.querySelector('#plot-detail').textContent, /consumables: \$0\.18/);
+  assert.ok(Math.min(...scores.slice(0, 8)) > Math.max(...scores.slice(8)));
+  f.d.querySelector('[data-point="7"]').dispatchEvent(new f.w.MouseEvent('click', { bubbles: true }));
+  assert.match(f.d.querySelector('#plot-detail').textContent, /\$122\.89 total/);
+  assert.match(f.d.querySelector('#plot-detail').textContent, /consumables: \$1\.10/);
+  f.close();
+});
+
+test('axis tricks change geometry without changing invoices or Pareto membership', () => {
+  const f = fixture(0);
+  f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
+  const mode = f.d.querySelector('#axis-mode');
+  const data = f.d.querySelector('#cost-data').innerHTML;
+  const path = () => f.d.querySelector('.pareto-path').getAttribute('points');
+  const original = path();
+  for (const value of ['launch', 'reverse', 'vibes']) {
+    mode.value = value;
+    mode.dispatchEvent(new f.w.Event('change'));
+    assert.notEqual(path(), original);
+    assert.equal(f.d.querySelector('#cost-data').innerHTML, data);
+    assert.deepEqual([...f.d.querySelectorAll('.efficient')].map(p => p.dataset.point).sort(), ['0', '4']);
+    assert.match(f.d.querySelector('#axis-disclosure').textContent, /AXIS TRICK/);
+    assert.doesNotMatch(f.d.querySelector('#cost-plot').innerHTML, /NaN|Infinity/);
+  }
+  f.d.querySelector('#reset-axes').click();
+  assert.equal(mode.value, 'honest');
+  assert.equal(path(), original);
+  assert.equal(f.d.querySelectorAll('.effort-pair').length, 4);
+  assert.equal((f.d.querySelector('#effort-comparisons').textContent.match(/REGRESSION/g) || []).length, 3);
   f.close();
 });

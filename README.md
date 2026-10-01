@@ -49,3 +49,5 @@ GitHub Actions deploys `site/` to GitHub Pages on pushes to `main` or a manual w
 ## Future real benchmark
 
 Real evaluation would need reproducible environments, permitted actions, fixed time limits, repeated trials, verified outcomes, documented model versions, and separate human baselines. None of those exist yet. Synthetic results must remain labeled until replaced by measured data.
+
+Company satire uses real company names with explicitly invented model names, effort presets, and results. Four paired effort comparisons include three regressions. Chart modes deliberately warp completion, reverse cost, or equally space invoice ranks; disclosures explain each trick. Restore reality returns to fixed axes. Full invoices and raw-data Pareto membership never change.
