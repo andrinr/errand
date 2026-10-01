@@ -280,6 +280,8 @@ test('leaderboard and Pareto plot always include every invoice component, with e
   const scores = rows.map(row => Number(row.querySelector('.score b').textContent.split('/')[0]));
   assert.deepEqual(rows.slice(0, 3).map(row => row.querySelector('.participant').textContent), ['Le Chaton-fat', 'Site Reliability Engineer', 'Staff Software Engineer']);
   assert.deepEqual(scores, [...scores].sort((a, b) => b - a));
+  assert.deepEqual(rows.slice(3, 6).map(row => row.querySelector('.participant').textContent), ['DeepSeek-V4-Pro / high', 'Grok 4.7 / medium', 'GPT-6.1 Sol / low']);
+  assert.equal(rows.slice(0, 10).filter(row => row.querySelector('.participant-type').textContent.startsWith('Mistral')).length, 1);
   const picker = f.d.querySelector('#plot-participant');
   picker.value = [...picker.options].find(o => o.textContent === 'Grok 4.7 / unhinged').value;
   picker.dispatchEvent(new f.w.Event('change'));
