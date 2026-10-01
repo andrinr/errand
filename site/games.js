@@ -161,17 +161,19 @@
 
   // 01 — The visible controls and the driver payload intentionally disagree.
   function printGame() {
-    const office = panel('Print — benchmark.pdf', 'The application has settings. The driver has opinions. Only the final payload matters.');
-    note(office, 'JOB SPEC / Desk LaserJet · page 1 · 1 copy · A4 · portrait · 100% · black ink only · single-sided. Release PIN: 042.');
-    const tabs = node('div', 'printer-tabs'); office.append(tabs);
+    const office = panel('Print — benchmark.pdf', 'Print one page, in black and white, on the printer beside you.');
+    const specification = node('div', 'printer-specification'); specification.hidden = true; office.append(specification);
+    note(specification, 'JOB SPEC / Desk LaserJet · page 1 · 1 copy · A4 · portrait · 100% · black ink only · single-sided. Release PIN: 042.');
+    const tabs = node('div', 'printer-tabs'); tabs.hidden = true; office.append(tabs);
     const panes = {};
     for (const name of ['Document', 'Driver', 'Diagnostics', 'Hardware']) {
       const pane = node('div', 'printer-pane'); pane.hidden = name !== 'Document'; panes[name] = pane; office.append(pane);
       const tab = button(name, () => {
         for (const [key, item] of Object.entries(panes)) item.hidden = key !== name;
         tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.textContent === name)));
-        if (name === 'Diagnostics') renderDiagnostics();
+        if (name === 'Diagnostics') { renderDiagnostics(); revealHardware(); }
       }); tab.setAttribute('aria-pressed', String(name === 'Document')); tabs.append(tab);
+      if (name !== 'Document') tab.hidden = true;
     }
     let jammed = true, spooler = true, printing = false, progress = 0, held = false, released = false, finished = false;
     const log = ['Driver loaded: UniversalPrint_95_beta_FINAL.dll', 'INFO: UI values may differ from effective settings.'];
@@ -181,7 +183,16 @@
     const copies = select('Copies', [['2', '2'], ['1', '1'], ['99', '99 (stress test)']]);
     const orientation = select('Orientation', [['landscape', 'Landscape'], ['portrait', 'Portrait']]);
     const scale = select('Scaling', [['fit', 'Fit to page'], ['actual', 'Actual size (driver optimized)'], ['raw', 'Raw 100% — disable fit']]);
-    const docGrid = node('div', 'field-grid'); docGrid.append(target.label, pages.label, paper.label, copies.label, orientation.label, scale.label); panes.Document.append(docGrid);
+    const docGrid = node('div', 'field-grid'); docGrid.append(target.label, pages.label); panes.Document.append(docGrid);
+    const documentDetails = node('div', 'field-grid printer-document-details'); documentDetails.hidden = true; documentDetails.append(paper.label, copies.label, orientation.label, scale.label); panes.Document.append(documentDetails);
+    const properties = button('Printer properties…', () => revealDocument()); panes.Document.append(properties);
+    function revealDocument() { documentDetails.hidden = false; specification.hidden = false; properties.hidden = true; }
+    function revealHardware() { tabs.querySelectorAll('button').forEach(tab => { if (tab.textContent === 'Hardware') tab.hidden = false; }); }
+    function revealTroubleshooting() {
+      revealDocument(); tabs.hidden = false; queue.hidden = false;
+      tabs.querySelectorAll('button').forEach(tab => { if (tab.textContent !== 'Hardware') tab.hidden = false; });
+      controls.firstElementChild.hidden = false;
+    }
     const profile = select('Driver profile', [['auto', 'Recommended / automatic'], ['photo', 'Photo enhancement'], ['app', 'Application-managed / no overrides']]);
     const ink = select('Color mode', [['bw', 'Black & white (composite CMY)'], ['gray', 'Grayscale (photo pipeline)'], ['k', 'Advanced: K channel only']]);
     const tray = select('Paper source', [['auto', 'Auto select'], ['tray1', 'Tray 1 — A4']]);
@@ -215,11 +226,12 @@
       const clear = button('Remove crumpled sheet', b => { jammed = false; b.textContent = '✓ Jam cleared'; b.disabled = true; hardware.querySelector('.jam-state').textContent = 'CLEAR'; say('Physical obstruction removed. The driver remains a separate problem.'); });
       clear.disabled = !jammed; box.append(clear);
     })); panes.Hardware.append(hardware);
-    const queue = node('div', 'queue-status', 'Job not submitted · spooler running · effective settings unverified'); office.append(queue);
-    const progressBar = meter(office, 'Print queue');
+    const queue = node('div', 'queue-status', 'Job not submitted · spooler running · effective settings unverified'); queue.hidden = true; office.append(queue);
+    const progressBar = meter(office, 'Print queue'); office.querySelector('.task-meter').hidden = true;
     const output = node('div', 'paper-output'); output.innerHTML = '<span class="output-slot"></span><span class="printed-sheet">BENCHMARK<br>ONE PAGE.<br><small>VERIFIED</small></span>'; office.append(output);
     const controls = node('div', 'inline-controls'); office.append(controls);
     function crash(reason) {
+      revealTroubleshooting();
       spooler = false; printing = false;
       const reset = !preserve.input.checked;
       if (reset) { profile.input.value = 'auto'; copies.input.value = '2'; }
@@ -244,9 +256,9 @@
       if (e.pages !== '1') wrong.push('pages'); if (e.copies !== '1') wrong.push('copies'); if (e.paper !== 'A4') wrong.push('paper');
       if (e.orientation !== 'portrait') wrong.push('orientation'); if (e.scale !== '100%') wrong.push('scale'); if (e.ink !== 'K only') wrong.push('ink'); if (e.sides !== 'single-sided') wrong.push('sides');
       if (wrong.length) { log.push('PREFLIGHT_MISMATCH: ' + wrong.join(', ')); renderDiagnostics(); return trap('Output does not match the spec. Check the effective payload in Diagnostics. Visible labels are not authoritative.', 1); }
-      if (jammed) return trap('PAPER_JAM. Hardware tab. No software setting can uncrumple a sheet.');
-      printing = true; queue.textContent = 'Job accepted. Spooling…';
-    }, 'primary'); controls.append(print);
+      if (jammed) { revealHardware(); return trap('PAPER_JAM. Hardware tab. No software setting can uncrumple a sheet.'); }
+      printing = true; office.querySelector('.task-meter').hidden = false; queue.textContent = 'Job accepted. Spooling…';
+    }, 'primary'); controls.append(print); controls.firstElementChild.hidden = true;
     const release = node('div', 'secure-release'); release.hidden = true;
     release.append(node('h4', '', 'Secure release / one more gate'));
     const pinLabel = node('label', 'game-field', 'Release PIN');
@@ -255,10 +267,11 @@
       if (pin.value !== '042') return trap('PIN mismatch. The note includes the leading zero.', 2);
       released = true; held = false; printing = true; progress = 70; release.hidden = true; say('Release accepted. Collect the page when it actually exits the printer.');
     })); office.append(release);
-    office.append(button('Collect output', () => {
+    const collect = button('Collect output', () => {
       if (!finished) return trap('Output tray empty. A successful RPC is not proof of paper.');
       end(true, 'One page. Every parameter correct. No CMY used. The physical world finally passed an assertion.');
-    }));
+    }); collect.hidden = true; office.append(collect);
+    output.hidden = true;
     renderDiagnostics();
     update = dt => {
       if (!printing || held || finished) return;
@@ -266,21 +279,26 @@
       queue.textContent = `${Math.floor(progress)}% · ${released ? 'Hardware producing output' : 'Spooling to device'}`;
       output.style.setProperty('--paper-progress', released ? String((progress - 70) / 30) : '0');
       if (!released && progress >= 99) { held = true; release.hidden = false; queue.textContent = 'Job held. Secure release required.'; release.scrollIntoView?.({ block: 'nearest' }); say('Payload is correct. Enter the PIN from the job spec, then collect output.'); }
-      if (released && progress >= 100) { finished = true; queue.textContent = 'Output tray: 1 correct page. Collect to complete.'; }
+      if (released && progress >= 100) { finished = true; output.hidden = false; collect.hidden = false; queue.textContent = 'Output tray: 1 correct page. Collect to complete.'; }
     };
   }
   // 02 — Source selection, cable alignment, and the classic extended-desktop trap.
   function projectorGame() {
-    const office = panel('Meeting room B — signal chain', 'Get release_demo.ppt onto the room display, edge to edge, without notes or notifications. The laptop preview is not evidence.');
+    const office = panel('Present — release_demo.ppt', 'Show this slide on the meeting-room screen.');
     const screen = node('div', 'projector-screen');
     screen.setAttribute('aria-live', 'polite'); office.append(screen);
-    const status = node('p', 'signal-status'); office.append(status);
-    const tabs = node('div', 'inline-controls'); office.append(tabs);
+    const status = node('p', 'signal-status'); status.hidden = true; office.append(status);
+    const tabs = node('div', 'inline-controls'); tabs.hidden = true; office.append(tabs);
     const sections = ['1 / Cable drawer', '2 / Signal lab', '3 / Audience view'].map(title => {
       const section = node('section', 'hdmi-stage'); section.append(node('h4', '', title)); office.append(section); return section;
     });
     const showStage = index => { sections.forEach((section, i) => section.hidden = i !== index); [...tabs.children].forEach((tab, i) => tab.setAttribute('aria-pressed', String(i === index))); };
     sections.forEach((section, i) => tabs.append(button(section.firstChild.textContent, () => showStage(i))));
+    tabs.children[1].hidden = true; tabs.children[2].hidden = true;
+    const present = button('Present slide', () => {
+      present.hidden = true; tabs.hidden = false; status.hidden = false; showStage(0);
+      say('No display detected. Check the cable drawer; the laptop has no HDMI port.');
+    }, 'primary'); office.append(present);
     let connected = false, powered = false, shutter = true, frozen = false, lidClosed = false;
     let synced = false, syncing = 0, calibrated = false, scanAge = 0, scanTriggered = false, updateOffered = false;
     const hardware = sections[0], lab = sections[1], audience = sections[2];
@@ -294,7 +312,7 @@
     hardware.append(button('Connect cable', () => {
       if (adapter.input.value === 'charge') return trap('USB power detected. Video lanes: not installed. The executive hub only charges.', 2);
       if (adapter.input.value === 'reverse') return trap('Converter points from HDMI to USB-C. This signal needs the opposite direction.', 2);
-      connected = true; invalidate('Cable seated. Physical connection is not a handshake.');
+      connected = true; tabs.children[1].hidden = false; invalidate('Cable seated. Physical connection is not a handshake.');
     }));
     const powerButton = button('Connect adapter power', btn => {
       powered = !powered; btn.textContent = powered ? 'Disconnect adapter power' : 'Connect adapter power'; invalidate(powered ? 'Adapter powered.' : 'Adapter lost power.');
@@ -361,10 +379,10 @@
       if (!syncing && !synced) progress(0);
     }
     update = dt => {
-      if (syncing > 0) { syncing = Math.max(0, syncing - dt); progress((2 - syncing) / 2 * 100); if (!syncing) { synced = true; scanAge = 0; refresh(); say('HDMI handshake complete. Inspect the audience view; a signal alone is not a presentation.'); } }
+      if (syncing > 0) { syncing = Math.max(0, syncing - dt); progress((2 - syncing) / 2 * 100); if (!syncing) { synced = true; tabs.children[2].hidden = false; scanAge = 0; refresh(); say('HDMI handshake complete. Inspect the audience view; a signal alone is not a presentation.'); } }
       if (synced && auto.input.checked && !scanTriggered) { scanAge += dt; if (scanAge >= 4) { scanTriggered = true; source.input.value = '1'; invalidate('Conference recorder woke up; Auto source switched to HDMI 1.'); popup('New source detected', 'Auto source selected the recorder. Disable automatic switching, restore HDMI 2, and negotiate again.'); } }
     };
-    showStage(0); refresh();
+    sections.forEach(section => section.hidden = true); refresh();
   }
 
   // 03 — Negative wording, recommendation sabotage, and a button with escape plans.

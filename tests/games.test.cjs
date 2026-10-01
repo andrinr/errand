@@ -60,11 +60,12 @@ test('opening, changing and retrying games arms the timer; only the first action
 });
 
 function configurePrinter(f) {
+  f.click('Document');
   f.choose('Printer', 'local'); f.choose('Pages', 'one'); f.choose('Paper size', 'a4'); f.choose('Copies', '1');
-  f.choose('Orientation', 'portrait'); f.choose('Scaling', 'raw'); f.choose('Driver profile', 'app');
-  f.choose('Color mode', 'k'); f.choose('Paper source', 'tray1'); f.choose('Duplex', 'simplex');
+  f.choose('Orientation', 'portrait'); f.choose('Scaling', 'raw');
+  f.click('Driver'); f.choose('Driver profile', 'app'); f.choose('Color mode', 'k'); f.choose('Paper source', 'tray1'); f.choose('Duplex', 'simplex');
   f.check('Automatic driver recovery (recommended)', false);
-  f.click('Open paper tray'); f.click('Remove crumpled sheet'); f.closeErrors();
+  f.click('Diagnostics'); f.click('Hardware'); f.click('Open paper tray'); f.click('Remove crumpled sheet'); f.closeErrors();
 }
 function releaseAndCollect(f) {
   f.step(3); assert.ok(!f.d.querySelector('.success'));
@@ -83,6 +84,8 @@ test('printer: crash recovery, effective settings, physical jam, secure release 
 });
 
 function wireProjector(f) {
+  const present = [...f.d.querySelectorAll('#game-arena button')].find(b => b.textContent === 'Present slide');
+  if (!present.hidden) f.click('Present slide');
   f.choose('Adapter from drawer', 'video'); f.choose('Wall socket', '2');
   f.click('Connect cable'); f.click('Connect adapter power'); f.click('Open lens shutter');
   f.click('2 / Signal lab');
@@ -166,7 +169,8 @@ test('blue-screen adventure: inventory gates four rooms; Practice and Cursed bot
 
 test('printer crashes reset defaults unless preservation is enabled; Cursed mode remains solvable', () => {
   const f = fixture(0, 'cursed');
-  f.choose('Driver profile', 'app'); f.choose('Copies', '1'); f.click('Print'); f.closeErrors();
+  f.click('Print'); f.closeErrors();
+  f.click('Document'); f.choose('Copies', '1'); f.click('Driver'); f.choose('Driver profile', 'app'); f.click('Restart spooler'); f.closeErrors();
   f.click('Diagnostics'); assert.match(f.d.querySelector('.printer-crash-log').textContent, /RESET: profile=auto, copies=2/);
   f.choose('Driver profile', 'app'); f.choose('Copies', '1'); f.check('Preserve settings after a spooler crash', true);
   f.click('Restart spooler'); f.closeErrors(); f.click('Diagnostics'); assert.match(f.d.querySelector('.printer-crash-log').textContent, /settings preserved/);
@@ -371,4 +375,27 @@ test('human roles credit only hands-on engineers and include their AI assistance
   assert.equal(rows.filter(row => /assisted|AI-generated|multi-agent/.test(row.querySelector('.participant-type').textContent)).length, 8);
   for (const row of successful.slice(0, 2)) assert.doesNotMatch(row.querySelector('.invoice-total .participant-type').textContent, /Compute \$0\.00/);
   f.close();
+});
+
+test('printer and HDMI progressively reveal controls and restart in their simple view', () => {
+  const p = fixture(0);
+  assert.equal(p.d.querySelector('.printer-tabs').hidden, true);
+  assert.equal(p.d.querySelector('.printer-document-details').hidden, true);
+  assert.equal(p.d.querySelector('.printer-specification').hidden, true);
+  p.click('Printer properties…'); assert.equal(p.d.querySelector('.printer-document-details').hidden, false);
+  assert.equal(p.d.querySelector('.printer-tabs').hidden, true);
+  p.click('Print'); p.closeErrors(); assert.equal(p.d.querySelector('.printer-tabs').hidden, false);
+  const hardware = [...p.d.querySelectorAll('.printer-tabs button')].find(b => b.textContent === 'Hardware');
+  assert.equal(hardware.hidden, true); p.click('Diagnostics'); assert.equal(hardware.hidden, false);
+  p.d.querySelector('#start-game').click(); assert.equal(p.d.querySelector('.printer-tabs').hidden, true); p.close();
+  const h = fixture(1);
+  const stages = [...h.d.querySelectorAll('.hdmi-stage')];
+  assert.ok(stages.every(stage => stage.hidden));
+  h.click('Present slide'); assert.equal(stages[0].hidden, false);
+  const tabs = [...h.d.querySelectorAll('.inline-controls button')];
+  assert.equal(tabs[1].hidden, true); assert.equal(tabs[2].hidden, true);
+  wireProjector(h); assert.equal(tabs[1].hidden, false); assert.equal(tabs[2].hidden, true);
+  h.check('Automatically switch to newly detected sources', false); h.click('Read EDID / negotiate signal'); h.step(2.1);
+  assert.equal(tabs[2].hidden, false);
+  h.d.querySelector('#start-game').click(); assert.ok([...h.d.querySelectorAll('.hdmi-stage')].every(stage => stage.hidden)); h.close();
 });
