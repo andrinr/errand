@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "type": "photo",
+  "title": "Computer Use Benchmark",
+  "provider_name": "Computer Use Benchmark",
+  "provider_url": "https://andrinr.github.io/errand/",
+  "url": "https://andrinr.github.io/errand/assets/benchmark-card-v2.jpg",
+  "width": 1200,
+  "height": 630,
+  "thumbnail_url": "https://andrinr.github.io/errand/assets/benchmark-card-v2.jpg",
+  "thumbnail_width": 1200,
+  "thumbnail_height": 630
+}

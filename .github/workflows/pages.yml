@@ -25,6 +25,8 @@ jobs:
           cache: npm
       - name: Install test dependencies
         run: npm ci
+      - name: Build share page
+        run: node scripts/build-share.cjs
       - name: Test game mechanics
         run: npm test
       - name: Check JavaScript

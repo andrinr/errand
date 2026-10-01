@@ -534,11 +534,18 @@ test('Chaton-fat retains first place with its full large compute bill', () => {
  f.close();
 });
 
-test('social previews expose an absolute PNG URL and matching image dimensions', () => {
+test('social previews expose an absolute image URL and matching image dimensions', () => {
  const dom = new JSDOM(html);
  const d = dom.window.document;
  const image = d.querySelector('meta[property="og:image"]').content;
- assert.equal(image, 'https://andrinr.github.io/errand/assets/social-preview.png');
+ assert.equal(image, 'https://andrinr.github.io/errand/assets/benchmark-card-v2.jpg');
+ assert.ok(fs.existsSync('site/assets/benchmark-card-v2.jpg'));
+ const preview = JSON.parse(fs.readFileSync('site/preview.json'));
+ assert.equal(preview.type, 'photo'); assert.equal(preview.url, image);
+ assert.equal(preview.width, 1200); assert.equal(preview.height, 630);
+ const share = new JSDOM(fs.readFileSync('site/share.html', 'utf8'));
+ assert.equal(share.window.document.querySelector('meta[property="og:url"]').content, 'https://andrinr.github.io/errand/share.html');
+ share.window.close();
  assert.equal(d.querySelector('meta[name="twitter:image"]').content, image);
  assert.equal(d.querySelector('meta[name="twitter:card"]').content, 'summary_large_image');
  const png = fs.readFileSync('site/assets/social-preview.png');
