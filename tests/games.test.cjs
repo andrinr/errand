@@ -522,3 +522,14 @@ test('seven scored levels have varied completions and consistent table and repor
  });
  f.close();
 });
+
+test('Chaton-fat retains first place with its full large compute bill', () => {
+ const f = fixture(0);
+ f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\nwindow.entries = participants;');
+ const fat = f.w.entries[0];
+ assert.equal(fat.name, 'Le Chaton-fat');
+ assert.equal(fat.costs.compute, 50000);
+ assert.equal(fat.time, '00:00.1');
+ assert.equal(f.d.querySelector('#results .invoice-total b').textContent, '$50000.12');
+ f.close();
+});

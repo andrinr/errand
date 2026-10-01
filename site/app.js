@@ -801,12 +801,12 @@ const participants = [
     "type": "model",
     "label": "Mistral · LLM · fat",
     "score": 7,
-    "time": "00:01",
+    "time": "00:00.1",
     "accounts": 0,
-    "note": "Finished before the progress bar mounted.",
-    "report": "Completed all seven tasks. The loading indicator arrived after the receipt.\n\nCompleted: 7/7.",
+    "note": "100 ms of inference. $50,000 of compute. The page exists.",
+    "report": "Completed all seven tasks in 100 milliseconds. The inference cluster cost $50,000; paper, ink, and power added $0.12.\n\nCompleted: 7/7. Ranked by completion and time; the entire compute bill is included in the cost plot.",
     "costs": {
-      "compute": 0.04,
+      "compute": 50000,
       "subscriptions": 0,
       "consumables": 0.12
     },

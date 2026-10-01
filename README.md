@@ -62,7 +62,7 @@ All human entries use job titles. The three hands-on engineers lead human perfor
 
 Printer and HDMI start with minimal controls and progressively disclose troubleshooting. Printer properties reveal document details; a crash reveals driver controls and diagnostics; diagnostics or a jam reveals hardware. HDMI reveals the cable drawer after Present, signal controls after connection, and audience verification after a successful handshake. Retry resets these reveals.
 
-Le Chaton-fat, Le Chaton-slim, and Le Chaton-mid add three meme entries. Fat finishes in one second; slim and mid take longer and rank below other frontier models. The roster now contains 35 model configurations, three engineers, and seven management roles. Company icons are bundled from [Lobe Icons](https://github.com/lobehub/lobe-icons) with their license in `site/assets/companies/LICENSE`; pixel portraits are original SVG artwork.
+Le Chaton-fat, Le Chaton-slim, and Le Chaton-mid add three meme entries. Fat finishes in 100 milliseconds at $50,000 compute per attempt; slim and mid take longer and rank below other frontier models. The roster now contains 35 model configurations, three engineers, and seven management roles. Company icons are bundled from [Lobe Icons](https://github.com/lobehub/lobe-icons) with their license in `site/assets/companies/LICENSE`; pixel portraits are original SVG artwork.
 
 ## Model-name sources (checked 2026-10-01)
 
