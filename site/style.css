@@ -29,3 +29,5 @@
 .leaderboard-scroll{max-height:560px;max-height:min(65vh,560px);overflow:auto;scrollbar-gutter:stable}.leaderboard-scroll thead th{position:sticky;top:0;z-index:2;background:var(--silver);box-shadow:0 1px 0 #888}.leaderboard-scroll:focus-visible{outline:2px dotted var(--navy);outline-offset:-3px}
 
 #game-arena [hidden]{display:none!important}
+
+.hero .paper{transform:none}.hero .printer-caption{font:9px/1.6 "Courier New",monospace;letter-spacing:.4px}.task-preview-label{display:flex;flex-direction:column;gap:5px;align-items:center;margin-top:15px;font:11px/1.5 "Courier New",monospace}.hero .printer-scene{padding-bottom:10px}
