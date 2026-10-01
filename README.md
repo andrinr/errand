@@ -56,7 +56,7 @@ Six fictional executives and managers join the four other humans. Their luxury g
 
 Each model family has a colored line connecting its four presets in increasing effort order. Lines follow the cursed axis transform; selecting a model highlights its series. The dashed green Pareto frontier remains separate.
 
-The current ranking uses a 0–1000 errand score: 1000 × (completed levels / 5) / (1 + average attempt seconds / 120). Completion is weighted by elapsed time, so speed materially separates results; zero completion gives zero score. Chart and Pareto use this same score. The axis selector has been replaced by a continuous cost axis: linear $0–1, logarithmic $1–100, and normalized exponential above $100. All invoices remain fully included.
+The current ranking uses a 0–1000 errand score: 1000 × (completed levels / 7) / (1 + average attempt seconds / 120). Completion is weighted by elapsed time, so speed materially separates results; zero completion gives zero score. Chart and Pareto use this same score. The axis selector has been replaced by a continuous cost axis: linear $0–1, logarithmic $1–100, and normalized exponential above $100. All invoices remain fully included.
 
 All human entries use job titles. Only the three hands-on engineers complete tasks; two use AI and one relies on archived documentation. Product and management entries receive no completion credit for delegation or generated plans. Eight humans use AI directly, with inference charges included in compute costs.
 
@@ -83,6 +83,8 @@ Neuron column: engineers use a rounded whole-brain reference of ≈86B biologica
 
 ## Bonus arcade
 
-The original five environments remain the scored leaderboard suite. Three extra games are playable from the catalog and selector: Plug In a USB (orientation, dust, power, disguised executable), Save Past the Goose (peas, nest, bell, save), and Finish the Update (an intentionally unwinnable sandbox with endless phases and an End session button). Local wins count the seven solvable games only. All timers start on the first action; retry clears game state.
+All seven solvable environments count in the leaderboard suite. The newer games are playable from the catalog and selector: Plug In a USB (orientation, dust, power, disguised executable), Save Past the Goose (peas, nest, bell, save), and Finish the Update (an intentionally unwinnable sandbox with endless phases and an End session button). Local wins count the seven solvable games only. All timers start on the first action; retry clears game state.
 
 Animals: Office Cat, IT Support Dog, and Cable Management Ferret have fictional results above management, full consumables invoices, original pixel portraits, an Animals filter, and triangle plot markers. Neuron counts are approximate **cortical** counts (250M, 530M, 39M), sourced from [Jardim-Messeder et al. 2017](https://www.frontiersin.org/journals/neuroanatomy/articles/10.3389/fnana.2017.00118/full), not whole-brain counts. Management uses explicitly satirical counts from 32K to 2.048M; engineers retain the ≈86B whole-brain reference. The board has 48 participants.
+
+The leaderboard now scores seven solvable levels. Completion totals span 0–7, shared by score calculation, table meters, reports, plot details, and Pareto ranking. Finish the Update remains unscored. Effort trends and the requested top three are preserved.

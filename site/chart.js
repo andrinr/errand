@@ -47,7 +47,7 @@
         path.setAttribute('stroke-width', active ? '3.5' : '1.8');
         path.setAttribute('stroke-opacity', active ? '1' : point.type === 'model' ? '0.18' : '0.6');
       });
-      detail.textContent = `${point.name} · ${point.performance.toFixed(1)} points · ${point.score}/5 levels · ${formatNeurons(point.neurons)} ${point.satiricalNeurons ? 'neurons (satirical)' : point.type === 'animal' ? 'cortical neurons' : point.type === 'human' ? 'biological neurons' : 'artificial units (est.)'} · ${point.time} per attempt · ${money(point.cost)} total. Compute: ${money(point.costs.compute)}; accidental subscriptions: ${money(point.costs.subscriptions)}; consumables / goods / perks: ${money(point.costs.consumables)} (${point.consumed}).`;
+      detail.textContent = `${point.name} · ${point.performance.toFixed(1)} points · ${point.score}/${benchmarkLevelCount} levels · ${formatNeurons(point.neurons)} ${point.satiricalNeurons ? 'neurons (satirical)' : point.type === 'animal' ? 'cortical neurons' : point.type === 'human' ? 'biological neurons' : 'artificial units (est.)'} · ${point.time} per attempt · ${money(point.cost)} total. Compute: ${money(point.costs.compute)}; accidental subscriptions: ${money(point.costs.subscriptions)}; consumables / goods / perks: ${money(point.costs.consumables)} (${point.consumed}).`;
     };
     container.querySelectorAll('.plot-point').forEach(element => {
       element.onclick = () => show(Number(element.dataset.point));

@@ -298,7 +298,7 @@ test('combined scores reward speed within a level and Pareto uses full raw value
   const rows = [...f.d.querySelectorAll('#results tr')];
   const points = rows.map((row, id) => ({ id, score: Number(row.querySelector('.score b').textContent), levels: Number(row.querySelector('.score .participant-type').textContent.split('/')[0]), cost: Number(row.querySelector('.invoice-total b').textContent.slice(1)), time: row.children[3].textContent.split(':').map(Number).reduce((m, v) => m * 60 + v, 0) }));
   for (const point of points) {
-    assert.ok(point.score >= 0 && point.score <= point.levels * 200);
+    assert.ok(point.score >= 0 && point.score <= point.levels * 1000 / 7);
     if (!point.levels) assert.equal(point.score, 0);
     for (const other of points) if (point.levels === other.levels && point.levels > 0 && point.time < other.time) assert.ok(point.score > other.score);
     assert.equal(Number(f.d.querySelectorAll('#cost-data tr')[point.id].children[1].textContent), point.score);
@@ -501,7 +501,21 @@ test('effort curves include steady gains, deep recoveries, and complete failures
  for (const [company, effort] of [['Anthropic', 'max'], ['xAI', 'unhinged']]) {
    const p = f.w.entries.find(p => p.company === company && p.effort === effort);
    assert.equal(p.score, 0); assert.equal(f.w.scoreOf(p), 0);
-   assert.ok(p.costs.compute > 0); assert.match(p.report, /Completed: 0\/5/);
+   assert.ok(p.costs.compute > 0); assert.match(p.report, /Completed: 0\/7/);
  }
+ f.close();
+});
+
+test('seven scored levels have varied completions and consistent table and report totals', () => {
+ const f = fixture(0);
+ f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\nwindow.entries = participants; window.levelCount = benchmarkLevelCount;');
+ assert.equal(f.w.levelCount, 7);
+ assert.deepEqual([...new Set(f.w.entries.map(p => p.score))].sort(), [0,1,2,3,4,5,6,7]);
+ const rows = [...f.d.querySelectorAll('#results tr')];
+ f.w.entries.forEach((p, i) => {
+   assert.ok(p.report.includes(`Completed: ${p.score}/7`));
+   assert.equal(rows[i].querySelector('.score .participant-type').textContent, `${p.score}/7 levels`);
+   assert.equal(rows[i].querySelectorAll('.meter i').length, 7);
+ });
  f.close();
 });
