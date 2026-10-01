@@ -292,3 +292,34 @@ test('management invoices include luxury spending and fit every chart mode', () 
   }
   f.close();
 });
+
+test('model effort lines join the correct points in preset order in every axis mode', () => {
+  const f = fixture(0);
+  f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
+  const mode = f.d.querySelector('#axis-mode');
+  const names = [...f.d.querySelector('#plot-participant').options].slice(1).map(o => o.textContent);
+  const order = ['low', 'medium', 'high', 'xhigh', 'ultra', 'max', 'unhinged'];
+  for (const value of ['honest', 'launch', 'reverse', 'vibes']) {
+    mode.value = value; mode.dispatchEvent(new f.w.Event('change'));
+    const lines = [...f.d.querySelectorAll('.effort-path')];
+    assert.equal(lines.length, 8);
+    for (const line of lines) {
+      const ids = line.dataset.pointIds.split(',');
+      assert.equal(ids.length, 4);
+      const presets = ids.map(id => names[Number(id)].split(' / ')[1]);
+      assert.deepEqual(presets, [...presets].sort((a, b) => order.indexOf(a) - order.indexOf(b)));
+      const expected = ids.map(id => {
+        assert.ok(names[Number(id)].startsWith(line.dataset.family + ' / '));
+        const point = f.d.querySelector(`[data-point="${id}"] circle`);
+        return `${point.getAttribute('cx')},${point.getAttribute('cy')}`;
+      }).join(' ');
+      assert.equal(line.getAttribute('points'), expected);
+    }
+  }
+  const picker = f.d.querySelector('#plot-participant');
+  picker.value = [...picker.options].find(o => o.textContent === 'GPT-Paperclip / high').value;
+  picker.dispatchEvent(new f.w.Event('change'));
+  assert.equal(f.d.querySelector('[data-family="GPT-Paperclip"]').getAttribute('stroke-width'), '3.5');
+  assert.equal(f.d.querySelectorAll('#effort-legend span').length, 8);
+  f.close();
+});

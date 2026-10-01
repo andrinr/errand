@@ -5,6 +5,11 @@
   const money = value => `$${value.toFixed(2)}`;
   const escape = value => String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
   const modeControl = document.querySelector('#axis-mode');
+  const effortOrder = ['low', 'medium', 'high', 'xhigh', 'ultra', 'max', 'unhinged'];
+  const familyOf = point => point.type === 'model' ? point.name.split(' / ')[0] : '';
+  const families = [...new Set(participants.filter(p => p.type === 'model').map(familyOf))];
+  const palette = ['#000080', '#a04000', '#7040a0', '#005c5c', '#b00040', '#526300', '#3658a0', '#69452c'];
+  const familyColor = family => palette[families.indexOf(family) % palette.length];
   let selected = null;
   function render() {
     const points = participants.map((participant, i) => ({ ...participant, id: i, cost: totalCost(participant), performance: participant.score / tasks.length * 100 }));
@@ -29,10 +34,14 @@
     const ticks = mode === 'vibes' ? costs.filter((_, i) => i % 3 === 0 || i === costs.length - 1) : [0, 1, 100, 10000, axisMax];
     for (const tick of ticks) svg += `<line x1="${x(tick)}" x2="${x(tick)}" y1="60" y2="300" stroke="#d5d5c9" stroke-dasharray="2 4"/><text x="${x(tick)}" y="321" text-anchor="middle">${money(tick)}</text>`;
     svg += `<text x="70" y="29" class="axis-title">${mode === 'launch' ? 'Completion ↑ (warped: eighth-power scale)' : 'Errands completed ↑'}</text><text x="360" y="350" text-anchor="middle" class="axis-title">${mode === 'vibes' ? 'Invoice rank → (NOT proportional to cost)' : mode === 'reverse' ? '← Cost per attempt (US$, reversed log scale)' : 'Cost per attempt → (US$, log scale)'}</text>`;
+    for (const family of families) {
+      const variants = points.filter(p => familyOf(p) === family).sort((a, b) => effortOrder.indexOf(a.effort) - effortOrder.indexOf(b.effort));
+      svg += `<polyline class="effort-path" data-family="${escape(family)}" data-point-ids="${variants.map(p => p.id).join(',')}" points="${variants.map(p => `${x(p.cost)},${y(p.performance)}`).join(' ')}" fill="none" stroke="${familyColor(family)}" stroke-width="1.8" stroke-opacity="0.6" pointer-events="none"><title>${escape(family)}: ${variants.map(p => escape(p.effort)).join(' → ')} (increasing effort)</title></polyline>`;
+    }
     svg += `<polyline points="${frontier.map(point => `${x(point.cost)},${y(point.performance)}`).join(' ')}" fill="none" stroke="#008000" stroke-width="2.5" stroke-dasharray="7 4" class="pareto-path"/>`;
     // Draw low performers first so frontier markers remain visible at crowded low costs.
     for (const point of [...points].sort((a, b) => a.performance - b.performance)) {
-      const px = x(point.cost), py = y(point.performance), color = point.role === 'management' ? '#800080' : point.type === 'human' ? '#008080' : '#000080';
+      const px = x(point.cost), py = y(point.performance), color = point.role === 'management' ? '#800080' : point.type === 'human' ? '#008080' : familyColor(familyOf(point));
       const label = `${point.name}: ${money(point.cost)}, ${point.performance.toFixed(0)}% completion${efficient.has(point.id) ? ', Pareto-efficient' : ''}`;
       svg += `<g class="plot-point ${efficient.has(point.id) ? 'efficient' : ''} ${selected === point.id ? 'selected' : ''}" data-point="${point.id}" tabindex="0" role="button" aria-label="${escape(label)}"><title>${escape(label)}</title><circle cx="${px}" cy="${py}" r="14" fill="transparent"/>`;
       if (efficient.has(point.id)) svg += `<circle cx="${px}" cy="${py}" r="10" fill="none" stroke="#008000" stroke-width="2"/>`;
@@ -44,6 +53,11 @@
     const show = id => {
       selected = id; document.querySelector('#plot-participant').value = String(id); const point = points[id];
       container.querySelectorAll('.plot-point').forEach(el => el.classList.toggle('selected', Number(el.dataset.point) === id));
+      container.querySelectorAll('.effort-path').forEach(path => {
+        const active = path.dataset.family === familyOf(point);
+        path.setAttribute('stroke-width', active ? '3.5' : '1.8');
+        path.setAttribute('stroke-opacity', active ? '1' : point.type === 'model' ? '0.18' : '0.6');
+      });
       detail.textContent = `${point.name} · ${point.performance.toFixed(0)}% complete · ${money(point.cost)} total. Compute: ${money(point.costs.compute)}; accidental subscriptions: ${money(point.costs.subscriptions)}; consumables / goods / perks: ${money(point.costs.consumables)} (${point.consumed}). Every charge counts, including failed attempts.`;
     };
     container.querySelectorAll('.plot-point').forEach(element => {
@@ -55,7 +69,7 @@
     document.querySelector('#cost-data').innerHTML = points.map(point => `<tr><td>${escape(point.name)}</td><td>${point.performance.toFixed(0)}%</td><td>${money(point.costs.compute)}</td><td>${money(point.costs.subscriptions)}</td><td>${money(point.costs.consumables)}</td><td>${money(point.cost)}</td></tr>`).join('');
     if (selected !== null) show(selected);
   }
-  const effortOrder = ['low', 'medium', 'high', 'xhigh', 'ultra', 'max', 'unhinged'];
+  document.querySelector('#effort-legend').innerHTML = families.map(family => `<span><i style="border-color:${familyColor(family)}"></i>${escape(family)}</span>`).join('');
   document.querySelector('#effort-comparisons').innerHTML = [...new Set(participants.filter(p => p.type === 'model').map(p => p.company))].map(company => {
     const variants = participants.filter(p => p.company === company).sort((a, b) => effortOrder.indexOf(a.effort) - effortOrder.indexOf(b.effort));
     const regresses = variants.some((p, i) => i > 0 && p.score < variants[i - 1].score);
