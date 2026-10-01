@@ -8,22 +8,30 @@ A Windows 95-inspired parody benchmark for frontier AI and ordinary humans. **Al
 
 https://andrinr.github.io/errand/
 
-The static site lives in `site/`: no build step, external fonts, dependencies, analytics, or backend. Serve that folder with any static web server. For example, `python3 -m http.server 8000 --directory site`.
+The static site lives in `site/`: no build step, runtime dependencies, external fonts, analytics, or backend. The optional development test suite uses jsdom. Serve that folder with any static web server. For example, `python3 -m http.server 8000 --directory site`.
 
 Includes a filterable fictional leaderboard, eight incident reports, and eight playable mini-games inspired by interactive reasoning benchmarks. Unaffiliated with ARC Prize or ARC-AGI-3.
 
 ## Games
 
-1. **Just Print It:** close multiplying error windows, then print.
-2. **Cancel My Gym:** survive six deliberately confusing cancellation steps.
-3. **Present Your Screen:** move a cable slowly and stop inside a narrow socket.
-4. **Stop the Emails:** clear every checkbox and catch a moving Save button.
-5. **Return the Parcel:** hold to dispatch a painfully slow parcel. Cursed mode gives you 8 seconds for a minimum 25-second journey, making it deliberately impossible.
-6. **Make It One Page:** click tiny paragraph marks; misses add pages and reset progress.
-7. **Find the Attachment:** inspect nearly identical files to find Linda’s approved version.
-8. **Fix the Blue Screen:** enter recovery, disable three conflicting settings, clear a recovery error, and restart past the 99% progress stall. Cursed mode re-enables settings and gives you 28 seconds.
+1. **Just Print It:** match the sticky note’s exact settings, avoid PDF and remote printers, clear multiplying errors, and watch the paper emerge.
+2. **Cancel My Gym:** reject a pause and retention offers, read renewal checkboxes, then hold to confirm cancellation.
+3. **Present Your Screen:** align the cable with the right socket, choose HDMI 2, and duplicate instead of extending the display.
+4. **Stop the Emails:** turn off recommendation sabotage, interpret negative wording, chase Save, and avoid the final double-negative trap.
+5. **Return the Parcel:** choose the return address, stamp the label, and use the conveyor. “Express” delivers it back to you. Cursed mode deliberately gives only 8 seconds for at least 25 seconds of transit.
+6. **Make It One Page:** reveal formatting, remove a page break, shrink the table’s mandatory paragraph, and undo accidental content deletion.
+7. **Find the Attachment:** compare approver, version, page count, and file type against Linda’s note. Names and “APPROVED” badges can lie.
+8. **Fix the Blue Screen:** a four-stage adventure with a desk to search, collectible items, item-use puzzles, a boot code, a driver vault, a clue notebook, and a final update trap.
 
-**Cursed office** is intentionally frustrating and sometimes impossible. **Practice** gives 60 seconds, larger targets or fewer obstacles, and a solvable version of every task. All games have timers, action counts, retries, and session-only completion tracking. Closing or changing the game stops its active loop. Nothing touches real printers, accounts, memberships, or files.
+Games load immediately. **The clock starts on the first game action**, including selecting an option or collecting an item. There is no separate Start screen. Retry and switching games prepare a new attempt without starting the timer. Hints and optional sound controls do not start it.
+
+**Cursed office** adds tighter timers, interruptions, and the deliberately impossible parcel deadline. **Practice** gives 120 seconds and fewer interruptions. All games have a solvable Practice path. The blue-screen adventure also gets 120 seconds in Cursed mode. All other Cursed limits are 60–65 seconds, except the eight-second parcel.
+
+Shared feedback includes optional synthesized sound, animated errors, progress bars, shaking mistakes, trap/action counts, hints, receipts, and next-game navigation. Wins are tracked separately per difficulty for the current page visit. No real printers, accounts, memberships, files, or operating-system settings are touched.
+
+## Validation
+
+Run `npm ci` then `npm test`. The tests use an isolated DOM and controlled animation clock to exercise all eight win paths, selected traps, hold/release behavior, inventory gates, timer arming, retries, closing, and separate scores. Run `npm run check` for JavaScript syntax checks. No test dependencies are shipped with the site.
 
 ## Publishing
 

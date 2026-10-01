@@ -19,6 +19,14 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install test dependencies
+        run: npm ci
+      - name: Test game mechanics
+        run: npm test
       - name: Check JavaScript
         run: |
           node --check site/app.js

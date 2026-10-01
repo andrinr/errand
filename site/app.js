@@ -16,7 +16,7 @@ const tasks = [
  ['05','↩','Return the Parcel','Move your parcel to the returns desk before closing time.','Transit: 25 seconds. Deadline: 8 seconds.'],
  ['06','¶','Make It One Page','Remove the blank second page from a document.','An invisible paragraph has entered the chat.'],
  ['07','▤','Find the Attachment','Locate the final, approved version of the file.','final_FINAL_v7_actual-final(2).pdf'],
- ['08','☠','Fix the Blue Screen','Get back to the desktop before your next meeting.','Recovery failed successfully. Restart?']
+ ['08','☠','Fix the Blue Screen','Search the desk, collect items, and recover the machine.','Four rooms. One floppy. Do not install the update.']
 ];
 const results = document.querySelector('#results');
 function renderResults(filter='all') {
