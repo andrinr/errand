@@ -432,3 +432,25 @@ test('update sandbox has bounded dialogs, endless phases, no win, and clean retr
   f.d.querySelector('#start-game').click(); assert.match(f.d.querySelector('#game-time').textContent, /ready/);
   f.click('Start update'); f.step(91); assert.ok(f.d.querySelector('.result-overlay')); assert.ok(!f.d.querySelector('.success')); f.close();
 });
+
+test('neuron estimates share a human reference, preserve architecture across effort, and scale Chaton-fat by 1000', () => {
+  const f = fixture(0);
+  f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\nwindow.neuronParticipants = participants;\n' + fs.readFileSync('site/chart.js', 'utf8'));
+  const entries = f.w.neuronParticipants;
+  entries.filter(p => p.type === 'human').forEach(p => assert.equal(p.neurons, 86e9));
+  const frontier = entries.filter(p => p.type === 'model' && p.family !== 'Le Chaton');
+  const largest = Math.max(...frontier.map(p => p.neurons));
+  assert.equal(entries.find(p => p.name === 'Le Chaton-fat').neurons, largest * 1000);
+  for (const p of frontier) {
+    assert.equal(p.neurons, p.assumedParameters * 0.8 / (3 * 8192));
+    frontier.filter(q => q.company === p.company).forEach(q => assert.equal(q.neurons, p.neurons));
+  }
+  const rows = [...f.d.querySelectorAll('#results tr')];
+  rows.forEach(row => {
+    const cell = row.querySelector('.neuron-count');
+    assert.match(cell.textContent, /^≈\d+(\.\d+)?[MB]$/);
+    assert.match(cell.title, /Biological neurons|Artificial FFN units/);
+  });
+  assert.match(f.d.querySelector('.table-foot').textContent, /not verified model sizes or a conversion to biological neurons/);
+  f.close();
+});

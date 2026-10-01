@@ -79,7 +79,7 @@ Names only are sourced here; benchmark scores, costs, and effort variants remain
 
 Le Chaton remains a separate meme entry, not a verified release.
 
-Neuron counts are a fictional leaderboard metric, not parameter counts or published architecture measurements. Engineers show 86B; management ranges down to zero; Le Chaton-fat has 10²⁴. Counts are shown compactly with the full value on hover and are not used in scoring.
+Neuron column: all humans use a rounded whole-brain reference of ≈86B biological neurons ([Azevedo et al., 2009](https://pubmed.ncbi.nlm.nih.gov/19226510/)), never a job-dependent or individual measurement. AI counts use an explicitly hypothetical FFN-unit proxy: assumed total parameters × 0.8 / (3 × 8192). The assumptions are 80% FFN weights, gated three-matrix MLPs, and width 8192; attention units and token reuse are excluded. These are not biological equivalents or verified model architectures. The parameter scenarios (0.128–3.2T for frontier entries) are author assumptions, retained in `assumedParameters` and disclosed on hover. All effort variants share the same estimate. Le Chaton-fat dynamically gets exactly 1,000× the maximum non-Chaton model estimate (about 104.2B artificial units); slim and mid use 128B and 1T parameter scenarios. Table and chart share the count, and counts do not affect scoring.
 
 ## Bonus arcade
 

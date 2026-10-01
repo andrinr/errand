@@ -16,7 +16,7 @@ const participants = [
       "consumables": 0.22
     },
     "consumed": "1 sheet · ink · power",
-    "neurons": 1800000000000
+    "assumedParameters": 1800000000000
   },
   {
     "name": "DeepSeek-V4-Pro / medium",
@@ -35,7 +35,7 @@ const participants = [
       "consumables": 0.24
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 1000000000000
+    "assumedParameters": 1000000000000
   },
   {
     "name": "Grok 4.7 / low",
@@ -54,7 +54,7 @@ const participants = [
       "consumables": 0.25
     },
     "consumed": "1 sheet · ink · power",
-    "neurons": 1500000000000
+    "assumedParameters": 1500000000000
   },
   {
     "name": "Claude Opus 5.5 / medium",
@@ -73,7 +73,7 @@ const participants = [
       "consumables": 0.28
     },
     "consumed": "1 sheet · ink · power",
-    "neurons": 2100000000000
+    "assumedParameters": 2100000000000
   },
   {
     "name": "Qwen3.8-Max / medium",
@@ -92,7 +92,7 @@ const participants = [
       "consumables": 0.29
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 2400000000000
+    "assumedParameters": 2400000000000
   },
   {
     "name": "Muse Spark 1.3 / medium",
@@ -111,7 +111,7 @@ const participants = [
       "consumables": 0.27
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 1200000000000
+    "assumedParameters": 1200000000000
   },
   {
     "name": "Mistral Medium 3.5 / medium",
@@ -130,7 +130,7 @@ const participants = [
       "consumables": 0.33
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 128000000000
+    "assumedParameters": 128000000000
   },
   {
     "name": "GPT-6.1 Sol / medium",
@@ -149,7 +149,7 @@ const participants = [
       "consumables": 0.3
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 1800000000000
+    "assumedParameters": 1800000000000
   },
   {
     "name": "Grok 4.7 / medium",
@@ -168,7 +168,7 @@ const participants = [
       "consumables": 0.31
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 1500000000000
+    "assumedParameters": 1500000000000
   },
   {
     "name": "Gemini 4 Argon / medium",
@@ -187,7 +187,7 @@ const participants = [
       "consumables": 0.42
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 3200000000000
+    "assumedParameters": 3200000000000
   },
   {
     "name": "Mistral Medium 3.5 / high",
@@ -206,7 +206,7 @@ const participants = [
       "consumables": 0.6
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 128000000000
+    "assumedParameters": 128000000000
   },
   {
     "name": "Claude Opus 5.5 / high",
@@ -225,7 +225,7 @@ const participants = [
       "consumables": 0.55
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 2100000000000
+    "assumedParameters": 2100000000000
   },
   {
     "name": "DeepSeek-V4-Pro / high",
@@ -244,7 +244,7 @@ const participants = [
       "consumables": 0.38
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 1000000000000
+    "assumedParameters": 1000000000000
   },
   {
     "name": "Muse Spark 1.3 / high",
@@ -263,7 +263,7 @@ const participants = [
       "consumables": 0.46
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 1200000000000
+    "assumedParameters": 1200000000000
   },
   {
     "name": "Gemini 4 Argon / high",
@@ -282,7 +282,7 @@ const participants = [
       "consumables": 0.35
     },
     "consumed": "1 sheet · ink · power",
-    "neurons": 3200000000000
+    "assumedParameters": 3200000000000
   },
   {
     "name": "GPT-6.1 Sol / high",
@@ -301,7 +301,7 @@ const participants = [
       "consumables": 0.4
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 1800000000000
+    "assumedParameters": 1800000000000
   },
   {
     "name": "Qwen3.8-Max / high",
@@ -320,7 +320,7 @@ const participants = [
       "consumables": 0.48
     },
     "consumed": "2 sheets · ink · power",
-    "neurons": 2400000000000
+    "assumedParameters": 2400000000000
   },
   {
     "name": "Gemini 4 Argon / low",
@@ -339,7 +339,7 @@ const participants = [
       "consumables": 0.09
     },
     "consumed": "9 sheets · ink · power",
-    "neurons": 3200000000000
+    "assumedParameters": 3200000000000
   },
   {
     "name": "DeepSeek-V4-Pro / low",
@@ -358,7 +358,7 @@ const participants = [
       "consumables": 0.14
     },
     "consumed": "11 sheets · ink · power",
-    "neurons": 1000000000000
+    "assumedParameters": 1000000000000
   },
   {
     "name": "Muse Spark 1.3 / low",
@@ -377,7 +377,7 @@ const participants = [
       "consumables": 0.16
     },
     "consumed": "11 sheets · ink · power",
-    "neurons": 1200000000000
+    "assumedParameters": 1200000000000
   },
   {
     "name": "Mistral Medium 3.5 / low",
@@ -396,7 +396,7 @@ const participants = [
       "consumables": 0.17
     },
     "consumed": "11 sheets · ink · power",
-    "neurons": 128000000000
+    "assumedParameters": 128000000000
   },
   {
     "name": "Qwen3.8-Max / low",
@@ -415,7 +415,7 @@ const participants = [
       "consumables": 0.2
     },
     "consumed": "11 sheets · ink · power",
-    "neurons": 2400000000000
+    "assumedParameters": 2400000000000
   },
   {
     "name": "Claude Opus 5.5 / low",
@@ -434,7 +434,7 @@ const participants = [
       "consumables": 0.18
     },
     "consumed": "11 sheets · ink · power",
-    "neurons": 2100000000000
+    "assumedParameters": 2100000000000
   },
   {
     "name": "Muse Spark 1.3 / max",
@@ -453,7 +453,7 @@ const participants = [
       "consumables": 1.5
     },
     "consumed": "11 sheets · ink · power",
-    "neurons": 1200000000000
+    "assumedParameters": 1200000000000
   },
   {
     "name": "DeepSeek-V4-Pro / max",
@@ -472,7 +472,7 @@ const participants = [
       "consumables": 0.95
     },
     "consumed": "11 sheets · ink · power",
-    "neurons": 1000000000000
+    "assumedParameters": 1000000000000
   },
   {
     "name": "Grok 4.7 / high",
@@ -491,7 +491,7 @@ const participants = [
       "consumables": 0.65
     },
     "consumed": "11 sheets · ink · power",
-    "neurons": 1500000000000
+    "assumedParameters": 1500000000000
   },
   {
     "name": "Claude Opus 5.5 / max",
@@ -510,7 +510,7 @@ const participants = [
       "consumables": 0.7
     },
     "consumed": "9 sheets · ink · power",
-    "neurons": 2100000000000
+    "assumedParameters": 2100000000000
   },
   {
     "name": "Mistral Medium 3.5 / max",
@@ -529,7 +529,7 @@ const participants = [
       "consumables": 1.3
     },
     "consumed": "11 sheets · ink · power",
-    "neurons": 128000000000
+    "assumedParameters": 128000000000
   },
   {
     "name": "Gemini 4 Argon / ultra",
@@ -548,7 +548,7 @@ const participants = [
       "consumables": 1.2
     },
     "consumed": "11 sheets · ink · power",
-    "neurons": 3200000000000
+    "assumedParameters": 3200000000000
   },
   {
     "name": "Qwen3.8-Max / max",
@@ -567,7 +567,7 @@ const participants = [
       "consumables": 1.6
     },
     "consumed": "11 sheets · ink · power",
-    "neurons": 2400000000000
+    "assumedParameters": 2400000000000
   },
   {
     "name": "GPT-6.1 Sol / xhigh",
@@ -586,7 +586,7 @@ const participants = [
       "consumables": 0.9
     },
     "consumed": "9 sheets · ink · power",
-    "neurons": 1800000000000
+    "assumedParameters": 1800000000000
   },
   {
     "name": "Grok 4.7 / unhinged",
@@ -605,7 +605,7 @@ const participants = [
       "consumables": 1.1
     },
     "consumed": "9 sheets · ink · power",
-    "neurons": 1500000000000
+    "assumedParameters": 1500000000000
   },
   {
     "name": "Staff Software Engineer",
@@ -623,8 +623,7 @@ const participants = [
     },
     "consumed": "1 coffee · 3 sheets · ink",
     "role": "engineering",
-    "portrait": "assets/people/person-0.svg",
-    "neurons": 86000000000
+    "portrait": "assets/people/person-0.svg"
   },
   {
     "name": "Site Reliability Engineer",
@@ -642,8 +641,7 @@ const participants = [
     },
     "consumed": "8 sheets · ink · power",
     "role": "engineering",
-    "portrait": "assets/people/person-1.svg",
-    "neurons": 86000000000
+    "portrait": "assets/people/person-1.svg"
   },
   {
     "name": "Senior Engineering Manager",
@@ -661,8 +659,7 @@ const participants = [
       "consumables": 8400
     },
     "consumed": "Steak dinners · airport lounges · wine",
-    "portrait": "assets/people/person-2.svg",
-    "neurons": 42000000000
+    "portrait": "assets/people/person-2.svg"
   },
   {
     "name": "Legacy Systems Engineer",
@@ -680,8 +677,7 @@ const participants = [
     },
     "consumed": "2 coffees · 12 sheets · ink",
     "role": "engineering",
-    "portrait": "assets/people/person-3.svg",
-    "neurons": 86000000000
+    "portrait": "assets/people/person-3.svg"
   },
   {
     "name": "Director of Strategic Alignment",
@@ -699,8 +695,7 @@ const participants = [
       "consumables": 16800
     },
     "consumed": "Spa retreat · premium catering · chauffeur",
-    "portrait": "assets/people/person-4.svg",
-    "neurons": 16
+    "portrait": "assets/people/person-4.svg"
   },
   {
     "name": "VP of Engineering",
@@ -718,8 +713,7 @@ const participants = [
       "consumables": 42750
     },
     "consumed": "Business-class flights · tasting menu · suite",
-    "portrait": "assets/people/person-5.svg",
-    "neurons": 8
+    "portrait": "assets/people/person-5.svg"
   },
   {
     "name": "Product Manager",
@@ -737,8 +731,7 @@ const participants = [
     },
     "consumed": "37 sheets · ink · power",
     "role": "management",
-    "portrait": "assets/people/person-6.svg",
-    "neurons": 86000000000
+    "portrait": "assets/people/person-6.svg"
   },
   {
     "name": "Head of AI Transformation",
@@ -756,8 +749,7 @@ const participants = [
       "consumables": 68000
     },
     "consumed": "Luxury watches · launch dinner · executive suite",
-    "portrait": "assets/people/person-7.svg",
-    "neurons": 2
+    "portrait": "assets/people/person-7.svg"
   },
   {
     "name": "Fractional Chief Strategy Officer",
@@ -775,8 +767,7 @@ const participants = [
       "consumables": 127500
     },
     "consumed": "Yacht charter · caviar · consulting package",
-    "portrait": "assets/people/person-8.svg",
-    "neurons": 1
+    "portrait": "assets/people/person-8.svg"
   },
   {
     "name": "Chief Executive Officer",
@@ -794,8 +785,7 @@ const participants = [
       "consumables": 184500
     },
     "consumed": "Private jet · champagne · penthouse",
-    "portrait": "assets/people/person-9.svg",
-    "neurons": 0
+    "portrait": "assets/people/person-9.svg"
   },
   {
     "name": "Le Chaton-fat",
@@ -815,7 +805,7 @@ const participants = [
     },
     "consumed": "1 sheet · ink · power",
     "family": "Le Chaton",
-    "neurons": 1000000000000000000000000
+    "assumedParameters": null
   },
   {
     "name": "Le Chaton-slim",
@@ -835,7 +825,7 @@ const participants = [
     },
     "consumed": "1 sheet · ink · power",
     "family": "Le Chaton",
-    "neurons": 128000000000
+    "assumedParameters": 128000000000
   },
   {
     "name": "Le Chaton-mid",
@@ -855,9 +845,18 @@ const participants = [
     },
     "consumed": "1 sheet · ink · power",
     "family": "Le Chaton",
-    "neurons": 12000000000000
+    "assumedParameters": 1000000000000.0
   }
 ];
+// FFN-unit proxy: assumed 80% FFN weights, gated MLP with three matrices,
+// and a common assumed width of 8192. These are scenario assumptions, not
+// published architectures or biological-neuron equivalents.
+const estimateArtificialNeurons = parameters => parameters * 0.8 / (3 * 8192);
+const frontierNeuronEstimate = Math.max(...participants.filter(p => p.type === 'model' && p.family !== 'Le Chaton').map(p => estimateArtificialNeurons(p.assumedParameters)));
+participants.forEach(p => {
+ p.neurons = p.type === 'human' ? 86e9 : p.effort === 'fat' ? 1000 * frontierNeuronEstimate : estimateArtificialNeurons(p.assumedParameters);
+});
+
 const totalCost = participant => Math.round(Object.values(participant.costs).reduce((sum, cost) => sum + cost, 0) * 100) / 100;
 const benchmarkScore = participant => {
  const [minutes, seconds] = participant.time.split(':').map(Number);
@@ -874,11 +873,12 @@ const tasks = [
 ];
 const companyIcons = {OpenAI:'openai',Anthropic:'anthropic',Google:'google',xAI:'xai',Meta:'meta',DeepSeek:'deepseek',Mistral:'mistral',Alibaba:'qwen'};
 const participantIcon = p => `<img class="participant-avatar ${p.type === 'human' ? 'portrait' : ''}" src="${p.portrait || 'assets/companies/' + companyIcons[p.company] + '.svg'}" alt="" width="36" height="40">`;
-const formatNeurons = count => count >= 1e24 ? '10²⁴' : count >= 1e12 ? `${+(count / 1e12).toFixed(1)}T` : count >= 1e9 ? `${+(count / 1e9).toFixed(1)}B` : String(count);
+const formatNeurons = count => `≈${count >= 1e9 ? +(count / 1e9).toFixed(1) + 'B' : +(count / 1e6).toFixed(1) + 'M'}`;
+const neuronDescription = p => p.type === 'human' ? 'Biological neurons: approximate whole-brain reference, not an individual measurement.' : p.effort === 'fat' ? 'Artificial FFN units: fictional 1,000× the largest frontier scenario estimate.' : `Artificial FFN units: scenario estimate from ${(p.assumedParameters / 1e12).toFixed(3)}T assumed parameters; architecture unverified. Not equivalent to biological neurons.`;
 const results = document.querySelector('#results');
 function renderResults(filter='all') {
  const visible=participants.filter(p=>filter==='all'||p.type===filter||(filter==='engineering'&&p.role==='engineering')||(filter==='management'&&p.role==='management'));
- results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${participantIcon(p)}<span>${p.name}</span></button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${benchmarkScore(p).toFixed(1)}</b><span class="participant-type">${p.score}/${tasks.length} levels</span><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td class="neuron-count" title="${p.neurons.toLocaleString('en-US')}">${formatNeurons(p.neurons)}</td><td>${p.accounts}</td><td class="invoice-total"><b>${formatCost(totalCost(p))}</b><span class="participant-type">Compute ${formatCost(p.costs.compute)} · subscriptions ${formatCost(p.costs.subscriptions)} · goods/perks ${formatCost(p.costs.consumables)}</span></td><td class="consumed">${p.consumed}</td><td class="observation">${p.note}</td></tr>`}).join('');
+ results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${participantIcon(p)}<span>${p.name}</span></button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${benchmarkScore(p).toFixed(1)}</b><span class="participant-type">${p.score}/${tasks.length} levels</span><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td class="neuron-count" title="${neuronDescription(p)}">${formatNeurons(p.neurons)}</td><td>${p.accounts}</td><td class="invoice-total"><b>${formatCost(totalCost(p))}</b><span class="participant-type">Compute ${formatCost(p.costs.compute)} · subscriptions ${formatCost(p.costs.subscriptions)} · goods/perks ${formatCost(p.costs.consumables)}</span></td><td class="consumed">${p.consumed}</td><td class="observation">${p.note}</td></tr>`}).join('');
  document.querySelector('#result-count').textContent=`${visible.length} participants`;
 }
 renderResults();
