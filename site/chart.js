@@ -59,11 +59,6 @@
     if (selected !== null) show(selected);
   }
   document.querySelector('#effort-legend').innerHTML = families.map(family => `<span><i style="border-color:${familyColor(family)}"></i>${escape(family)}</span>`).join('');
-  document.querySelector('#effort-comparisons').innerHTML = [...new Set(participants.filter(p => p.type === 'model').map(p => p.company))].map(company => {
-    const variants = participants.filter(p => p.company === company).sort((a, b) => effortOrder.indexOf(a.effort) - effortOrder.indexOf(b.effort));
-    const regresses = variants.some((p, i) => i > 0 && p.score < variants[i - 1].score);
-    return `<div class="effort-pair"><b>${escape(company)}</b><span>${variants.map(p => `${escape(p.effort)}: ${benchmarkScore(p).toFixed(1)} pts · ${money(totalCost(p))}`).join(' → ')}</span><small>${regresses ? 'REGRESSION: more effort eventually completes fewer errands.' : 'PLATEAU: the invoice scales more reliably than the score.'}</small></div>`;
-  }).join('');
   const picker = document.querySelector('#plot-participant');
   picker.innerHTML = '<option value="">Inspect a participant…</option>' + participants.map((p, i) => `<option value="${i}">${escape(p.name)}</option>`).join('');
   picker.addEventListener('change', () => { selected = picker.value === '' ? null : Number(picker.value); render(); if (selected === null) detail.textContent = 'Select a participant to inspect the invoice.'; });
