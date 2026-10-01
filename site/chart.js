@@ -4,8 +4,8 @@
   const detail = document.querySelector('#plot-detail');
   const money = value => `$${value.toFixed(2)}`;
   const escape = value => String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
-  const effortOrder = ['low', 'medium', 'high', 'xhigh', 'ultra', 'max', 'unhinged'];
-  const familyOf = point => point.type === 'model' ? point.name.split(' / ')[0] : '';
+  const effortOrder = ['low', 'medium', 'high', 'xhigh', 'ultra', 'max', 'unhinged', 'slim', 'mid', 'fat'];
+  const familyOf = point => point.type === 'model' ? (point.family || point.name.split(' / ')[0]) : '';
   const families = [...new Set(participants.filter(p => p.type === 'model').map(familyOf))];
   const palette = ['#000080', '#a04000', '#7040a0', '#005c5c', '#b00040', '#526300', '#3658a0', '#69452c', '#e06510'];
   const familyColor = family => palette[families.indexOf(family) % palette.length];
@@ -25,7 +25,7 @@
     svg += '<text x="70" y="22" class="axis-title">Score ↑</text><text x="360" y="352" text-anchor="middle" class="axis-title">Cost per attempt → (US$)</text>';
     for (const family of families) {
       const variants = points.filter(p => familyOf(p) === family).sort((a, b) => effortOrder.indexOf(a.effort) - effortOrder.indexOf(b.effort));
-      svg += `<polyline class="effort-path" data-family="${escape(family)}" data-point-ids="${variants.map(p => p.id).join(',')}" points="${variants.map(p => `${x(p.cost)},${y(p.performance)}`).join(' ')}" fill="none" stroke="${familyColor(family)}" stroke-width="1.8" stroke-opacity="0.6" pointer-events="none"><title>${escape(family)}: ${variants.map(p => escape(p.effort)).join(' → ')} (increasing effort)</title></polyline>`;
+      svg += `<polyline class="effort-path" data-family="${escape(family)}" data-point-ids="${variants.map(p => p.id).join(',')}" points="${variants.map(p => `${x(p.cost)},${y(p.performance)}`).join(' ')}" fill="none" stroke="${familyColor(family)}" stroke-width="1.8" stroke-opacity="0.6" pointer-events="none"><title>${escape(family)}: ${variants.map(p => escape(p.effort)).join(' → ')} (preset order)</title></polyline>`;
     }
     svg += `<polyline points="${frontier.map(point => `${x(point.cost)},${y(point.performance)}`).join(' ')}" fill="none" stroke="#008000" stroke-width="2.5" stroke-dasharray="7 4" class="pareto-path"/>`;
     // Draw low performers first so frontier markers remain visible at crowded low costs.

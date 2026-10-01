@@ -62,7 +62,7 @@ All human entries use job titles. Only the three hands-on engineers complete tas
 
 Printer and HDMI start with minimal controls and progressively disclose troubleshooting. Printer properties reveal document details; a crash reveals driver controls and diagnostics; diagnostics or a jam reveals hardware. HDMI reveals the cable drawer after Present, signal controls after connection, and audience verification after a successful handshake. Retry resets these reveals.
 
-Le Faton Large adds four 1–4 second entries. The roster now contains 36 model configurations, three engineers, and seven management roles. Company icons are bundled from [Lobe Icons](https://github.com/lobehub/lobe-icons) with their license in `site/assets/companies/LICENSE`; pixel portraits are original SVG artwork.
+Le Chaton-fat, Le Chaton-slim, and Le Chaton-mid add three 1–3 second entries. The roster now contains 35 model configurations, three engineers, and seven management roles. Company icons are bundled from [Lobe Icons](https://github.com/lobehub/lobe-icons) with their license in `site/assets/companies/LICENSE`; pixel portraits are original SVG artwork.
 
 ## Model-name sources (checked 2026-10-01)
 
@@ -77,4 +77,4 @@ Names only are sourced here; benchmark scores, costs, and effort variants remain
 - [Qwen3.8-Max](https://www.alibabacloud.com/en/press-room/alibaba-unveils-qwen3-8-max?_p_lc=1)
 - [Mistral Medium 3.5](https://docs.mistral.ai/models/mistral-medium-3-5-26-04)
 
-Le Faton Large remains a separate meme entry, not a verified release.
+Le Chaton remains a separate meme entry, not a verified release.

@@ -756,11 +756,11 @@ const participants = [
     "portrait": "assets/people/person-9.svg"
   },
   {
-    "name": "Le Faton Large / low",
+    "name": "Le Chaton-fat",
     "company": "Mistral",
-    "effort": "low",
+    "effort": "fat",
     "type": "model",
-    "label": "Mistral · LLM · low effort",
+    "label": "Mistral · LLM · fat",
     "score": 5,
     "time": "00:01",
     "accounts": 0,
@@ -771,14 +771,15 @@ const participants = [
       "subscriptions": 0,
       "consumables": 0.12
     },
-    "consumed": "1 sheet · ink · power"
+    "consumed": "1 sheet · ink · power",
+    "family": "Le Chaton"
   },
   {
-    "name": "Le Faton Large / medium",
+    "name": "Le Chaton-slim",
     "company": "Mistral",
-    "effort": "medium",
+    "effort": "slim",
     "type": "model",
-    "label": "Mistral · LLM · medium effort",
+    "label": "Mistral · LLM · slim",
     "score": 5,
     "time": "00:02",
     "accounts": 0,
@@ -789,14 +790,15 @@ const participants = [
       "subscriptions": 0,
       "consumables": 0.12
     },
-    "consumed": "1 sheet · ink · power"
+    "consumed": "1 sheet · ink · power",
+    "family": "Le Chaton"
   },
   {
-    "name": "Le Faton Large / high",
+    "name": "Le Chaton-mid",
     "company": "Mistral",
-    "effort": "high",
+    "effort": "mid",
     "type": "model",
-    "label": "Mistral · LLM · high effort",
+    "label": "Mistral · LLM · mid",
     "score": 5,
     "time": "00:03",
     "accounts": 0,
@@ -807,25 +809,8 @@ const participants = [
       "subscriptions": 0,
       "consumables": 0.12
     },
-    "consumed": "1 sheet · ink · power"
-  },
-  {
-    "name": "Le Faton Large / max",
-    "company": "Mistral",
-    "effort": "max",
-    "type": "model",
-    "label": "Mistral · LLM · max effort",
-    "score": 5,
-    "time": "00:04",
-    "accounts": 0,
-    "note": "Four seconds. Internal investigation opened.",
-    "report": "Completed all five tasks. The loading indicator arrived after the receipt.\n\nCompleted: 5/5.",
-    "costs": {
-      "compute": 0.16,
-      "subscriptions": 0,
-      "consumables": 0.12
-    },
-    "consumed": "1 sheet · ink · power"
+    "consumed": "1 sheet · ink · power",
+    "family": "Le Chaton"
   }
 ];
 const totalCost = participant => Math.round(Object.values(participant.costs).reduce((sum, cost) => sum + cost, 0) * 100) / 100;

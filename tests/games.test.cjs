@@ -262,12 +262,12 @@ test('leaderboard and Pareto plot always include every invoice component, with e
 
   const rows = [...f.d.querySelectorAll('#results tr')];
   const costs = [...f.d.querySelectorAll('#cost-data tr')];
-  assert.equal(rows.length, 46);
-  assert.equal(costs.length, 46);
-  assert.equal(f.d.querySelectorAll('.plot-point').length, 46);
-  assert.equal(f.d.querySelectorAll('#plot-participant option').length, 47);
+  assert.equal(rows.length, 45);
+  assert.equal(costs.length, 45);
+  assert.equal(f.d.querySelectorAll('.plot-point').length, 45);
+  assert.equal(f.d.querySelectorAll('#plot-participant option').length, 46);
   f.d.querySelector('[data-filter="model"]').click();
-  assert.equal(f.d.querySelectorAll('#results tr').length, 36);
+  assert.equal(f.d.querySelectorAll('#results tr').length, 35);
   f.d.querySelector('[data-filter="all"]').click();
   rows.forEach((row, i) => {
     const cells = costs[i].querySelectorAll('td');
@@ -278,7 +278,7 @@ test('leaderboard and Pareto plot always include every invoice component, with e
     assert.match(row.querySelector('.participant-type').textContent, /LLM|Human/);
   });
   const scores = rows.map(row => Number(row.querySelector('.score b').textContent.split('/')[0]));
-  assert.deepEqual(rows.slice(0, 3).map(row => row.querySelector('.participant').textContent), ['Le Faton Large / low', 'Site Reliability Engineer', 'Staff Software Engineer']);
+  assert.deepEqual(rows.slice(0, 3).map(row => row.querySelector('.participant').textContent), ['Le Chaton-fat', 'Site Reliability Engineer', 'Staff Software Engineer']);
   assert.deepEqual(scores, [...scores].sort((a, b) => b - a));
   const picker = f.d.querySelector('#plot-participant');
   picker.value = [...picker.options].find(o => o.textContent === 'Grok 4.7 / unhinged').value;
@@ -301,7 +301,7 @@ test('combined scores reward speed within a level and Pareto uses full raw value
     for (const other of points) if (point.levels === other.levels && point.levels > 0 && point.time < other.time) assert.ok(point.score > other.score);
     assert.equal(Number(f.d.querySelectorAll('#cost-data tr')[point.id].children[1].textContent), point.score);
   }
-  assert.ok(new Set(points.slice(0, 36).map(p => p.score)).size > 20);
+  assert.ok(new Set(points.slice(0, 35).map(p => p.score)).size > 20);
   const modelRows = rows.filter(row => /LLM/.test(row.querySelector('.participant-type').textContent));
   const modelScores = modelRows.map(row => Number(row.querySelector('.score b').textContent));
   assert.ok(modelScores.filter(score => score >= 900).length <= 4, 'Only the ultra-fast model should hug the top');
@@ -345,17 +345,17 @@ test('model effort lines join the correct points in preset order on the cursed s
   const f = fixture(0);
   f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
   const names = [...f.d.querySelector('#plot-participant').options].slice(1).map(o => o.textContent);
-  const order = ['low', 'medium', 'high', 'xhigh', 'ultra', 'max', 'unhinged'];
+  const order = ['low', 'medium', 'high', 'xhigh', 'ultra', 'max', 'unhinged', 'slim', 'mid', 'fat'];
   {
     const lines = [...f.d.querySelectorAll('.effort-path')];
     assert.equal(lines.length, 9);
     for (const line of lines) {
       const ids = line.dataset.pointIds.split(',');
-      assert.equal(ids.length, 4);
-      const presets = ids.map(id => names[Number(id)].split(' / ')[1]);
+      assert.equal(ids.length, line.dataset.family === 'Le Chaton' ? 3 : 4);
+      const presets = ids.map(id => line.dataset.family === 'Le Chaton' ? names[Number(id)].split('-')[1] : names[Number(id)].split(' / ')[1]);
       assert.deepEqual(presets, [...presets].sort((a, b) => order.indexOf(a) - order.indexOf(b)));
       const expected = ids.map(id => {
-        assert.ok(names[Number(id)].startsWith(line.dataset.family + ' / '));
+        assert.ok(names[Number(id)].startsWith(line.dataset.family + (line.dataset.family === 'Le Chaton' ? '-' : ' / ')));
         const point = f.d.querySelector(`[data-point="${id}"] circle`);
         return `${point.getAttribute('cx')},${point.getAttribute('cy')}`;
       }).join(' ');
