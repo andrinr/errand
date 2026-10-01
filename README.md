@@ -50,7 +50,7 @@ GitHub Actions deploys `site/` to GitHub Pages on pushes to `main` or a manual w
 
 Real evaluation would need reproducible environments, permitted actions, fixed time limits, repeated trials, verified outcomes, documented model versions, and separate human baselines. None of those exist yet. Synthetic results must remain labeled until replaced by measured data.
 
-Company satire uses real company names and real model names with invented effort presets and results. 32 fictional AI entries span eight company parodies and four effort variants each, alongside four humans. All eight effort ladders include a regression. An invoice picker keeps crowded chart points accessible. The single cursed cost scale changes its mapping across three labeled segments. Full invoices and raw-data Pareto membership never change.
+Company satire uses real company names and real model names with invented effort presets and results. 32 fictional AI entries span eight company parodies and four effort variants each, alongside four humans. Effort curves vary: DeepSeek and Qwen improve steadily; GPT and Muse dip then recover; Claude and Grok drop to zero at their highest presets; Gemini and Mistral retain moderate regressions. An invoice picker keeps crowded chart points accessible. The single cursed cost scale changes its mapping across three labeled segments. Full invoices and raw-data Pareto membership never change.
 
 Six fictional executives and managers join the four other humans. Their luxury goods, travel, retreats, consulting purchases, and subscriptions count in full; salaries and hardware remain excluded. Management has a dedicated filter and purple diamond chart markers. The cost axis expands to fit every full invoice.
 

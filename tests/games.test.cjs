@@ -280,7 +280,7 @@ test('leaderboard and Pareto plot always include every invoice component, with e
   const scores = rows.map(row => Number(row.querySelector('.score b').textContent.split('/')[0]));
   assert.deepEqual(rows.slice(0, 3).map(row => row.querySelector('.participant').textContent), ['Le Chaton-fat', 'Site Reliability Engineer', 'Staff Software Engineer']);
   assert.deepEqual(scores, [...scores].sort((a, b) => b - a));
-  assert.deepEqual(rows.slice(3, 6).map(row => row.querySelector('.participant').textContent), ['DeepSeek-V4-Pro / high', 'Grok 4.7 / medium', 'GPT-6.1 Sol / low']);
+
   assert.equal(rows.slice(0, 10).filter(row => row.querySelector('.participant-type').textContent.startsWith('Mistral')).length, 1);
   const picker = f.d.querySelector('#plot-participant');
   picker.value = [...picker.options].find(o => o.textContent === 'Grok 4.7 / unhinged').value;
@@ -481,4 +481,27 @@ test('shipped stylesheet contains CSS instead of an HTML document', () => {
  assert.ok(dom.window.document.styleSheets[0].cssRules.length > 20);
  assert.equal(dom.window.getComputedStyle(dom.window.document.body).margin, '0px');
  dom.window.close();
+});
+
+test('effort curves include steady gains, deep recoveries, and complete failures', () => {
+ const f = fixture(0);
+ f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\nwindow.entries = participants; window.scoreOf = benchmarkScore;');
+ const ladder = company => ['low', 'medium', 'high', 'max'].map(effort => f.w.entries.find(p => p.company === company && p.effort === effort));
+ for (const company of ['DeepSeek', 'Alibaba']) {
+   const scores = ladder(company).map(f.w.scoreOf);
+   assert.ok(scores.every((score, i) => i === 0 || score > scores[i - 1]));
+ }
+ for (const company of ['OpenAI', 'Meta']) {
+   const p = f.w.entries.filter(p => p.company === company);
+   const score = effort => f.w.scoreOf(p.find(p => p.effort === effort));
+   assert.ok(score('medium') < score('low') / 2);
+   assert.ok(score('high') > score('medium'));
+   assert.ok(score(company === 'OpenAI' ? 'xhigh' : 'max') > score('low'));
+ }
+ for (const [company, effort] of [['Anthropic', 'max'], ['xAI', 'unhinged']]) {
+   const p = f.w.entries.find(p => p.company === company && p.effort === effort);
+   assert.equal(p.score, 0); assert.equal(f.w.scoreOf(p), 0);
+   assert.ok(p.costs.compute > 0); assert.match(p.report, /Completed: 0\/5/);
+ }
+ f.close();
 });
