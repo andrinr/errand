@@ -78,3 +78,5 @@ Names only are sourced here; benchmark scores, costs, and effort variants remain
 - [Mistral Medium 3.5](https://docs.mistral.ai/models/mistral-medium-3-5-26-04)
 
 Le Chaton remains a separate meme entry, not a verified release.
+
+Neuron counts are a fictional leaderboard metric, not parameter counts or published architecture measurements. Engineers show 86B; management ranges down to zero; Le Chaton-fat has 10²⁴. Counts are shown compactly with the full value on hover and are not used in scoring.
