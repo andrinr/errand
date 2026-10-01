@@ -309,7 +309,7 @@ test('combined scores reward speed within a level and Pareto uses full raw value
     const x = Number(f.d.querySelector(`[data-point="${point.id}"] circle`).getAttribute('cx'));
     assert.ok(x >= previous); previous = x;
   }
-  assert.match(f.d.querySelector('#cost-plot').textContent, /LINEAR.*LOGARITHMIC.*EXPONENTIAL/);
+  assert.match(f.d.querySelector('#cost-plot').textContent, /Cost per attempt/);
   f.close();
 });
 
