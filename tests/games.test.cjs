@@ -253,7 +253,7 @@ test('removed games are absent from the playable catalog and runtime', () => {
   f.close();
 });
 
-test('leaderboard and Pareto plot always include every invoice component, with engineers in the top three', () => {
+test('leaderboard and Pareto plot always include every invoice component, with one engineer and Claude in the top three', () => {
   const f = fixture(0);
   f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
   assert.equal(f.d.querySelector('#include-subscriptions'), null);
@@ -278,7 +278,7 @@ test('leaderboard and Pareto plot always include every invoice component, with e
     assert.match(row.querySelector('.participant-type').textContent, /LLM|Human|Animal/);
   });
   const scores = rows.map(row => Number(row.querySelector('.score b').textContent.split('/')[0]));
-  assert.deepEqual(rows.slice(0, 3).map(row => row.querySelector('.participant').textContent), ['Le Chaton-fat', 'Site Reliability Engineer', 'Staff Software Engineer']);
+  assert.deepEqual(rows.slice(0, 3).map(row => row.querySelector('.participant').textContent), ['Le Chaton-fat', 'Claude Opus 5.5 / medium', 'Site Reliability Engineer']);
   assert.deepEqual(scores, [...scores].sort((a, b) => b - a));
 
   assert.equal(rows.slice(0, 10).filter(row => row.querySelector('.participant-type').textContent.startsWith('Mistral')).length, 1);
