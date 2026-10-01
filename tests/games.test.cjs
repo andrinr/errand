@@ -436,14 +436,14 @@ test('update sandbox has bounded dialogs, endless phases, no win, and clean retr
   f.click('Start update'); f.step(91); assert.ok(f.d.querySelector('.result-overlay')); assert.ok(!f.d.querySelector('.success')); f.close();
 });
 
-test('neuron estimates share a human reference, preserve architecture across effort, and scale Chaton-fat by 1000', () => {
+test('neuron estimates share a human reference, preserve architecture across effort, and scale Chaton-fat by one million', () => {
   const f = fixture(0);
   f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\nwindow.neuronParticipants = participants;\n' + fs.readFileSync('site/chart.js', 'utf8'));
   const entries = f.w.neuronParticipants;
   entries.filter(p => p.role === 'engineering').forEach(p => assert.equal(p.neurons, 86e9));
   const frontier = entries.filter(p => p.type === 'model' && p.family !== 'Le Chaton');
   const largest = Math.max(...frontier.map(p => p.neurons));
-  assert.equal(entries.find(p => p.name === 'Le Chaton-fat').neurons, largest * 1000);
+  assert.equal(entries.find(p => p.name === 'Le Chaton-fat').neurons, largest * 1e6);
   for (const p of frontier) {
     assert.equal(p.neurons, p.assumedParameters * 0.8 / (3 * 8192));
     frontier.filter(q => q.company === p.company).forEach(q => assert.equal(q.neurons, p.neurons));
@@ -451,7 +451,7 @@ test('neuron estimates share a human reference, preserve architecture across eff
   const rows = [...f.d.querySelectorAll('#results tr')];
   rows.forEach(row => {
     const cell = row.querySelector('.neuron-count');
-    assert.match(cell.textContent, /^≈\d+(\.\d+)?[KMB](cortex)?$/);
+    assert.match(cell.textContent, /^≈\d+(\.\d+)?[KMBT](cortex)?$/);
     assert.match(cell.title, /Biological neurons|Artificial FFN units|Satirical management count/);
   });
   assert.match(f.d.querySelector('.table-foot').textContent, /not verified model sizes or a conversion to biological neurons/);

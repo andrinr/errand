@@ -918,7 +918,7 @@ const participants = [
 const estimateArtificialNeurons = parameters => parameters * 0.8 / (3 * 8192);
 const frontierNeuronEstimate = Math.max(...participants.filter(p => p.type === 'model' && p.family !== 'Le Chaton').map(p => estimateArtificialNeurons(p.assumedParameters)));
 participants.forEach(p => {
- p.neurons = p.type === 'animal' ? p.neurons : p.type === 'human' ? (p.satiricalNeurons ?? 86e9) : p.effort === 'fat' ? 1000 * frontierNeuronEstimate : estimateArtificialNeurons(p.assumedParameters);
+ p.neurons = p.type === 'animal' ? p.neurons : p.type === 'human' ? (p.satiricalNeurons ?? 86e9) : p.effort === 'fat' ? 1e6 * frontierNeuronEstimate : estimateArtificialNeurons(p.assumedParameters);
 });
 
 const totalCost = participant => Math.round(Object.values(participant.costs).reduce((sum, cost) => sum + cost, 0) * 100) / 100;
@@ -938,8 +938,8 @@ const tasks = [
 ];
 const companyIcons = {OpenAI:'openai',Anthropic:'anthropic',Google:'google',xAI:'xai',Meta:'meta',DeepSeek:'deepseek',Mistral:'mistral',Alibaba:'qwen'};
 const participantIcon = p => `<img class="participant-avatar ${p.type === 'human' ? 'portrait' : ''}" src="${p.portrait || 'assets/companies/' + companyIcons[p.company] + '.svg'}" alt="" width="36" height="40">`;
-const formatNeurons = count => `≈${count >= 1e9 ? +(count / 1e9).toFixed(1) + 'B' : count >= 1e6 ? +(count / 1e6).toFixed(1) + 'M' : +(count / 1e3).toFixed(1) + 'K'}`;
-const neuronDescription = p => p.type === 'animal' ? 'Biological neurons: approximate cerebral cortex count, not whole brain (Jardim-Messeder et al., 2017).' : p.satiricalNeurons ? 'Satirical management count; not a biological measurement.' : p.type === 'human' ? 'Biological neurons: approximate whole-brain reference, not an individual measurement.' : p.effort === 'fat' ? 'Artificial FFN units: fictional 1,000× the largest frontier scenario estimate.' : `Artificial FFN units: scenario estimate from ${(p.assumedParameters / 1e12).toFixed(3)}T assumed parameters; architecture unverified. Not equivalent to biological neurons.`;
+const formatNeurons = count => `≈${count >= 1e12 ? +(count / 1e12).toFixed(1) + 'T' : count >= 1e9 ? +(count / 1e9).toFixed(1) + 'B' : count >= 1e6 ? +(count / 1e6).toFixed(1) + 'M' : +(count / 1e3).toFixed(1) + 'K'}`;
+const neuronDescription = p => p.type === 'animal' ? 'Biological neurons: approximate cerebral cortex count, not whole brain (Jardim-Messeder et al., 2017).' : p.satiricalNeurons ? 'Satirical management count; not a biological measurement.' : p.type === 'human' ? 'Biological neurons: approximate whole-brain reference, not an individual measurement.' : p.effort === 'fat' ? 'Artificial FFN units: fictional 1,000,000× the largest frontier scenario estimate.' : `Artificial FFN units: scenario estimate from ${(p.assumedParameters / 1e12).toFixed(3)}T assumed parameters; architecture unverified. Not equivalent to biological neurons.`;
 const results = document.querySelector('#results');
 function renderResults(filter='all') {
  const visible=participants.filter(p=>filter==='all'||p.type===filter||(filter==='engineering'&&p.role==='engineering')||(filter==='management'&&p.role==='management'));
