@@ -56,7 +56,7 @@ Six fictional executives and managers join the four other humans. Their luxury g
 
 Each model family has a colored line connecting its four presets in increasing effort order. Lines follow the cursed axis transform; selecting a model highlights its series. The dashed green Pareto frontier remains separate.
 
-The current ranking uses a 0–1000 errand score: 180 × completed levels + (levels / 5) × 100 / (1 + average attempt seconds / 120). Speed separates equal completion counts; zero completion gives zero score. Chart and Pareto use this same score. The axis selector has been replaced by a continuous cost axis: linear $0–1, logarithmic $1–100, and normalized exponential above $100. All invoices remain fully included.
+The current ranking uses a 0–1000 errand score: 1000 × (completed levels / 5) / (1 + average attempt seconds / 120). Completion is weighted by elapsed time, so speed materially separates results; zero completion gives zero score. Chart and Pareto use this same score. The axis selector has been replaced by a continuous cost axis: linear $0–1, logarithmic $1–100, and normalized exponential above $100. All invoices remain fully included.
 
 All human entries use job titles. Only the three hands-on engineers complete tasks; two use AI and one relies on archived documentation. Product and management entries receive no completion credit for delegation or generated plans. Eight humans use AI directly, with inference charges included in compute costs.
 

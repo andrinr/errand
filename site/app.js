@@ -831,7 +831,7 @@ const participants = [
 const totalCost = participant => Math.round(Object.values(participant.costs).reduce((sum, cost) => sum + cost, 0) * 100) / 100;
 const benchmarkScore = participant => {
  const [minutes, seconds] = participant.time.split(':').map(Number);
- return Math.round((180 * participant.score + (participant.score / 5) * 100 / (1 + (minutes * 60 + seconds) / 120)) * 10) / 10;
+ return Math.round(((participant.score / 5) * 1000 / (1 + (minutes * 60 + seconds) / 120)) * 10) / 10;
 };
 participants.sort((a, b) => benchmarkScore(b) - benchmarkScore(a) || totalCost(a) - totalCost(b));
 const formatCost = value => `$${value.toFixed(2)}`;

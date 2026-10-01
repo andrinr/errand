@@ -296,12 +296,17 @@ test('combined scores reward speed within a level and Pareto uses full raw value
   const rows = [...f.d.querySelectorAll('#results tr')];
   const points = rows.map((row, id) => ({ id, score: Number(row.querySelector('.score b').textContent), levels: Number(row.querySelector('.score .participant-type').textContent.split('/')[0]), cost: Number(row.querySelector('.invoice-total b').textContent.slice(1)), time: row.children[3].textContent.split(':').map(Number).reduce((m, v) => m * 60 + v, 0) }));
   for (const point of points) {
-    assert.ok(point.score >= point.levels * 180 && point.score <= point.levels * 200);
+    assert.ok(point.score >= 0 && point.score <= point.levels * 200);
     if (!point.levels) assert.equal(point.score, 0);
     for (const other of points) if (point.levels === other.levels && point.levels > 0 && point.time < other.time) assert.ok(point.score > other.score);
     assert.equal(Number(f.d.querySelectorAll('#cost-data tr')[point.id].children[1].textContent), point.score);
   }
   assert.ok(new Set(points.slice(0, 36).map(p => p.score)).size > 20);
+  const modelRows = rows.filter(row => /LLM/.test(row.querySelector('.participant-type').textContent));
+  const modelScores = modelRows.map(row => Number(row.querySelector('.score b').textContent));
+  assert.ok(modelScores.filter(score => score >= 900).length <= 4, 'Only the ultra-fast model should hug the top');
+  assert.ok(modelScores.some(score => score > 500 && score < 700));
+  assert.ok(modelScores.some(score => score > 200 && score < 400));
   const expected = points.filter(p => !points.some(q => q.cost <= p.cost && q.score >= p.score && (q.cost < p.cost || q.score > p.score))).map(p => p.id).sort((a,b) => a-b);
   assert.deepEqual([...f.d.querySelectorAll('.efficient')].map(p => Number(p.dataset.point)).sort((a,b) => a-b), expected);
   const byCost = [...points].sort((a,b) => a.cost-b.cost);
