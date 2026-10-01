@@ -7,7 +7,7 @@
   const effortOrder = ['low', 'medium', 'high', 'xhigh', 'ultra', 'max', 'unhinged'];
   const familyOf = point => point.type === 'model' ? point.name.split(' / ')[0] : '';
   const families = [...new Set(participants.filter(p => p.type === 'model').map(familyOf))];
-  const palette = ['#000080', '#a04000', '#7040a0', '#005c5c', '#b00040', '#526300', '#3658a0', '#69452c'];
+  const palette = ['#000080', '#a04000', '#7040a0', '#005c5c', '#b00040', '#526300', '#3658a0', '#69452c', '#e06510'];
   const familyColor = family => palette[families.indexOf(family) % palette.length];
   let selected = null;
   function render() {

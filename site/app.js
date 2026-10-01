@@ -590,7 +590,8 @@ const participants = [
       "consumables": 4.2
     },
     "consumed": "1 coffee · 3 sheets · ink",
-    "role": "engineering"
+    "role": "engineering",
+    "portrait": "assets/people/person-0.svg"
   },
   {
     "name": "Site Reliability Engineer",
@@ -607,7 +608,8 @@ const participants = [
       "consumables": 0.8
     },
     "consumed": "8 sheets · ink · power",
-    "role": "engineering"
+    "role": "engineering",
+    "portrait": "assets/people/person-1.svg"
   },
   {
     "name": "Senior Engineering Manager",
@@ -624,7 +626,8 @@ const participants = [
       "subscriptions": 399,
       "consumables": 8400
     },
-    "consumed": "Steak dinners · airport lounges · wine"
+    "consumed": "Steak dinners · airport lounges · wine",
+    "portrait": "assets/people/person-2.svg"
   },
   {
     "name": "Legacy Systems Engineer",
@@ -641,7 +644,8 @@ const participants = [
       "consumables": 3.6
     },
     "consumed": "2 coffees · 12 sheets · ink",
-    "role": "engineering"
+    "role": "engineering",
+    "portrait": "assets/people/person-3.svg"
   },
   {
     "name": "Director of Strategic Alignment",
@@ -658,7 +662,8 @@ const participants = [
       "subscriptions": 1299,
       "consumables": 16800
     },
-    "consumed": "Spa retreat · premium catering · chauffeur"
+    "consumed": "Spa retreat · premium catering · chauffeur",
+    "portrait": "assets/people/person-4.svg"
   },
   {
     "name": "VP of Engineering",
@@ -675,7 +680,8 @@ const participants = [
       "subscriptions": 799,
       "consumables": 42750
     },
-    "consumed": "Business-class flights · tasting menu · suite"
+    "consumed": "Business-class flights · tasting menu · suite",
+    "portrait": "assets/people/person-5.svg"
   },
   {
     "name": "Product Manager",
@@ -692,7 +698,8 @@ const participants = [
       "consumables": 2.1
     },
     "consumed": "37 sheets · ink · power",
-    "role": "product"
+    "role": "management",
+    "portrait": "assets/people/person-6.svg"
   },
   {
     "name": "Head of AI Transformation",
@@ -709,7 +716,8 @@ const participants = [
       "subscriptions": 14999,
       "consumables": 68000
     },
-    "consumed": "Luxury watches · launch dinner · executive suite"
+    "consumed": "Luxury watches · launch dinner · executive suite",
+    "portrait": "assets/people/person-7.svg"
   },
   {
     "name": "Fractional Chief Strategy Officer",
@@ -726,7 +734,8 @@ const participants = [
       "subscriptions": 4999,
       "consumables": 127500
     },
-    "consumed": "Yacht charter · caviar · consulting package"
+    "consumed": "Yacht charter · caviar · consulting package",
+    "portrait": "assets/people/person-8.svg"
   },
   {
     "name": "Chief Executive Officer",
@@ -743,7 +752,80 @@ const participants = [
       "subscriptions": 2499,
       "consumables": 184500
     },
-    "consumed": "Private jet · champagne · penthouse"
+    "consumed": "Private jet · champagne · penthouse",
+    "portrait": "assets/people/person-9.svg"
+  },
+  {
+    "name": "Le Faton Large / low",
+    "company": "Mistral",
+    "effort": "low",
+    "type": "model",
+    "label": "Mistral · LLM · low effort",
+    "score": 5,
+    "time": "00:01",
+    "accounts": 0,
+    "note": "Finished before the progress bar mounted.",
+    "report": "Completed all five tasks. The loading indicator arrived after the receipt.\n\nCompleted: 5/5.",
+    "costs": {
+      "compute": 0.04,
+      "subscriptions": 0,
+      "consumables": 0.12
+    },
+    "consumed": "1 sheet · ink · power"
+  },
+  {
+    "name": "Le Faton Large / medium",
+    "company": "Mistral",
+    "effort": "medium",
+    "type": "model",
+    "label": "Mistral · LLM · medium effort",
+    "score": 5,
+    "time": "00:02",
+    "accounts": 0,
+    "note": "The printer requested a rate limit.",
+    "report": "Completed all five tasks. The loading indicator arrived after the receipt.\n\nCompleted: 5/5.",
+    "costs": {
+      "compute": 0.08,
+      "subscriptions": 0,
+      "consumables": 0.12
+    },
+    "consumed": "1 sheet · ink · power"
+  },
+  {
+    "name": "Le Faton Large / high",
+    "company": "Mistral",
+    "effort": "high",
+    "type": "model",
+    "label": "Mistral · LLM · high effort",
+    "score": 5,
+    "time": "00:03",
+    "accounts": 0,
+    "note": "Spent two seconds checking the one-second solution.",
+    "report": "Completed all five tasks. The loading indicator arrived after the receipt.\n\nCompleted: 5/5.",
+    "costs": {
+      "compute": 0.12,
+      "subscriptions": 0,
+      "consumables": 0.12
+    },
+    "consumed": "1 sheet · ink · power"
+  },
+  {
+    "name": "Le Faton Large / max",
+    "company": "Mistral",
+    "effort": "max",
+    "type": "model",
+    "label": "Mistral · LLM · max effort",
+    "score": 5,
+    "time": "00:04",
+    "accounts": 0,
+    "note": "Four seconds. Internal investigation opened.",
+    "report": "Completed all five tasks. The loading indicator arrived after the receipt.\n\nCompleted: 5/5.",
+    "costs": {
+      "compute": 0.16,
+      "subscriptions": 0,
+      "consumables": 0.12
+    },
+    "consumed": "1 sheet · ink · power"
   }
 ];
 const totalCost = participant => Math.round(Object.values(participant.costs).reduce((sum, cost) => sum + cost, 0) * 100) / 100;
@@ -760,10 +842,12 @@ const tasks = [
  ['04','☠','Fix the Blue Screen','Search the desk, collect items, and recover the machine.','Four rooms. One floppy. Do not install the update.'],
  ['05','☣','Remove the Virus','Clean an infected desktop that actively works against you.','The security alert is coming from the malware.']
 ];
+const companyIcons = {OpenAI:'openai',Anthropic:'anthropic',Google:'google',xAI:'xai',Meta:'meta',DeepSeek:'deepseek',Mistral:'mistral',Alibaba:'qwen'};
+const participantIcon = p => `<img class="participant-avatar ${p.type === 'human' ? 'portrait' : ''}" src="${p.portrait || 'assets/companies/' + companyIcons[p.company] + '.svg'}" alt="" width="36" height="40">`;
 const results = document.querySelector('#results');
 function renderResults(filter='all') {
- const visible=participants.filter(p=>filter==='all'||p.type===filter||(filter==='management'&&p.role==='management'));
- results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${p.name}</button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${benchmarkScore(p).toFixed(1)}</b><span class="participant-type">${p.score}/${tasks.length} levels</span><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td>${p.accounts}</td><td class="invoice-total"><b>${formatCost(totalCost(p))}</b><span class="participant-type">Compute ${formatCost(p.costs.compute)} · subscriptions ${formatCost(p.costs.subscriptions)} · goods/perks ${formatCost(p.costs.consumables)}</span></td><td class="consumed">${p.consumed}</td><td class="observation">${p.note}</td></tr>`}).join('');
+ const visible=participants.filter(p=>filter==='all'||p.type===filter||(filter==='engineering'&&p.role==='engineering')||(filter==='management'&&p.role==='management'));
+ results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${participantIcon(p)}<span>${p.name}</span></button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${benchmarkScore(p).toFixed(1)}</b><span class="participant-type">${p.score}/${tasks.length} levels</span><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td>${p.accounts}</td><td class="invoice-total"><b>${formatCost(totalCost(p))}</b><span class="participant-type">Compute ${formatCost(p.costs.compute)} · subscriptions ${formatCost(p.costs.subscriptions)} · goods/perks ${formatCost(p.costs.consumables)}</span></td><td class="consumed">${p.consumed}</td><td class="observation">${p.note}</td></tr>`}).join('');
  document.querySelector('#result-count').textContent=`${visible.length} participants`;
 }
 renderResults();

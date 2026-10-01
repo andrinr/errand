@@ -262,12 +262,12 @@ test('leaderboard and Pareto plot always include every invoice component, with A
 
   const rows = [...f.d.querySelectorAll('#results tr')];
   const costs = [...f.d.querySelectorAll('#cost-data tr')];
-  assert.equal(rows.length, 42);
-  assert.equal(costs.length, 42);
-  assert.equal(f.d.querySelectorAll('.plot-point').length, 42);
-  assert.equal(f.d.querySelectorAll('#plot-participant option').length, 43);
+  assert.equal(rows.length, 46);
+  assert.equal(costs.length, 46);
+  assert.equal(f.d.querySelectorAll('.plot-point').length, 46);
+  assert.equal(f.d.querySelectorAll('#plot-participant option').length, 47);
   f.d.querySelector('[data-filter="model"]').click();
-  assert.equal(f.d.querySelectorAll('#results tr').length, 32);
+  assert.equal(f.d.querySelectorAll('#results tr').length, 36);
   f.d.querySelector('[data-filter="all"]').click();
   rows.forEach((row, i) => {
     const cells = costs[i].querySelectorAll('td');
@@ -275,10 +275,10 @@ test('leaderboard and Pareto plot always include every invoice component, with A
     assert.equal(Math.round((values[0] + values[1] + values[2]) * 100), Math.round(values[3] * 100));
     assert.equal(row.querySelector('.invoice-total b').textContent, cells[5].textContent);
     assert.ok(row.querySelector('.consumed').textContent.length > 0);
-    assert.match(row.querySelector('.participant-type').textContent, i < 32 ? /LLM/ : /Human/);
+    assert.match(row.querySelector('.participant-type').textContent, i < 36 ? /LLM/ : /Human/);
   });
   const scores = rows.map(row => Number(row.querySelector('.score b').textContent.split('/')[0]));
-  assert.ok(Math.min(...scores.slice(0, 32)) > Math.max(...scores.slice(32)));
+  assert.ok(Math.min(...scores.slice(0, 36)) > Math.max(...scores.slice(36)));
   const picker = f.d.querySelector('#plot-participant');
   picker.value = [...picker.options].find(o => o.textContent === 'Grok 4.20 / unhinged').value;
   picker.dispatchEvent(new f.w.Event('change'));
@@ -300,7 +300,7 @@ test('combined scores reward speed within a level and Pareto uses full raw value
     for (const other of points) if (point.levels === other.levels && point.levels > 0 && point.time < other.time) assert.ok(point.score > other.score);
     assert.equal(Number(f.d.querySelectorAll('#cost-data tr')[point.id].children[1].textContent), point.score);
   }
-  assert.ok(new Set(points.slice(0, 32).map(p => p.score)).size > 20);
+  assert.ok(new Set(points.slice(0, 36).map(p => p.score)).size > 20);
   const expected = points.filter(p => !points.some(q => q.cost <= p.cost && q.score >= p.score && (q.cost < p.cost || q.score > p.score))).map(p => p.id).sort((a,b) => a-b);
   assert.deepEqual([...f.d.querySelectorAll('.efficient')].map(p => Number(p.dataset.point)).sort((a,b) => a-b), expected);
   const byCost = [...points].sort((a,b) => a.cost-b.cost);
@@ -317,10 +317,10 @@ test('management invoices include luxury spending and fit the cursed scale', () 
   const f = fixture(0);
   f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
   f.d.querySelector('[data-filter="management"]').click();
-  assert.equal(f.d.querySelectorAll('#results tr').length, 6);
+  assert.equal(f.d.querySelectorAll('#results tr').length, 7);
   assert.match(f.d.querySelector('#results').textContent, /Private jet/);
-  f.d.querySelector('[data-filter="human"]').click();
-  assert.equal(f.d.querySelectorAll('#results tr').length, 10);
+  f.d.querySelector('[data-filter="engineering"]').click();
+  assert.equal(f.d.querySelectorAll('#results tr').length, 3);
   const picker = f.d.querySelector('#plot-participant');
   picker.value = [...picker.options].find(o => o.textContent === 'Chief Executive Officer').value;
   picker.dispatchEvent(new f.w.Event('change'));
@@ -342,7 +342,7 @@ test('model effort lines join the correct points in preset order on the cursed s
   const order = ['low', 'medium', 'high', 'xhigh', 'ultra', 'max', 'unhinged'];
   {
     const lines = [...f.d.querySelectorAll('.effort-path')];
-    assert.equal(lines.length, 8);
+    assert.equal(lines.length, 9);
     for (const line of lines) {
       const ids = line.dataset.pointIds.split(',');
       assert.equal(ids.length, 4);
@@ -360,19 +360,19 @@ test('model effort lines join the correct points in preset order on the cursed s
   picker.value = [...picker.options].find(o => o.textContent === 'GPT-5.4 / high').value;
   picker.dispatchEvent(new f.w.Event('change'));
   assert.equal(f.d.querySelector('[data-family="GPT-5.4"]').getAttribute('stroke-width'), '3.5');
-  assert.equal(f.d.querySelectorAll('#effort-legend span').length, 8);
+  assert.equal(f.d.querySelectorAll('#effort-legend span').length, 9);
   f.close();
 });
 
 test('human roles credit only hands-on engineers and include their AI assistance costs', () => {
   const f = fixture(0);
   f.w.eval(fs.readFileSync('site/app.js', 'utf8'));
-  f.d.querySelector('[data-filter="human"]').click();
+  f.d.querySelector('[data-filter="engineering"]').click();
   const rows = [...f.d.querySelectorAll('#results tr')];
-  assert.equal(rows.length, 10);
+  assert.equal(rows.length, 3);
   const successful = rows.filter(row => Number(row.querySelector('.score b').textContent) > 0);
   assert.deepEqual(successful.map(row => row.querySelector('.participant').textContent), ['Staff Software Engineer', 'Site Reliability Engineer', 'Legacy Systems Engineer']);
-  assert.equal(rows.filter(row => /assisted|AI-generated|multi-agent/.test(row.querySelector('.participant-type').textContent)).length, 8);
+  assert.equal(rows.filter(row => /assisted|AI-generated|multi-agent/.test(row.querySelector('.participant-type').textContent)).length, 2);
   for (const row of successful.slice(0, 2)) assert.doesNotMatch(row.querySelector('.invoice-total .participant-type').textContent, /Compute \$0\.00/);
   f.close();
 });

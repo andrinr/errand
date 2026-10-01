@@ -61,3 +61,5 @@ The current ranking uses a 0–1000 errand score: 180 × completed levels + (lev
 All human entries use job titles. Only the three hands-on engineers complete tasks; two use AI and one relies on archived documentation. Product and management entries receive no completion credit for delegation or generated plans. Eight humans use AI directly, with inference charges included in compute costs.
 
 Printer and HDMI start with minimal controls and progressively disclose troubleshooting. Printer properties reveal document details; a crash reveals driver controls and diagnostics; diagnostics or a jam reveals hardware. HDMI reveals the cable drawer after Present, signal controls after connection, and audience verification after a successful handshake. Retry resets these reveals.
+
+Le Faton Large adds four 1–4 second entries. The roster now contains 36 model configurations, three engineers, and seven management roles. Company icons are bundled from [Lobe Icons](https://github.com/lobehub/lobe-icons) with their license in `site/assets/companies/LICENSE`; pixel portraits are original SVG artwork.
