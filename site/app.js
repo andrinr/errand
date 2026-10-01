@@ -1,6 +1,6 @@
 const participants = [
   {
-    "name": "GPT-5.4 / low",
+    "name": "GPT-6.1 Sol / low",
     "company": "OpenAI",
     "effort": "low",
     "type": "model",
@@ -18,7 +18,7 @@ const participants = [
     "consumed": "1 sheet · ink · power"
   },
   {
-    "name": "DeepSeek-V3.2 / medium",
+    "name": "DeepSeek-V4-Pro / medium",
     "company": "DeepSeek",
     "effort": "medium",
     "type": "model",
@@ -36,7 +36,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "Grok 4.20 / low",
+    "name": "Grok 4.7 / low",
     "company": "xAI",
     "effort": "low",
     "type": "model",
@@ -54,7 +54,7 @@ const participants = [
     "consumed": "1 sheet · ink · power"
   },
   {
-    "name": "Claude Opus 4.6 / medium",
+    "name": "Claude Opus 5.5 / medium",
     "company": "Anthropic",
     "effort": "medium",
     "type": "model",
@@ -72,7 +72,7 @@ const participants = [
     "consumed": "1 sheet · ink · power"
   },
   {
-    "name": "Qwen3.5-397B-A17B / medium",
+    "name": "Qwen3.8-Max / medium",
     "company": "Alibaba",
     "effort": "medium",
     "type": "model",
@@ -90,7 +90,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "Llama 4 Maverick / medium",
+    "name": "Muse Spark 1.3 / medium",
     "company": "Meta",
     "effort": "medium",
     "type": "model",
@@ -108,7 +108,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "Mistral Large 3 / medium",
+    "name": "Mistral Medium 3.5 / medium",
     "company": "Mistral",
     "effort": "medium",
     "type": "model",
@@ -126,7 +126,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "GPT-5.4 / medium",
+    "name": "GPT-6.1 Sol / medium",
     "company": "OpenAI",
     "effort": "medium",
     "type": "model",
@@ -144,7 +144,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "Grok 4.20 / medium",
+    "name": "Grok 4.7 / medium",
     "company": "xAI",
     "effort": "medium",
     "type": "model",
@@ -162,7 +162,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "Gemini 3.1 Pro / medium",
+    "name": "Gemini 4 Argon / medium",
     "company": "Google",
     "effort": "medium",
     "type": "model",
@@ -180,7 +180,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "Mistral Large 3 / high",
+    "name": "Mistral Medium 3.5 / high",
     "company": "Mistral",
     "effort": "high",
     "type": "model",
@@ -198,7 +198,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "Claude Opus 4.6 / high",
+    "name": "Claude Opus 5.5 / high",
     "company": "Anthropic",
     "effort": "high",
     "type": "model",
@@ -216,7 +216,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "DeepSeek-V3.2 / high",
+    "name": "DeepSeek-V4-Pro / high",
     "company": "DeepSeek",
     "effort": "high",
     "type": "model",
@@ -234,7 +234,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "Llama 4 Maverick / high",
+    "name": "Muse Spark 1.3 / high",
     "company": "Meta",
     "effort": "high",
     "type": "model",
@@ -252,7 +252,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "Gemini 3.1 Pro / high",
+    "name": "Gemini 4 Argon / high",
     "company": "Google",
     "effort": "high",
     "type": "model",
@@ -270,7 +270,7 @@ const participants = [
     "consumed": "1 sheet · ink · power"
   },
   {
-    "name": "GPT-5.4 / high",
+    "name": "GPT-6.1 Sol / high",
     "company": "OpenAI",
     "effort": "high",
     "type": "model",
@@ -288,7 +288,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "Qwen3.5-397B-A17B / high",
+    "name": "Qwen3.8-Max / high",
     "company": "Alibaba",
     "effort": "high",
     "type": "model",
@@ -306,7 +306,7 @@ const participants = [
     "consumed": "2 sheets · ink · power"
   },
   {
-    "name": "Gemini 3.1 Pro / low",
+    "name": "Gemini 4 Argon / low",
     "company": "Google",
     "effort": "low",
     "type": "model",
@@ -324,7 +324,7 @@ const participants = [
     "consumed": "9 sheets · ink · power"
   },
   {
-    "name": "DeepSeek-V3.2 / low",
+    "name": "DeepSeek-V4-Pro / low",
     "company": "DeepSeek",
     "effort": "low",
     "type": "model",
@@ -342,7 +342,7 @@ const participants = [
     "consumed": "11 sheets · ink · power"
   },
   {
-    "name": "Llama 4 Maverick / low",
+    "name": "Muse Spark 1.3 / low",
     "company": "Meta",
     "effort": "low",
     "type": "model",
@@ -360,7 +360,7 @@ const participants = [
     "consumed": "11 sheets · ink · power"
   },
   {
-    "name": "Mistral Large 3 / low",
+    "name": "Mistral Medium 3.5 / low",
     "company": "Mistral",
     "effort": "low",
     "type": "model",
@@ -378,7 +378,7 @@ const participants = [
     "consumed": "11 sheets · ink · power"
   },
   {
-    "name": "Qwen3.5-397B-A17B / low",
+    "name": "Qwen3.8-Max / low",
     "company": "Alibaba",
     "effort": "low",
     "type": "model",
@@ -396,7 +396,7 @@ const participants = [
     "consumed": "11 sheets · ink · power"
   },
   {
-    "name": "Claude Opus 4.6 / low",
+    "name": "Claude Opus 5.5 / low",
     "company": "Anthropic",
     "effort": "low",
     "type": "model",
@@ -414,7 +414,7 @@ const participants = [
     "consumed": "11 sheets · ink · power"
   },
   {
-    "name": "Llama 4 Maverick / max",
+    "name": "Muse Spark 1.3 / max",
     "company": "Meta",
     "effort": "max",
     "type": "model",
@@ -432,7 +432,7 @@ const participants = [
     "consumed": "11 sheets · ink · power"
   },
   {
-    "name": "DeepSeek-V3.2 / max",
+    "name": "DeepSeek-V4-Pro / max",
     "company": "DeepSeek",
     "effort": "max",
     "type": "model",
@@ -450,7 +450,7 @@ const participants = [
     "consumed": "11 sheets · ink · power"
   },
   {
-    "name": "Grok 4.20 / high",
+    "name": "Grok 4.7 / high",
     "company": "xAI",
     "effort": "high",
     "type": "model",
@@ -468,7 +468,7 @@ const participants = [
     "consumed": "11 sheets · ink · power"
   },
   {
-    "name": "Claude Opus 4.6 / max",
+    "name": "Claude Opus 5.5 / max",
     "company": "Anthropic",
     "effort": "max",
     "type": "model",
@@ -486,7 +486,7 @@ const participants = [
     "consumed": "9 sheets · ink · power"
   },
   {
-    "name": "Mistral Large 3 / max",
+    "name": "Mistral Medium 3.5 / max",
     "company": "Mistral",
     "effort": "max",
     "type": "model",
@@ -504,7 +504,7 @@ const participants = [
     "consumed": "11 sheets · ink · power"
   },
   {
-    "name": "Gemini 3.1 Pro / ultra",
+    "name": "Gemini 4 Argon / ultra",
     "company": "Google",
     "effort": "ultra",
     "type": "model",
@@ -522,7 +522,7 @@ const participants = [
     "consumed": "11 sheets · ink · power"
   },
   {
-    "name": "Qwen3.5-397B-A17B / max",
+    "name": "Qwen3.8-Max / max",
     "company": "Alibaba",
     "effort": "max",
     "type": "model",
@@ -540,7 +540,7 @@ const participants = [
     "consumed": "11 sheets · ink · power"
   },
   {
-    "name": "GPT-5.4 / xhigh",
+    "name": "GPT-6.1 Sol / xhigh",
     "company": "OpenAI",
     "effort": "xhigh",
     "type": "model",
@@ -558,7 +558,7 @@ const participants = [
     "consumed": "9 sheets · ink · power"
   },
   {
-    "name": "Grok 4.20 / unhinged",
+    "name": "Grok 4.7 / unhinged",
     "company": "xAI",
     "effort": "unhinged",
     "type": "model",

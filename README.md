@@ -63,3 +63,18 @@ All human entries use job titles. Only the three hands-on engineers complete tas
 Printer and HDMI start with minimal controls and progressively disclose troubleshooting. Printer properties reveal document details; a crash reveals driver controls and diagnostics; diagnostics or a jam reveals hardware. HDMI reveals the cable drawer after Present, signal controls after connection, and audience verification after a successful handshake. Retry resets these reveals.
 
 Le Faton Large adds four 1–4 second entries. The roster now contains 36 model configurations, three engineers, and seven management roles. Company icons are bundled from [Lobe Icons](https://github.com/lobehub/lobe-icons) with their license in `site/assets/companies/LICENSE`; pixel portraits are original SVG artwork.
+
+## Model-name sources (checked 2026-10-01)
+
+Names only are sourced here; benchmark scores, costs, and effort variants remain authored satire.
+
+- [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol)
+- [Claude Opus 5.5](https://www.anthropic.com/claude/opus)
+- [Gemini 4 Argon](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/) — limited-access release.
+- [Grok 4.7](https://docs.x.ai/developers/models)
+- [Muse Spark 1.3](https://research.meta.ai/blog/introducing-muse-spark-1-3)
+- [DeepSeek-V4-Pro](https://api-docs.deepseek.com/updates/)
+- [Qwen3.8-Max](https://www.alibabacloud.com/en/press-room/alibaba-unveils-qwen3-8-max?_p_lc=1)
+- [Mistral Medium 3.5](https://docs.mistral.ai/models/mistral-medium-3-5-26-04)
+
+Le Faton Large remains a separate meme entry, not a verified release.
