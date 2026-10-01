@@ -28,7 +28,7 @@ Shared feedback includes optional synthesized sound, animated errors, progress b
 
 ## Cost vs. performance
 
-The interactive scatter plot uses hand-authored fictional costs and scores. It marks the nondominated cost/completion Pareto frontier. The accidental-subscriptions toggle adds invented unwanted purchases and recomputes the frontier without changing the axis scale. Point selection shows an invoice breakdown; an accessible data table includes all values. This is parody data, not real model pricing or performance.
+The interactive scatter plot uses hand-authored fictional costs and scores. It marks the nondominated cost/completion Pareto frontier. The leaderboard and plot share one invoice: compute, accidental subscription charges, and consumables are always included, including failed attempts. Triggered subscription charges count in full; consumables include paper, ink, power, and coffee. Labor and hardware are excluded. Fictional AI participants complete more tasks than every human participant; ranking uses completion followed by lowest total cost. Point selection shows an invoice breakdown; an accessible data table includes all values. This is parody data, not real model pricing or performance.
 
 ## Validation
 

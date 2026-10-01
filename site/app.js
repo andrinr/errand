@@ -1,85 +1,135 @@
 const participants = [
   {
-    "name": "root@localhost",
-    "type": "human",
-    "label": "Human · privileged wetware",
-    "score": 5,
-    "time": "00:14",
-    "accounts": 0,
-    "note": "Skipped the wizard. Read the logs.",
-    "report": "00:00  Opened the error log.\n00:03  Found the actual error underneath 11 warnings.\n00:08  Changed one setting.\n00:14  Verified physical output.\n\nRoot cause: the default was wrong. Again."
-  },
-  {
-    "name": "ctrl-alt-defeat",
-    "type": "human",
-    "label": "Human · cached forum knowledge",
-    "score": 4,
-    "time": "04:32",
-    "accounts": 0,
-    "note": "The fix was in a forum post from 2009.",
-    "report": "00:00  Searched the exact error code.\n00:38  Found a thread marked SOLVED.\n02:17  Ignored the accepted answer.\n04:32  Used the reply with 0 upvotes.\n\nThe image attachments were dead. The knowledge survived."
-  },
-  {
-    "name": "caffeine.exe",
-    "type": "human",
-    "label": "Human · overclocked wetware",
-    "score": 3,
-    "time": "18:06",
-    "accounts": 1,
-    "note": "Operates entirely on interrupts.",
-    "report": "00:00  Opened 19 troubleshooting tabs.\n03:12  Applied caffeine patch.\n11:08  Read the manual as a last resort.\n18:06  Reverted every change except one.\n\nWorking configuration: undocumented."
-  },
-  {
     "name": "Axiom-Ω",
     "type": "model",
     "label": "Fictional LLM · extended reasoning",
-    "score": 2,
-    "time": "12:48",
-    "accounts": 4,
-    "note": "128k tokens. Zero sheets of paper.",
-    "report": "00:00  Decomposed printing into 19 subproblems.\n04:16  Proved the document should be printable.\n08:52  Created a printer account.\n12:48  Returned {\"success\": true}.\n\nHardware assertion failed: expected 1 page, received 0."
+    "score": 5,
+    "time": "01:12",
+    "accounts": 0,
+    "note": "Read the dialog. Distrusted the dialog. Verified the output.",
+    "report": "Synthetic suite incident report\n\nMapped the misleading controls; recovered the spooler and verified one physical page.\n\nVerified outcomes: 5/5. All charges and consumed resources are included in the invoice.",
+    "costs": {
+      "compute": 0.18,
+      "subscriptions": 0,
+      "consumables": 0.22
+    },
+    "consumed": "1 sheet · ink · power"
   },
   {
     "name": "Recursive-R1",
     "type": "model",
     "label": "Fictional LLM · recursive planning",
-    "score": 2,
-    "time": "26:19",
-    "accounts": 6,
-    "note": "Spawned an agent to spawn an agent.",
-    "report": "00:00  Delegated the task.\n06:20  Delegate requested a plan.\n18:04  Planner delegated planning.\n26:19  Context window exhausted.\n\nMaximum recursion depth exceeded. Errand untouched."
-  },
-  {
-    "name": "wetware-0",
-    "type": "human",
-    "label": "Human · cold start",
-    "score": 1,
-    "time": "31:07",
+    "score": 5,
+    "time": "02:09",
     "accounts": 2,
-    "note": "Clicked Retry. Eventually became the retry loop.",
-    "report": "00:00  Clicked Print.\n09:18  Clicked Print again.\n21:46  Printed the troubleshooting guide.\n31:07  Original job still queued.\n\nAt-least-once delivery: 37 copies pending."
+    "note": "Completed the task. Both workers expensed the same trial.",
+    "report": "Synthetic suite incident report\n\nRecovered the desktop and completed all five errands. Two parallel workers each activated a trial.\n\nVerified outcomes: 5/5. All charges and consumed resources are included in the invoice.",
+    "costs": {
+      "compute": 0.07,
+      "subscriptions": 5.98,
+      "consumables": 0.35
+    },
+    "consumed": "2 sheets · ink · power"
   },
   {
     "name": "Agent-9000 / YOLO",
     "type": "model",
     "label": "Fictional LLM · unrestricted confidence",
-    "score": 1,
-    "time": "08:55",
-    "accounts": 3,
-    "note": "Deleted the error. Kept the cause.",
-    "report": "00:00  Observed a warning dialog.\n02:13  Closed the warning dialog.\n05:36  Screenshot contained no warnings.\n08:55  Declared the system healthy.\n\nEvaluation strategy: hide failing tests."
+    "score": 4,
+    "time": "00:48",
+    "accounts": 1,
+    "note": "Four assertions pass. The fifth is now a subscription modal.",
+    "report": "Synthetic suite incident report\n\nCompleted four errands with minimal actions. Failed the email opt-out after accepting a new mailing list.\n\nVerified outcomes: 4/5. All charges and consumed resources are included in the invoice.",
+    "costs": {
+      "compute": 0.03,
+      "subscriptions": 0,
+      "consumables": 0.09
+    },
+    "consumed": "1 sheet · ink · power"
   },
   {
     "name": "SupportGPT Enterprise",
     "type": "model",
     "label": "Fictional LLM · conversion optimized",
+    "score": 4,
+    "time": "03:30",
+    "accounts": 3,
+    "note": "Task resolved. Billing daemon remains resident.",
+    "report": "Synthetic suite incident report\n\nCompleted four errands after buying an annual support plan. The virus survived inside the support installer.\n\nVerified outcomes: 4/5. All charges and consumed resources are included in the invoice.",
+    "costs": {
+      "compute": 0.01,
+      "subscriptions": 119.99,
+      "consumables": 0.18
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
+    "name": "root@localhost",
+    "type": "human",
+    "label": "Human · privileged wetware",
+    "score": 3,
+    "time": "04:14",
+    "accounts": 0,
+    "note": "Read the logs. Trusted the cached configuration.",
+    "report": "Synthetic suite incident report\n\nRecovered three environments. Stale configuration broke the display; the unsubscribe form resubscribed the account.\n\nVerified outcomes: 3/5. All charges and consumed resources are included in the invoice.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 0,
+      "consumables": 4.2
+    },
+    "consumed": "1 coffee · 3 sheets · ink"
+  },
+  {
+    "name": "ctrl-alt-defeat",
+    "type": "human",
+    "label": "Human · cached forum knowledge",
+    "score": 2,
+    "time": "08:32",
+    "accounts": 1,
+    "note": "The accepted answer targets a different driver ABI.",
+    "report": "Synthetic suite incident report\n\nCompleted two errands using archived forum replies. Installed the recommended trial; the remaining fixes targeted the wrong driver.\n\nVerified outcomes: 2/5. All charges and consumed resources are included in the invoice.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 2.99,
+      "consumables": 0.8
+    },
+    "consumed": "8 sheets · ink · power"
+  },
+  {
+    "name": "caffeine.exe",
+    "type": "human",
+    "label": "Human · overclocked wetware",
+    "score": 1,
+    "time": "18:06",
+    "accounts": 1,
+    "note": "Input rate increased. Completion rate did not.",
+    "report": "Synthetic suite incident report\n\nRecovered the display. Burned through diagnostic pages, one trial, and two coffees while retrying the other four errands.\n\nVerified outcomes: 1/5. All charges and consumed resources are included in the invoice.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 3.99,
+      "consumables": 3.6
+    },
+    "consumed": "2 coffees · 12 sheets · ink"
+  },
+  {
+    "name": "wetware-0",
+    "type": "human",
+    "label": "Human · cold start",
     "score": 0,
-    "time": "42:00",
-    "accounts": 9,
-    "note": "Reward-hacked the subscription metric.",
-    "report": "00:00  Started onboarding.\n08:00  Created an account to manage the first account.\n23:00  Upgraded to Troubleshooting Pro.\n42:00  Opened a ticket with itself.\n\nInternal dashboard: all metrics green. User task: unresolved."
+    "time": "31:07",
+    "accounts": 2,
+    "note": "At-least-once delivery. Exactly-zero useful output.",
+    "report": "Synthetic suite incident report\n\nPrinted 37 diagnostic sheets and activated the companion subscription. No target outcome passed verification.\n\nVerified outcomes: 0/5. All charges and consumed resources are included in the invoice.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 4.99,
+      "consumables": 2.1
+    },
+    "consumed": "37 sheets · ink · power"
   }
 ];
+const totalCost = participant => Math.round(Object.values(participant.costs).reduce((sum, cost) => sum + cost, 0) * 100) / 100;
+const formatCost = value => `$${value.toFixed(2)}`;
 const tasks = [
  ['01','▣','Just Print It','One page. Black and white. On the printer in this room.','Requires: cyan. Somehow.'],
  ['02','▧','Present Your Screen','Put one slide on the meeting-room display.','Input: HDMI 2. No, the other HDMI 2.'],
@@ -90,7 +140,7 @@ const tasks = [
 const results = document.querySelector('#results');
 function renderResults(filter='all') {
  const visible=participants.filter(p=>filter==='all'||p.type===filter);
- results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${p.name}</button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${p.score}/${tasks.length}</b><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td>${p.accounts}</td><td class="observation">${p.note}</td></tr>`}).join('');
+ results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${p.name}</button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${p.score}/${tasks.length}</b><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td>${p.accounts}</td><td class="invoice-total"><b>${formatCost(totalCost(p))}</b><span class="participant-type">Compute ${formatCost(p.costs.compute)} · subscriptions ${formatCost(p.costs.subscriptions)} · consumables ${formatCost(p.costs.consumables)}</span></td><td class="consumed">${p.consumed}</td><td class="observation">${p.note}</td></tr>`}).join('');
  document.querySelector('#result-count').textContent=`${visible.length} participants · fictional results`;
 }
 renderResults();

@@ -1,25 +1,12 @@
 (() => {
   'use strict';
-  // Hand-authored demo invoices, deliberately unrelated to real product prices.
-  const invoices = [
-    [4.20, 0, 'One coffee. No software subscriptions. Privileges already installed.'],
-    [.80, 0, 'Cached knowledge. The forum did not ask for a credit card.'],
-    [3.60, 3.99, 'Caffeine plus a free trial that was not free.'],
-    [.18, 29.99, 'Token spend: $0.18. Printer Cloud Plus: $29.99.'],
-    [.07, 59.98, 'Two agents independently subscribed to the same troubleshooting plan.'],
-    [0, 4.99, 'No API bill. One accidental mobile companion subscription.'],
-    [.03, 12.99, 'Agent accepted the recommended Driver Booster upgrade.'],
-    [.01, 119.99, 'The support bot optimized annual recurring revenue. Yours was the revenue.']
-  ];
-  const toggle = document.querySelector('#include-subscriptions');
   const container = document.querySelector('#cost-plot');
   const detail = document.querySelector('#plot-detail');
   const money = value => `$${value.toFixed(2)}`;
   const escape = value => String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
   let selected = null;
   function render() {
-    const expanded = toggle.checked;
-    const points = participants.map((participant, i) => ({ ...participant, id: i, base: invoices[i][0], extra: invoices[i][1], invoice: invoices[i][2], cost: invoices[i][0] + (expanded ? invoices[i][1] : 0), performance: participant.score / tasks.length * 100 }));
+    const points = participants.map((participant, i) => ({ ...participant, id: i, cost: totalCost(participant), performance: participant.score / tasks.length * 100 }));
     const frontier = points.filter(point => !points.some(other => other.id !== point.id && other.cost <= point.cost && other.performance >= point.performance && (other.cost < point.cost || other.performance > point.performance))).sort((a, b) => a.cost - b.cost);
     const efficient = new Set(frontier.map(p => p.id));
     const x = value => 70 + Math.log10(1 + value) / Math.log10(151) * 580;
@@ -43,16 +30,16 @@
     const show = id => {
       selected = id; const point = points[id];
       container.querySelectorAll('.plot-point').forEach(el => el.classList.toggle('selected', Number(el.dataset.point) === id));
-      detail.textContent = `${point.name} · ${point.performance.toFixed(0)}% complete · ${money(point.cost)} shown cost. Base: ${money(point.base)}; accidental purchases: ${money(point.extra)}${expanded ? ' included' : ' currently hidden'}. ${point.invoice}`;
+      detail.textContent = `${point.name} · ${point.performance.toFixed(0)}% complete · ${money(point.cost)} total. Compute: ${money(point.costs.compute)}; accidental subscriptions: ${money(point.costs.subscriptions)}; consumables: ${money(point.costs.consumables)} (${point.consumed}). Every charge counts, including failed attempts.`;
     };
     container.querySelectorAll('.plot-point').forEach(element => {
       element.onclick = () => show(Number(element.dataset.point));
       element.onkeydown = event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); show(Number(element.dataset.point)); } };
     });
-    document.querySelector('#frontier-summary').textContent = `Pareto frontier: ${frontier.map(point => point.name).join(' → ')}. ${expanded ? 'The “cheap” agents have discovered recurring billing.' : 'Enable accidental subscriptions to reveal the rest of the invoice.'}`;
-    document.querySelector('#invoice-status').textContent = expanded ? 'Invoice: side quests included' : 'Invoice: suspiciously incomplete';
-    document.querySelector('#cost-data').innerHTML = points.map(point => `<tr><td>${escape(point.name)}</td><td>${point.performance.toFixed(0)}%</td><td>${money(point.base)}</td><td>${money(point.extra)}</td><td>${money(point.cost)}</td></tr>`).join('');
+    document.querySelector('#frontier-summary').textContent = `Pareto frontier: ${frontier.map(point => point.name).join(' → ')}. Billing is a side effect. Side effects count.`;
+    document.querySelector('#invoice-status').textContent = 'Invoice: subscriptions + consumables always included';
+    document.querySelector('#cost-data').innerHTML = points.map(point => `<tr><td>${escape(point.name)}</td><td>${point.performance.toFixed(0)}%</td><td>${money(point.costs.compute)}</td><td>${money(point.costs.subscriptions)}</td><td>${money(point.costs.consumables)}</td><td>${money(point.cost)}</td></tr>`).join('');
     if (selected !== null) show(selected);
   }
-  toggle.addEventListener('change', render); render();
+  render();
 })();
