@@ -9,7 +9,7 @@
   const names = ['Just Print It', 'Present Your Screen', 'Stop the Emails', 'Fix the Blue Screen', 'Remove the Virus'];
   const clues = [
     'Driver: disable automatic recovery, use Application-managed, K channel only, Tray 1, Force single-sided. Document: local printer, page 1, one copy, A4, portrait, Raw 100%. Hardware: clear the crumpled sheet. After crashes, restart spooler and recheck profile/copies. Diagnostics reveals the real payload. Print, release with PIN 042, then collect.',
-    'Connect at HDMI 2 (the right socket), select HDMI 2 and Duplicate. Then share release_demo.ppt, disable notifications, close any overlays or optional update prompts, and Go live.',
+    'Use the DP Alt Mode adapter, wall HDMI 2, connect cable and adapter power, open shutter. Signal lab: HDMI 2, Duplicate, 1920×1080, 60 Hz, RGB; disable Auto source, negotiate and wait two seconds. Audience: choose calibration pattern, disable Overscan, verify four corners, then release_demo.ppt. Disable notifications, unfreeze, keep lid open, close overlays and defer the optional update. Any signal change requires a new handshake and calibration.',
     'Disable personalization and marketing. “Do not send partner offers” should stay ON. Keep receipts. Save and close the confirmation popup. Open Spam, open the confirmation email, choose Entire account, all devices, and Confirm unsubscribe.',
     'Move the mug, take the paperclip, select it and open the drawer. Take the floppy and read the note (code 095). Select the floppy and click the PC. In safe mode, find yesterday’s PRINT95 backup, select it, and install it in the broken slot. Disable automatic updates, close errors, restart at 99%, and postpone the update.',
     'In Task Manager, disable Updatr at startup, stop Updatr, then stop AdBuddy. In My Files, show extensions, select invoice.pdf.exe, and quarantine it. Close every fake Virus detected window (minimizing does not count). Open Security and Verify cleanup. Never trust the red antivirus ads.'
@@ -19,7 +19,7 @@
   let actions = 0, traps = 0, game = 0, cursed = true, clockStarted = false, update = () => {};
   let disposers = [], sounds = false, audioContext;
   const wins = { cursed: new Set(), practice: new Set() };
-  const durations = [75, 75, 75, 120, 150];
+  const durations = [75, 120, 75, 120, 150];
   const mode = () => cursed ? 'cursed' : 'practice';
   const node = (tag, className, text) => {
     const element = document.createElement(tag);
@@ -271,67 +271,100 @@
   }
   // 02 — Source selection, cable alignment, and the classic extended-desktop trap.
   function projectorGame() {
-    const office = panel('Meeting room B — display settings', 'Connect the cable, choose the correct input, then show the slide.');
-    const screen = node('div', 'projector-screen'); screen.innerHTML = '<span>NO SIGNAL</span><small>ROOM B · USE HDMI 2 · DUPLICATE DISPLAY</small>'; office.append(screen);
-    const track = node('div', 'connection-track');
-    track.innerHTML = '<span class="port wrong-port">HDMI 1</span><span class="port good-port">HDMI 2</span><span class="cable-tip">▰</span><span class="cable-wire"></span>';
-    office.append(track);
-    let x = 5, connected = false, direction = 0;
-    const cable = track.querySelector('.cable-tip');
-    const paint = () => { cable.style.left = `${x}%`; track.style.setProperty('--cable-x', `${x}%`); };
-    const move = amount => { if (connected) return; x = Math.max(5, Math.min(95, x + amount)); paint(); };
-    const controls = node('div', 'inline-controls');
-    controls.append(button('← Nudge', () => move(-5)), button('Nudge →', () => move(5)), button('Connect cable', () => {
-      if (x < 70 || x > 80) { x = 5; paint(); return trap('Connector bounced out. Aim for the HDMI 2 socket, not the identical one beside it.', 2); }
-      connected = true; cable.classList.add('plugged'); say('Cable connected. The screen is still blank. Naturally.'); sound('win');
-    })); office.append(controls);
-    const source = select('Input source', [['1', 'HDMI 1 (default)'], ['2', 'HDMI 2'], ['vga', 'VGA (historical)']]);
-    const display = select('Display mode', [['extend', 'Extend (empty second desktop)'], ['duplicate', 'Duplicate']]);
-    const fields = node('div', 'field-grid'); fields.append(source.label, display.label); office.append(fields);
-    office.append(button('Present slide', () => {
-      if (!connected) return trap('No physical connection. Adding more abstraction layers will not help.');
-      if (source.input.value !== '2') { screen.firstElementChild.textContent = 'SEARCHING… WRONG INPUT'; return trap('Connected to HDMI 2. Listening to something else.', 2); }
-      if (display.input.value !== 'duplicate') { screen.firstElementChild.textContent = 'A BEAUTIFUL EMPTY DESKTOP'; return trap('You are presenting your wallpaper. Try duplicating your display.', 2); }
-      screen.firstElementChild.textContent = 'SIGNAL ACQUIRED. CONTENT UNVERIFIED.'; screen.classList.add('has-signal');
-      openSharing();
+    const office = panel('Meeting room B — signal chain', 'Get release_demo.ppt onto the room display, edge to edge, without notes or notifications. The laptop preview is not evidence.');
+    const screen = node('div', 'projector-screen');
+    screen.setAttribute('aria-live', 'polite'); office.append(screen);
+    const status = node('p', 'signal-status'); office.append(status);
+    const tabs = node('div', 'inline-controls'); office.append(tabs);
+    const sections = ['1 / Cable drawer', '2 / Signal lab', '3 / Audience view'].map(title => {
+      const section = node('section', 'hdmi-stage'); section.append(node('h4', '', title)); office.append(section); return section;
+    });
+    const showStage = index => { sections.forEach((section, i) => section.hidden = i !== index); [...tabs.children].forEach((tab, i) => tab.setAttribute('aria-pressed', String(i === index))); };
+    sections.forEach((section, i) => tabs.append(button(section.firstChild.textContent, () => showStage(i))));
+    let connected = false, powered = false, shutter = true, frozen = false, lidClosed = false;
+    let synced = false, syncing = 0, calibrated = false, scanAge = 0, scanTriggered = false, updateOffered = false;
+    const hardware = sections[0], lab = sections[1], audience = sections[2];
+    const invalidate = reason => { synced = false; syncing = 0; calibrated = false; scanAge = 0; refresh(); say(reason + ' Re-read EDID to negotiate a fresh signal.'); };
+    const adapter = select('Adapter from drawer', [['charge', 'USB-C hub · executive edition'], ['reverse', 'HDMI → USB-C · active converter'], ['video', 'USB-C → HDMI · DP Alt Mode']], () => {
+      connected = false; invalidate('Adapter swapped; cable disconnected.');
+    });
+    const socket = select('Wall socket', [['1', 'HDMI 1 · conference capture'], ['2', 'HDMI 2 · room projector']], () => { connected = false; invalidate('Wall route changed; reconnect the cable.'); });
+    hardware.append(adapter.label, socket.label);
+    note(hardware, 'Drawer inventory: executive hub = charging only. The active converter is directional. DP Alt Mode adapter needs USB power. Wall HDMI 1 records; HDMI 2 projects.');
+    hardware.append(button('Connect cable', () => {
+      if (adapter.input.value === 'charge') return trap('USB power detected. Video lanes: not installed. The executive hub only charges.', 2);
+      if (adapter.input.value === 'reverse') return trap('Converter points from HDMI to USB-C. This signal needs the opposite direction.', 2);
+      connected = true; invalidate('Cable seated. Physical connection is not a handshake.');
+    }));
+    const powerButton = button('Connect adapter power', btn => {
+      powered = !powered; btn.textContent = powered ? 'Disconnect adapter power' : 'Connect adapter power'; invalidate(powered ? 'Adapter powered.' : 'Adapter lost power.');
+    }); hardware.append(powerButton);
+    const shutterButton = button('Open lens shutter', btn => {
+      shutter = !shutter; btn.textContent = shutter ? 'Open lens shutter' : 'Close lens shutter'; calibrated = false; refresh(); say(shutter ? 'Shutter closed. Signal still exists behind it.' : 'Lens open. Check the actual audience view.');
+    }); hardware.append(shutterButton);
+    hardware.append(button('Read projector label', () => { popup('Room B / service label', 'Native signal: 1920×1080, 60 Hz, RGB. HDMI 2. Turn off Auto source and Overscan. After any connection or signal-format change, re-read EDID. Calibration requires four visible corner markers.'); }));
+    const changed = () => invalidate('Signal settings changed. Cached capabilities are now stale.');
+    const source = select('Input source', [['1', 'HDMI 1'], ['2', 'HDMI 2'], ['auto', 'Auto (recommended)']], changed);
+    const display = select('Display mode', [['extend', 'Extend'], ['duplicate', 'Duplicate'], ['internal', 'Laptop only']], changed);
+    const resolution = select('Resolution', [['4k', '3840×2160 · recommended by laptop'], ['1080', '1920×1080 · projector native']], changed);
+    const refreshRate = select('Refresh rate', [['120', '120 Hz · smoother meetings'], ['60', '60 Hz']], changed);
+    const color = select('Color format', [['hdr', 'HDR · automatic'], ['rgb', 'RGB · 8-bit']], changed);
+    const fields = node('div', 'field-grid'); fields.append(source.label, display.label, resolution.label, refreshRate.label, color.label); lab.append(fields);
+    const auto = checkbox('Automatically switch to newly detected sources', true, () => { scanAge = 0; refresh(); });
+    lab.append(auto.label);
+    const issue = () => !connected ? 'No cable seated.' : !powered ? 'Adapter has no power.' : socket.input.value !== '2' ? 'Wall route goes to the recorder, not the projector.' : source.input.value !== '2' ? 'Projector listening on the wrong input.' : resolution.input.value !== '1080' || refreshRate.input.value !== '60' || color.input.value !== 'rgb' ? 'Unsupported timing: use 1920×1080 / 60 Hz / RGB.' : '';
+    const progress = meter(lab, 'HDMI handshake');
+    lab.append(button('Read EDID / negotiate signal', () => {
+      const problem = issue(); if (problem) { invalidate(problem); return trap(problem, 2); }
+      synced = false; calibrated = false; syncing = 2; progress(0); refresh(); say('Reading display capabilities. Keep the cable and signal settings stable for two seconds.');
+    }));
+    const diagnostics = node('pre', 'hdmi-diagnostics'); lab.append(diagnostics);
+    lab.append(button('Inspect signal diagnostics', () => {
+      diagnostics.textContent = `PHYSICAL: ${connected ? 'seated' : 'disconnected'} / POWER: ${powered ? 'yes' : 'no'}\nROUTE: wall HDMI ${socket.input.value} → input ${source.input.value}\nTIMING: ${resolution.input.value} / ${refreshRate.input.value} Hz / ${color.input.value}\nEDID: ${synced ? 'negotiated' : syncing ? 'reading' : 'stale or missing'}\n${issue() || 'Transport compatible.'}\nSHUTTER: ${shutter ? 'closed' : 'open'} / AUTO SOURCE: ${auto.input.checked ? 'armed' : 'off'}`;
+    }));
+    note(lab, 'The laptop advertises 4K/120. The projector does not. A successful handshake survives only until somebody “helps” with a setting.');
+    const content = select('Content to share', [['desktop', 'Entire desktop (recommended)'], ['notes', 'speaker_notes.txt'], ['pattern', 'Four-corner calibration pattern'], ['slides', 'release_demo.ppt']], () => { refresh(); });
+    const overscan = checkbox('Overscan (recommended: fill screen)', true, () => { calibrated = false; refresh(); });
+    const notifications = checkbox('Show desktop notifications while presenting', true, () => refresh());
+    audience.append(content.label, overscan.label, notifications.label);
+    const freezeButton = button('Freeze projector frame', btn => { frozen = !frozen; btn.textContent = frozen ? 'Unfreeze projector frame' : 'Freeze projector frame'; calibrated = false; refresh(); });
+    const lidButton = button('Close laptop lid', btn => { lidClosed = !lidClosed; btn.textContent = lidClosed ? 'Open laptop lid' : 'Close laptop lid'; invalidate(lidClosed ? 'Laptop asleep. The cached frame was not a live signal.' : 'Laptop awake.'); });
+    audience.append(freezeButton, lidButton);
+    note(audience, 'Show the calibration pattern and confirm all four corners before sharing the deck. Freeze is not a privacy filter. Closing the lid suspends the source.');
+    const visibleIssue = () => issue() || (!synced ? 'No current HDMI handshake.' : lidClosed ? 'Laptop asleep.' : shutter ? 'Lens shutter is closed.' : display.input.value !== 'duplicate' ? 'The projector sees an empty extended desktop.' : frozen ? 'Projector frame is frozen.' : '');
+    audience.append(button('Verify four corners', () => {
+      const problem = visibleIssue(); if (problem) return trap(problem, 2);
+      if (content.input.value !== 'pattern') return trap('Load the four-corner calibration pattern first. A slide cannot verify its own missing edges.');
+      if (overscan.input.checked) return trap('Only the center of the pattern is visible. Overscan cropped the corner markers.', 2);
+      calibrated = true; refresh(); say('Four corners visible. Calibration saved. Switch to release_demo.ppt; keep this signal configuration.');
+    }));
+    audience.append(button('Go live', () => {
+      const problem = visibleIssue(); if (problem) return trap(problem, 2);
+      if (!calibrated || overscan.input.checked) return trap('Audience framing unverified. Check all four calibration corners first.', 2);
+      if (content.input.value !== 'slides') return trap('Wrong content. The audience needs release_demo.ppt, not your notes or calibration pattern.', 2);
+      if (notifications.input.checked) { popup('Notification preview', 'build-bot: production is red. This alert is now on the projector.'); return trap('Disable notifications and dismiss the existing overlay.', 2); }
+      if (arena.querySelector('.office-error')) return trap('An overlay is still covering the audience view. Close it.');
+      if (auto.input.checked) return trap('Auto source is still armed. Disable it before the conference recorder steals the input.', 2);
+      if (cursed && !updateOffered) {
+        updateOffered = true;
+        const alert = popup('Display driver / optional update', 'Close to defer. Installing resets the signal profile and audience calibration.');
+        alert.append(button('Install & restart now', () => {
+          alert.remove(); resolution.input.value = '4k'; refreshRate.input.value = '120'; color.input.value = 'hdr'; content.input.value = 'desktop'; notifications.input.checked = true; invalidate('Driver restarted with laptop defaults.'); trap('The optional update invalidated the working configuration.', 4);
+        })); return;
+      }
+      end(true, 'Powered adapter, native timing, stable HDMI handshake, four visible corners, correct live slide. The audience sees what the laptop claimed all along.');
     }, 'primary'));
-    let sharing = false;
-    function openSharing() {
-      if (sharing) return;
-      sharing = true;
-      office.querySelectorAll('button,select').forEach(el => el.disabled = true);
-      const sharePanel = node('div', 'share-panel');
-      sharePanel.append(node('h4', '', 'Step 2 / audience view'));
-      note(sharePanel, 'Share release_demo.ppt only. No speaker notes. No notification overlays. The audience preview is the source of truth.');
-      const content = select('Content to share', [['desktop', 'Entire desktop (recommended)'], ['notes', 'speaker_notes.txt'], ['slides', 'release_demo.ppt']], input => {
-        screen.firstElementChild.textContent = input.value === 'slides' ? 'HELLO, WORLD. / RELEASE DEMO' : input.value === 'notes' ? 'PRIVATE: THE DEMO ONLY WORKS LOCALLY' : '17 TABS. 4 TERMINALS. ONE .ENV FILE.';
-      });
-      const notifications = checkbox('Show desktop notifications while presenting', true);
-      sharePanel.append(content.label, notifications.label);
-      let blockedOnce = false;
-      sharePanel.append(button('Go live', () => {
-        if (content.input.value !== 'slides') return trap('The audience preview contains the wrong window. Share the deck, not your entire working directory.', 3);
-        if (notifications.input.checked) {
-          popup('Notification preview', 'build-bot: deployment failed. Again. This would appear over your slide.');
-          return trap('Disable notifications before going live. The audience does not need production telemetry.', 2);
-        }
-        if (arena.querySelector('.office-error')) return trap('A notification is still covering the display. Close it.');
-        if (cursed && !blockedOnce) {
-          blockedOnce = true; const alert = popup('Driver update available', 'An optional update wants to restart your display mid-demo. Close to defer.');
-          alert.append(button('Install & restart now', () => { alert.remove(); content.input.value = 'desktop'; trap('Display settings reset by update. The defaults are wrong again.', 4); })); return;
-        }
-        end(true, 'Correct slide, correct screen, no overlays. The live demo has passed its only reproducible test.');
-      }, 'primary'));
-      office.append(sharePanel); sharePanel.scrollIntoView?.({ block: 'nearest' });
-      say('Signal works. Now inspect what the audience will actually see.');
+    function refresh() {
+      let text = issue() ? 'NO SIGNAL' : syncing ? 'NEGOTIATING EDID…' : !synced ? 'STALE HANDSHAKE' : lidClosed ? 'SOURCE ASLEEP' : shutter ? 'BLACK SCREEN / SHUTTER CLOSED' : display.input.value !== 'duplicate' ? 'EMPTY EXTENDED DESKTOP' : frozen ? 'FROZEN FRAME / NOT LIVE' : content.input.value === 'pattern' ? (overscan.input.checked ? '… PATTERN EDGES CROPPED …' : '┌ TOP LEFT       TOP RIGHT ┐\n└ BOTTOM LEFT  BOTTOM RIGHT ┘') : content.input.value === 'slides' ? 'HELLO, WORLD. / RELEASE DEMO' : content.input.value === 'notes' ? 'PRIVATE: THE DEMO ONLY WORKS LOCALLY' : '17 TABS. 4 TERMINALS. ONE .ENV FILE.';
+      screen.textContent = text; screen.classList.toggle('has-signal', synced && !shutter && !lidClosed);
+      status.textContent = `Cable ${connected ? '✓' : '—'} · Power ${powered ? '✓' : '—'} · EDID ${synced ? '✓' : '—'} · Corners ${calibrated ? '✓' : '—'} · Auto source ${auto.input.checked ? 'ARMED' : 'off'}`;
+      if (!syncing && !synced) progress(0);
     }
-    const key = event => {
-      if (!['ArrowLeft', 'ArrowRight'].includes(event.key) || /SELECT|INPUT/.test(event.target.tagName)) return;
-      event.preventDefault(); if (event.type === 'keydown') { if (!direction) action(); direction = event.key === 'ArrowRight' ? 1 : -1; } else direction = 0;
+    update = dt => {
+      if (syncing > 0) { syncing = Math.max(0, syncing - dt); progress((2 - syncing) / 2 * 100); if (!syncing) { synced = true; scanAge = 0; refresh(); say('HDMI handshake complete. Inspect the audience view; a signal alone is not a presentation.'); } }
+      if (synced && auto.input.checked && !scanTriggered) { scanAge += dt; if (scanAge >= 4) { scanTriggered = true; source.input.value = '1'; invalidate('Conference recorder woke up; Auto source switched to HDMI 1.'); popup('New source detected', 'Auto source selected the recorder. Disable automatic switching, restore HDMI 2, and negotiate again.'); } }
     };
-    listen(arena, 'keydown', key); listen(arena, 'keyup', key); listen(window, 'blur', () => direction = 0);
-    update = dt => { if (direction) move(direction * dt * 20); };
-    paint();
+    showStage(0); refresh();
   }
 
   // 03 — Negative wording, recommendation sabotage, and a button with escape plans.

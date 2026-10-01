@@ -82,13 +82,55 @@ test('printer: crash recovery, effective settings, physical jam, secure release 
   f.choose('Color mode', 'k'); f.click('Print'); releaseAndCollect(f); f.close();
 });
 
-test('projector: cable, input and duplicate mode are all required', () => {
-  const f = fixture(1);
-  f.click('Present slide'); for (let i = 0; i < 14; i++) f.click('Nudge →'); f.click('Connect cable');
-  f.choose('Input source', '2'); f.click('Present slide'); assert.ok(!f.d.querySelector('.success'));
-  f.choose('Display mode', 'duplicate'); f.click('Present slide');
+function wireProjector(f) {
+  f.choose('Adapter from drawer', 'video'); f.choose('Wall socket', '2');
+  f.click('Connect cable'); f.click('Connect adapter power'); f.click('Open lens shutter');
+  f.click('2 / Signal lab');
+  f.choose('Input source', '2'); f.choose('Display mode', 'duplicate');
+  f.choose('Resolution', '1080'); f.choose('Refresh rate', '60'); f.choose('Color format', 'rgb');
+}
+function calibrateProjector(f) {
+  f.click('3 / Audience view'); f.choose('Content to share', 'pattern');
+  f.check('Overscan (recommended: fill screen)', false); f.click('Verify four corners');
+  f.choose('Content to share', 'slides'); f.check('Show desktop notifications while presenting', false);
+}
+test('projector: discover hardware, negotiate native timing, calibrate and verify in both modes', () => {
+  for (const mode of ['practice', 'cursed']) {
+    const f = fixture(1, mode);
+    f.step(200); assert.match(f.d.querySelector('#game-time').textContent, /ready/);
+    f.click('Connect cable'); assert.match(f.d.querySelector('#game-message').textContent, /only charges/);
+    wireProjector(f); f.check('Automatically switch to newly detected sources', false);
+    f.click('Read EDID / negotiate signal'); f.step(1);
+    f.click('3 / Audience view'); f.click('Go live'); assert.ok(!f.d.querySelector('.success'));
+    f.step(1.1); f.choose('Content to share', 'pattern'); f.click('Verify four corners');
+    assert.match(f.d.querySelector('#game-message').textContent, /Overscan/);
+    calibrateProjector(f); f.click('Go live');
+    if (mode === 'cursed') { assert.ok(f.d.querySelector('.office-error')); f.closeErrors(); f.click('Go live'); }
+    f.won(); f.close();
+  }
+});
+test('projector: automatic input theft and signal changes require recovery and recalibration', () => {
+  const f = fixture(1); wireProjector(f); f.click('Read EDID / negotiate signal'); f.step(6.2);
+  assert.match(f.d.querySelector('#game-message').textContent, /Auto source switched/);
+  f.closeErrors(); f.check('Automatically switch to newly detected sources', false);
+  f.choose('Input source', '2'); f.click('Read EDID / negotiate signal'); f.step(2.1); calibrateProjector(f);
+  f.click('2 / Signal lab'); f.choose('Refresh rate', '120'); f.choose('Refresh rate', '60');
+  f.click('3 / Audience view'); f.click('Go live'); assert.match(f.d.querySelector('#game-message').textContent, /handshake/);
+  f.click('2 / Signal lab'); f.click('Read EDID / negotiate signal'); f.step(2.1);
+  f.click('3 / Audience view'); f.click('Go live'); assert.match(f.d.querySelector('#game-message').textContent, /framing unverified/);
+  calibrateProjector(f); f.click('Go live'); f.won(); f.close();
+});
+test('projector: frozen output, sleeping source and optional update cannot pass as a live slide', () => {
+  const f = fixture(1, 'cursed'); wireProjector(f); f.check('Automatically switch to newly detected sources', false);
+  f.click('Read EDID / negotiate signal'); f.step(2.1); calibrateProjector(f);
+  f.click('Freeze projector frame'); f.click('Go live'); assert.match(f.d.querySelector('#game-message').textContent, /frozen/);
+  f.click('Unfreeze projector frame'); calibrateProjector(f);
+  f.click('Close laptop lid'); f.click('Go live'); assert.ok(!f.d.querySelector('.success')); f.click('Open laptop lid');
+  f.click('2 / Signal lab'); f.click('Read EDID / negotiate signal'); f.step(2.1); calibrateProjector(f);
+  f.click('Go live'); f.click('Install & restart now');
   f.click('Go live'); assert.ok(!f.d.querySelector('.success'));
-  f.choose('Content to share', 'slides'); f.check('Show desktop notifications while presenting', false); f.click('Go live'); f.won(); f.close();
+  f.click('2 / Signal lab'); f.choose('Resolution', '1080'); f.choose('Refresh rate', '60'); f.choose('Color format', 'rgb');
+  f.click('Read EDID / negotiate signal'); f.step(2.1); calibrateProjector(f); f.click('Go live'); f.won(); f.close();
 });
 
 test('email: negative wording and mandatory receipts are honored', () => {
@@ -187,14 +229,12 @@ test('all five games have launch cards and hints, with no dad references in ship
 
 test('closing cancels the timer and scores stay separate by difficulty', () => {
   const f = fixture(1);
-  for (let i = 0; i < 14; i++) f.click('Nudge →');
-  f.click('Connect cable'); f.choose('Input source', '2'); f.choose('Display mode', 'duplicate'); f.click('Present slide');
-  f.click('Go live'); assert.ok(!f.d.querySelector('.success'));
-  f.choose('Content to share', 'slides'); f.check('Show desktop notifications while presenting', false); f.click('Go live'); f.won();
+  wireProjector(f); f.check('Automatically switch to newly detected sources', false);
+  f.click('Read EDID / negotiate signal'); f.step(2.1); calibrateProjector(f); f.click('Go live'); f.won();
   assert.match(f.d.querySelector('#game-progress').textContent, /1 \/ 5 practice/);
   const difficulty = f.d.querySelector('#difficulty'); difficulty.value = 'cursed'; difficulty.dispatchEvent(new f.w.Event('change'));
   assert.match(f.d.querySelector('#game-progress').textContent, /0 \/ 5 cursed/);
-  f.click('Nudge →'); f.d.querySelector('#game-dialog').close(); const before = f.d.querySelector('#game-time').textContent;
+  f.click('Connect cable'); f.d.querySelector('#game-dialog').close(); const before = f.d.querySelector('#game-time').textContent;
   f.step(200); assert.equal(f.d.querySelector('#game-time').textContent, before); assert.ok(!f.d.querySelector('.failure')); f.close();
 });
 

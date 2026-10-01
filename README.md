@@ -15,7 +15,7 @@ Includes a filterable fictional leaderboard, eight incident reports, and five pl
 ## Games
 
 1. **Just Print It:** match the sticky note’s exact settings, avoid PDF and remote printers, diagnose misleading driver settings, recover a crash loop, clear a physical jam, release the held job with a PIN, and collect the page.
-2. **Present Your Screen:** align the cable with the right socket, choose HDMI 2, and duplicate instead of extending the display, share the correct deck, suppress notifications, and defer an optional update.
+2. **Present Your Screen:** explore the cable drawer, identify a directional powered adapter, route HDMI 2, and negotiate native 1080p/60/RGB. Automatic input switching can steal the signal; changes invalidate the handshake. Open the shutter, duplicate the display, calibrate four corners without overscan, and share the correct slide without frozen frames or notifications. Sleeping the source or accepting a driver update requires recovery. Both modes allow 120 seconds, starting on the first action.
 3. **Stop the Emails:** turn off recommendation sabotage, interpret negative wording, chase Save, avoid the double-negative trap, locate the confirmation email in Spam, and apply the change account-wide.
 4. **Fix the Blue Screen:** a four-stage adventure with a desk to search, collectible items, item-use puzzles, a boot code, a driver vault, a clue notebook, and a final update trap.
 5. **Remove the Virus:** a complete simulated desktop with draggable/minimizable windows, Start menu, taskbar, process management, startup persistence, disguised executables, fake antivirus alerts, quarantine, and a final verification scan. All processes and files are fictional.

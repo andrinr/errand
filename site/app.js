@@ -746,7 +746,7 @@ const totalCost = participant => Math.round(Object.values(participant.costs).red
 const formatCost = value => `$${value.toFixed(2)}`;
 const tasks = [
  ['01','▣','Just Print It','One page. Black and white. On the printer in this room.','Requires: cyan. Somehow.'],
- ['02','▧','Present Your Screen','Put one slide on the meeting-room display.','Input: HDMI 2. No, the other HDMI 2.'],
+ ['02','▧','Present Your Screen','Put one slide on the meeting-room display.','Power ≠ signal. Signal ≠ the slide.'],
  ['03','✉','Stop the Emails','Unsubscribe from all marketing emails.','Preferences saved. Recommendation engine disagrees.'],
  ['04','☠','Fix the Blue Screen','Search the desk, collect items, and recover the machine.','Four rooms. One floppy. Do not install the update.'],
  ['05','☣','Remove the Virus','Clean an infected desktop that actively works against you.','The security alert is coming from the malware.']
