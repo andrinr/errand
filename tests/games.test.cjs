@@ -218,10 +218,10 @@ test('leaderboard and Pareto plot always include every invoice component, with A
   assert.match(f.d.querySelector('#frontier-summary').textContent, /Gemini Tab Ultra \/ low → GPT-Paperclip \/ low/);
   const rows = [...f.d.querySelectorAll('#results tr')];
   const costs = [...f.d.querySelectorAll('#cost-data tr')];
-  assert.equal(rows.length, 36);
-  assert.equal(costs.length, 36);
-  assert.equal(f.d.querySelectorAll('.plot-point').length, 36);
-  assert.equal(f.d.querySelectorAll('#plot-participant option').length, 37);
+  assert.equal(rows.length, 42);
+  assert.equal(costs.length, 42);
+  assert.equal(f.d.querySelectorAll('.plot-point').length, 42);
+  assert.equal(f.d.querySelectorAll('#plot-participant option').length, 43);
   f.d.querySelector('[data-filter="model"]').click();
   assert.equal(f.d.querySelectorAll('#results tr').length, 32);
   f.d.querySelector('[data-filter="all"]').click();
@@ -239,7 +239,7 @@ test('leaderboard and Pareto plot always include every invoice component, with A
   picker.value = [...picker.options].find(o => o.textContent === 'Grok Kernel / unhinged').value;
   picker.dispatchEvent(new f.w.Event('change'));
   assert.match(f.d.querySelector('#plot-detail').textContent, /\$122\.89 total/);
-  assert.match(f.d.querySelector('#plot-detail').textContent, /consumables: \$1\.10/);
+  assert.match(f.d.querySelector('#plot-detail').textContent, /consumables \/ goods \/ perks: \$1\.10/);
   f.close();
 });
 
@@ -266,5 +266,29 @@ test('axis tricks change geometry without changing invoices or Pareto membership
   assert.equal(path(), original);
   assert.equal(f.d.querySelectorAll('.effort-pair').length, 8);
   assert.equal((f.d.querySelector('#effort-comparisons').textContent.match(/REGRESSION/g) || []).length, 8);
+  f.close();
+});
+
+test('management invoices include luxury spending and fit every chart mode', () => {
+  const f = fixture(0);
+  f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
+  f.d.querySelector('[data-filter="management"]').click();
+  assert.equal(f.d.querySelectorAll('#results tr').length, 6);
+  assert.match(f.d.querySelector('#results').textContent, /Private jet/);
+  f.d.querySelector('[data-filter="human"]').click();
+  assert.equal(f.d.querySelectorAll('#results tr').length, 10);
+  const picker = f.d.querySelector('#plot-participant');
+  picker.value = [...picker.options].find(o => o.textContent === 'Chief Executive Bottleneck').value;
+  picker.dispatchEvent(new f.w.Event('change'));
+  assert.match(f.d.querySelector('#plot-detail').textContent, /\$186999\.00 total/);
+  const mode = f.d.querySelector('#axis-mode');
+  for (const value of ['honest', 'launch', 'reverse', 'vibes']) {
+    mode.value = value; mode.dispatchEvent(new f.w.Event('change'));
+    for (const point of f.d.querySelectorAll('.plot-point')) {
+      const hit = point.querySelector('circle');
+      const x = Number(hit.getAttribute('cx')), y = Number(hit.getAttribute('cy'));
+      assert.ok(x >= 70 && x <= 650 && y >= 60 && y <= 300);
+    }
+  }
   f.close();
 });

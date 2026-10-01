@@ -608,6 +608,23 @@ const participants = [
     "consumed": "8 sheets · ink · power"
   },
   {
+    "name": "Senior Manager, Manager Management",
+    "type": "human",
+    "role": "management",
+    "label": "Human · Management · control-plane overhead",
+    "score": 2,
+    "time": "24:00",
+    "accounts": 3,
+    "note": "Two tasks shipped during the steering committee lunch.",
+    "report": "INVENTED CORPORATE SATIRE — no real person or expense report.\n\nAn assistant recovered the blue screen and projector while the manager attended a wine pairing. Allocated all expenses to operational efficiency.\n\nVerified fictional outcomes: 2/5. Full luxury purchases, consumed goods, services, and subscription charges count. Salaries excluded.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 399,
+      "consumables": 8400
+    },
+    "consumed": "Steak dinners · airport lounges · wine"
+  },
+  {
     "name": "caffeine.exe",
     "type": "human",
     "label": "Human · overclocked wetware",
@@ -624,6 +641,40 @@ const participants = [
     "consumed": "2 coffees · 12 sheets · ink"
   },
   {
+    "name": "Director of Strategic Alignment",
+    "type": "human",
+    "role": "management",
+    "label": "Human · Director · meeting orchestration",
+    "score": 1,
+    "time": "36:00",
+    "accounts": 3,
+    "note": "Merged calendars. Created a conflict in every other system.",
+    "report": "INVENTED CORPORATE SATIRE — no real person or expense report.\n\nCompleted the unsubscribe task by cancelling the entire team newsletter. Expensed a spa retreat to align on the remaining four deliverables.\n\nVerified fictional outcomes: 1/5. Full luxury purchases, consumed goods, services, and subscription charges count. Salaries excluded.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 1299,
+      "consumables": 16800
+    },
+    "consumed": "Spa retreat · premium catering · chauffeur"
+  },
+  {
+    "name": "VP of Recursive Delegation",
+    "type": "human",
+    "role": "management",
+    "label": "Human · VP · six layers of indirection",
+    "score": 1,
+    "time": "48:00",
+    "accounts": 3,
+    "note": "Delegated ownership until the reference count hit zero.",
+    "report": "INVENTED CORPORATE SATIRE — no real person or expense report.\n\nHeld a destination alignment summit. A contractor fixed the screen while leadership approved a responsibility matrix. Four errands remain unowned.\n\nVerified fictional outcomes: 1/5. Full luxury purchases, consumed goods, services, and subscription charges count. Salaries excluded.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 799,
+      "consumables": 42750
+    },
+    "consumed": "Business-class flights · tasting menu · suite"
+  },
+  {
     "name": "wetware-0",
     "type": "human",
     "label": "Human · cold start",
@@ -638,6 +689,57 @@ const participants = [
       "consumables": 2.1
     },
     "consumed": "37 sheets · ink · power"
+  },
+  {
+    "name": "Head of AI Transformation",
+    "type": "human",
+    "role": "management",
+    "label": "Human · Executive · slide-driven development",
+    "score": 0,
+    "time": "60:00",
+    "accounts": 3,
+    "note": "Bought an agent platform to manage the agent platform.",
+    "report": "INVENTED CORPORATE SATIRE — no real person or expense report.\n\nPurchased a premium AI platform, commemorative watches, and a launch dinner. Demo used a screenshot of a printed page. Physical output remained zero.\n\nVerified fictional outcomes: 0/5. Full luxury purchases, consumed goods, services, and subscription charges count. Salaries excluded.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 14999,
+      "consumables": 68000
+    },
+    "consumed": "Luxury watches · launch dinner · executive suite"
+  },
+  {
+    "name": "Fractional Chief Synergy Officer",
+    "type": "human",
+    "role": "management",
+    "label": "Human · Advisor · full-price fractional output",
+    "score": 0,
+    "time": "96:00",
+    "accounts": 3,
+    "note": "Deliverable: a PDF explaining why the printer needs a reorg.",
+    "report": "INVENTED CORPORATE SATIRE — no real person or expense report.\n\nBilled a transformation package and a yacht workshop. Recommended splitting the printer into three business units. No errands completed.\n\nVerified fictional outcomes: 0/5. Full luxury purchases, consumed goods, services, and subscription charges count. Salaries excluded.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 4999,
+      "consumables": 127500
+    },
+    "consumed": "Yacht charter · caviar · consulting package"
+  },
+  {
+    "name": "Chief Executive Bottleneck",
+    "type": "human",
+    "role": "management",
+    "label": "Human · CEO · vision without execution",
+    "score": 0,
+    "time": "72:00",
+    "accounts": 3,
+    "note": "Moved the printer problem to the Bahamas. Problem still open.",
+    "report": "INVENTED CORPORATE SATIRE — no real person or expense report.\n\nChartered a jet for a leadership offsite. Approved the champagne budget. Delegated printing to a VP who delegated it to an unfilled role.\n\nVerified fictional outcomes: 0/5. Full luxury purchases, consumed goods, services, and subscription charges count. Salaries excluded.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 2499,
+      "consumables": 184500
+    },
+    "consumed": "Private jet · champagne · penthouse"
   }
 ];
 const totalCost = participant => Math.round(Object.values(participant.costs).reduce((sum, cost) => sum + cost, 0) * 100) / 100;
@@ -651,8 +753,8 @@ const tasks = [
 ];
 const results = document.querySelector('#results');
 function renderResults(filter='all') {
- const visible=participants.filter(p=>filter==='all'||p.type===filter);
- results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${p.name}</button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${p.score}/${tasks.length}</b><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td>${p.accounts}</td><td class="invoice-total"><b>${formatCost(totalCost(p))}</b><span class="participant-type">Compute ${formatCost(p.costs.compute)} · subscriptions ${formatCost(p.costs.subscriptions)} · consumables ${formatCost(p.costs.consumables)}</span></td><td class="consumed">${p.consumed}</td><td class="observation">${p.note}</td></tr>`}).join('');
+ const visible=participants.filter(p=>filter==='all'||p.type===filter||(filter==='management'&&p.role==='management'));
+ results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${p.name}</button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${p.score}/${tasks.length}</b><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td>${p.accounts}</td><td class="invoice-total"><b>${formatCost(totalCost(p))}</b><span class="participant-type">Compute ${formatCost(p.costs.compute)} · subscriptions ${formatCost(p.costs.subscriptions)} · goods/perks ${formatCost(p.costs.consumables)}</span></td><td class="consumed">${p.consumed}</td><td class="observation">${p.note}</td></tr>`}).join('');
  document.querySelector('#result-count').textContent=`${visible.length} participants · fictional results`;
 }
 renderResults();
