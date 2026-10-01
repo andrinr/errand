@@ -262,10 +262,10 @@ test('leaderboard and Pareto plot always include every invoice component, with e
 
   const rows = [...f.d.querySelectorAll('#results tr')];
   const costs = [...f.d.querySelectorAll('#cost-data tr')];
-  assert.equal(rows.length, 45);
-  assert.equal(costs.length, 45);
-  assert.equal(f.d.querySelectorAll('.plot-point').length, 45);
-  assert.equal(f.d.querySelectorAll('#plot-participant option').length, 46);
+  assert.equal(rows.length, 48);
+  assert.equal(costs.length, 48);
+  assert.equal(f.d.querySelectorAll('.plot-point').length, 48);
+  assert.equal(f.d.querySelectorAll('#plot-participant option').length, 49);
   f.d.querySelector('[data-filter="model"]').click();
   assert.equal(f.d.querySelectorAll('#results tr').length, 35);
   f.d.querySelector('[data-filter="all"]').click();
@@ -275,7 +275,7 @@ test('leaderboard and Pareto plot always include every invoice component, with e
     assert.equal(Math.round((values[0] + values[1] + values[2]) * 100), Math.round(values[3] * 100));
     assert.equal(row.querySelector('.invoice-total b').textContent, cells[5].textContent);
     assert.ok(row.querySelector('.consumed').textContent.length > 0);
-    assert.match(row.querySelector('.participant-type').textContent, /LLM|Human/);
+    assert.match(row.querySelector('.participant-type').textContent, /LLM|Human|Animal/);
   });
   const scores = rows.map(row => Number(row.querySelector('.score b').textContent.split('/')[0]));
   assert.deepEqual(rows.slice(0, 3).map(row => row.querySelector('.participant').textContent), ['Le Chaton-fat', 'Site Reliability Engineer', 'Staff Software Engineer']);
@@ -437,7 +437,7 @@ test('neuron estimates share a human reference, preserve architecture across eff
   const f = fixture(0);
   f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\nwindow.neuronParticipants = participants;\n' + fs.readFileSync('site/chart.js', 'utf8'));
   const entries = f.w.neuronParticipants;
-  entries.filter(p => p.type === 'human').forEach(p => assert.equal(p.neurons, 86e9));
+  entries.filter(p => p.role === 'engineering').forEach(p => assert.equal(p.neurons, 86e9));
   const frontier = entries.filter(p => p.type === 'model' && p.family !== 'Le Chaton');
   const largest = Math.max(...frontier.map(p => p.neurons));
   assert.equal(entries.find(p => p.name === 'Le Chaton-fat').neurons, largest * 1000);
@@ -448,9 +448,28 @@ test('neuron estimates share a human reference, preserve architecture across eff
   const rows = [...f.d.querySelectorAll('#results tr')];
   rows.forEach(row => {
     const cell = row.querySelector('.neuron-count');
-    assert.match(cell.textContent, /^≈\d+(\.\d+)?[MB]$/);
-    assert.match(cell.title, /Biological neurons|Artificial FFN units/);
+    assert.match(cell.textContent, /^≈\d+(\.\d+)?[KMB](cortex)?$/);
+    assert.match(cell.title, /Biological neurons|Artificial FFN units|Satirical management count/);
   });
   assert.match(f.d.querySelector('.table-foot').textContent, /not verified model sizes or a conversion to biological neurons/);
   f.close();
 });
+
+ test('animals outperform management and management neuron counts have a 32K floor', () => {
+ const f = fixture(0);
+ f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\nwindow.entries = participants;\n' + fs.readFileSync('site/chart.js', 'utf8'));
+ const managers = f.w.entries.filter(p => p.role === 'management');
+ const animals = f.w.entries.filter(p => p.type === 'animal');
+ assert.equal(Math.min(...managers.map(p => p.neurons)), 32000);
+ assert.equal(animals.length, 3);
+ animals.forEach(p => {
+   assert.ok(p.neurons > Math.max(...managers.map(m => m.neurons)));
+   assert.ok(p.score > Math.max(...managers.map(m => m.score)));
+   assert.equal(p.neuronScope, 'cortex');
+   assert.ok(fs.existsSync('site/' + p.portrait));
+ });
+ f.d.querySelector('[data-filter="animal"]').click();
+ assert.equal(f.d.querySelectorAll('#results tr').length, 3);
+ assert.equal(f.d.querySelectorAll('.animal-marker').length, 3);
+ f.close();
+ });

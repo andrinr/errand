@@ -31,3 +31,5 @@
 <dialog id="report-dialog" class="window"><div class="titlebar"><span>▤ &nbsp; incident_report.txt</span><button class="close" aria-label="Close incident report" data-close>×</button></div><div class="dialog-body"><div class="eyebrow">FICTIONAL INCIDENT REPORT</div><h2 id="report-title"></h2><pre id="report-text"></pre><button data-close>That sounds about right</button></div></dialog>
 <script src="app.js"></script><script src="chart.js"></script><script src="games.js"></script>
 </body></html>
+
+.animal-dot{display:inline-block;width:12px;height:12px;background:#a05a00;clip-path:polygon(50% 0,100% 100%,0 100%)}

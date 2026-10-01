@@ -659,7 +659,8 @@ const participants = [
       "consumables": 8400
     },
     "consumed": "Steak dinners · airport lounges · wine",
-    "portrait": "assets/people/person-2.svg"
+    "portrait": "assets/people/person-2.svg",
+    "satiricalNeurons": 1024000
   },
   {
     "name": "Legacy Systems Engineer",
@@ -695,7 +696,8 @@ const participants = [
       "consumables": 16800
     },
     "consumed": "Spa retreat · premium catering · chauffeur",
-    "portrait": "assets/people/person-4.svg"
+    "portrait": "assets/people/person-4.svg",
+    "satiricalNeurons": 512000
   },
   {
     "name": "VP of Engineering",
@@ -713,7 +715,8 @@ const participants = [
       "consumables": 42750
     },
     "consumed": "Business-class flights · tasting menu · suite",
-    "portrait": "assets/people/person-5.svg"
+    "portrait": "assets/people/person-5.svg",
+    "satiricalNeurons": 256000
   },
   {
     "name": "Product Manager",
@@ -731,7 +734,8 @@ const participants = [
     },
     "consumed": "37 sheets · ink · power",
     "role": "management",
-    "portrait": "assets/people/person-6.svg"
+    "portrait": "assets/people/person-6.svg",
+    "satiricalNeurons": 2048000
   },
   {
     "name": "Head of AI Transformation",
@@ -749,7 +753,8 @@ const participants = [
       "consumables": 68000
     },
     "consumed": "Luxury watches · launch dinner · executive suite",
-    "portrait": "assets/people/person-7.svg"
+    "portrait": "assets/people/person-7.svg",
+    "satiricalNeurons": 128000
   },
   {
     "name": "Fractional Chief Strategy Officer",
@@ -767,7 +772,8 @@ const participants = [
       "consumables": 127500
     },
     "consumed": "Yacht charter · caviar · consulting package",
-    "portrait": "assets/people/person-8.svg"
+    "portrait": "assets/people/person-8.svg",
+    "satiricalNeurons": 64000
   },
   {
     "name": "Chief Executive Officer",
@@ -785,7 +791,8 @@ const participants = [
       "consumables": 184500
     },
     "consumed": "Private jet · champagne · penthouse",
-    "portrait": "assets/people/person-9.svg"
+    "portrait": "assets/people/person-9.svg",
+    "satiricalNeurons": 32000
   },
   {
     "name": "Le Chaton-fat",
@@ -846,6 +853,63 @@ const participants = [
     "consumed": "1 sheet · ink · power",
     "family": "Le Chaton",
     "assumedParameters": 1000000000000.0
+  },
+  {
+    "name": "Office Cat",
+    "type": "animal",
+    "label": "Animal · no AI",
+    "score": 4,
+    "time": "01:00",
+    "accounts": 0,
+    "note": "Killed the process by sitting on Escape. Refused the fifth task.",
+    "report": "Killed the process by sitting on Escape. Refused the fifth task.\n\nCompleted: 4/5. Food and replacement supplies are included in the invoice.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 0,
+      "consumables": 1.2
+    },
+    "consumed": "Tuna · keyboard cleaning",
+    "portrait": "assets/animals/cat.svg",
+    "neurons": 250000000,
+    "neuronScope": "cortex"
+  },
+  {
+    "name": "IT Support Dog",
+    "type": "animal",
+    "label": "Animal · no AI",
+    "score": 3,
+    "time": "00:45",
+    "accounts": 0,
+    "note": "Retrieved the correct cable. No discovery meeting.",
+    "report": "Retrieved the correct cable. No discovery meeting.\n\nCompleted: 3/5. Food and replacement supplies are included in the invoice.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 0,
+      "consumables": 1.8
+    },
+    "consumed": "Training treats · replacement cable sleeve",
+    "portrait": "assets/animals/dog.svg",
+    "neurons": 530000000,
+    "neuronScope": "cortex"
+  },
+  {
+    "name": "Cable Management Ferret",
+    "type": "animal",
+    "label": "Animal · no AI",
+    "score": 2,
+    "time": "01:20",
+    "accounts": 0,
+    "note": "Found the loose connector. Removed three load-bearing cables.",
+    "report": "Found the loose connector. Removed three load-bearing cables.\n\nCompleted: 2/5. Food and replacement supplies are included in the invoice.",
+    "costs": {
+      "compute": 0,
+      "subscriptions": 0,
+      "consumables": 0.6
+    },
+    "consumed": "Kibble · two cable ties",
+    "portrait": "assets/animals/ferret.svg",
+    "neurons": 39000000,
+    "neuronScope": "cortex"
   }
 ];
 // FFN-unit proxy: assumed 80% FFN weights, gated MLP with three matrices,
@@ -854,7 +918,7 @@ const participants = [
 const estimateArtificialNeurons = parameters => parameters * 0.8 / (3 * 8192);
 const frontierNeuronEstimate = Math.max(...participants.filter(p => p.type === 'model' && p.family !== 'Le Chaton').map(p => estimateArtificialNeurons(p.assumedParameters)));
 participants.forEach(p => {
- p.neurons = p.type === 'human' ? 86e9 : p.effort === 'fat' ? 1000 * frontierNeuronEstimate : estimateArtificialNeurons(p.assumedParameters);
+ p.neurons = p.type === 'animal' ? p.neurons : p.type === 'human' ? (p.satiricalNeurons ?? 86e9) : p.effort === 'fat' ? 1000 * frontierNeuronEstimate : estimateArtificialNeurons(p.assumedParameters);
 });
 
 const totalCost = participant => Math.round(Object.values(participant.costs).reduce((sum, cost) => sum + cost, 0) * 100) / 100;
@@ -873,12 +937,12 @@ const tasks = [
 ];
 const companyIcons = {OpenAI:'openai',Anthropic:'anthropic',Google:'google',xAI:'xai',Meta:'meta',DeepSeek:'deepseek',Mistral:'mistral',Alibaba:'qwen'};
 const participantIcon = p => `<img class="participant-avatar ${p.type === 'human' ? 'portrait' : ''}" src="${p.portrait || 'assets/companies/' + companyIcons[p.company] + '.svg'}" alt="" width="36" height="40">`;
-const formatNeurons = count => `≈${count >= 1e9 ? +(count / 1e9).toFixed(1) + 'B' : +(count / 1e6).toFixed(1) + 'M'}`;
-const neuronDescription = p => p.type === 'human' ? 'Biological neurons: approximate whole-brain reference, not an individual measurement.' : p.effort === 'fat' ? 'Artificial FFN units: fictional 1,000× the largest frontier scenario estimate.' : `Artificial FFN units: scenario estimate from ${(p.assumedParameters / 1e12).toFixed(3)}T assumed parameters; architecture unverified. Not equivalent to biological neurons.`;
+const formatNeurons = count => `≈${count >= 1e9 ? +(count / 1e9).toFixed(1) + 'B' : count >= 1e6 ? +(count / 1e6).toFixed(1) + 'M' : +(count / 1e3).toFixed(1) + 'K'}`;
+const neuronDescription = p => p.type === 'animal' ? 'Biological neurons: approximate cerebral cortex count, not whole brain (Jardim-Messeder et al., 2017).' : p.satiricalNeurons ? 'Satirical management count; not a biological measurement.' : p.type === 'human' ? 'Biological neurons: approximate whole-brain reference, not an individual measurement.' : p.effort === 'fat' ? 'Artificial FFN units: fictional 1,000× the largest frontier scenario estimate.' : `Artificial FFN units: scenario estimate from ${(p.assumedParameters / 1e12).toFixed(3)}T assumed parameters; architecture unverified. Not equivalent to biological neurons.`;
 const results = document.querySelector('#results');
 function renderResults(filter='all') {
  const visible=participants.filter(p=>filter==='all'||p.type===filter||(filter==='engineering'&&p.role==='engineering')||(filter==='management'&&p.role==='management'));
- results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${participantIcon(p)}<span>${p.name}</span></button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${benchmarkScore(p).toFixed(1)}</b><span class="participant-type">${p.score}/${tasks.length} levels</span><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td class="neuron-count" title="${neuronDescription(p)}">${formatNeurons(p.neurons)}</td><td>${p.accounts}</td><td class="invoice-total"><b>${formatCost(totalCost(p))}</b><span class="participant-type">Compute ${formatCost(p.costs.compute)} · subscriptions ${formatCost(p.costs.subscriptions)} · goods/perks ${formatCost(p.costs.consumables)}</span></td><td class="consumed">${p.consumed}</td><td class="observation">${p.note}</td></tr>`}).join('');
+ results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${participantIcon(p)}<span>${p.name}</span></button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${benchmarkScore(p).toFixed(1)}</b><span class="participant-type">${p.score}/${tasks.length} levels</span><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td class="neuron-count" title="${neuronDescription(p)}">${formatNeurons(p.neurons)}${p.neuronScope ? '<span class="participant-type">cortex</span>' : ''}</td><td>${p.accounts}</td><td class="invoice-total"><b>${formatCost(totalCost(p))}</b><span class="participant-type">Compute ${formatCost(p.costs.compute)} · subscriptions ${formatCost(p.costs.subscriptions)} · goods/perks ${formatCost(p.costs.consumables)}</span></td><td class="consumed">${p.consumed}</td><td class="observation">${p.note}</td></tr>`}).join('');
  document.querySelector('#result-count').textContent=`${visible.length} participants`;
 }
 renderResults();

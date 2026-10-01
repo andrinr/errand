@@ -30,11 +30,11 @@
     svg += `<polyline points="${frontier.map(point => `${x(point.cost)},${y(point.performance)}`).join(' ')}" fill="none" stroke="#008000" stroke-width="2.5" stroke-dasharray="7 4" class="pareto-path"/>`;
     // Draw low performers first so frontier markers remain visible at crowded low costs.
     for (const point of [...points].sort((a, b) => a.performance - b.performance)) {
-      const px = x(point.cost), py = y(point.performance), color = point.role === 'management' ? '#800080' : point.type === 'human' ? '#008080' : familyColor(familyOf(point));
+      const px = x(point.cost), py = y(point.performance), color = point.role === 'management' ? '#800080' : point.type === 'animal' ? '#a05a00' : point.type === 'human' ? '#008080' : familyColor(familyOf(point));
       const label = `${point.name}: ${money(point.cost)}, ${point.performance.toFixed(1)} points${efficient.has(point.id) ? ', Pareto-efficient' : ''}`;
       svg += `<g class="plot-point ${efficient.has(point.id) ? 'efficient' : ''} ${selected === point.id ? 'selected' : ''}" data-point="${point.id}" tabindex="0" role="button" aria-label="${escape(label)}"><title>${escape(label)}</title><circle cx="${px}" cy="${py}" r="14" fill="transparent"/>`;
       if (efficient.has(point.id)) svg += `<circle cx="${px}" cy="${py}" r="10" fill="none" stroke="#008000" stroke-width="2"/>`;
-      svg += point.role === 'management' ? `<path d="M ${px} ${py - 7} l 7 7 l -7 7 l -7 -7 Z" fill="${color}" stroke="white"/>` : point.type === 'human' ? `<rect x="${px - 5}" y="${py - 5}" width="10" height="10" fill="${color}" stroke="white"/>` : `<circle cx="${px}" cy="${py}" r="5.5" fill="${color}" stroke="white"/>`;
+      svg += point.type === 'animal' ? `<path class="animal-marker" d="M ${px} ${py - 7} l 7 13 h -14 Z" fill="${color}" stroke="white"/>` : point.role === 'management' ? `<path d="M ${px} ${py - 7} l 7 7 l -7 7 l -7 -7 Z" fill="${color}" stroke="white"/>` : point.type === 'human' ? `<rect x="${px - 5}" y="${py - 5}" width="10" height="10" fill="${color}" stroke="white"/>` : `<circle cx="${px}" cy="${py}" r="5.5" fill="${color}" stroke="white"/>`;
       if (efficient.has(point.id)) svg += `<text x="${px + 13}" y="${py + (point.performance >= 900 ? -13 : -11)}" class="point-label">${escape(point.name)}</text>`;
       svg += '</g>';
     }
@@ -47,7 +47,7 @@
         path.setAttribute('stroke-width', active ? '3.5' : '1.8');
         path.setAttribute('stroke-opacity', active ? '1' : point.type === 'model' ? '0.18' : '0.6');
       });
-      detail.textContent = `${point.name} · ${point.performance.toFixed(1)} points · ${point.score}/5 levels · ${formatNeurons(point.neurons)} ${point.type === 'human' ? 'biological neurons' : 'artificial units (est.)'} · ${point.time} per attempt · ${money(point.cost)} total. Compute: ${money(point.costs.compute)}; accidental subscriptions: ${money(point.costs.subscriptions)}; consumables / goods / perks: ${money(point.costs.consumables)} (${point.consumed}).`;
+      detail.textContent = `${point.name} · ${point.performance.toFixed(1)} points · ${point.score}/5 levels · ${formatNeurons(point.neurons)} ${point.satiricalNeurons ? 'neurons (satirical)' : point.type === 'animal' ? 'cortical neurons' : point.type === 'human' ? 'biological neurons' : 'artificial units (est.)'} · ${point.time} per attempt · ${money(point.cost)} total. Compute: ${money(point.costs.compute)}; accidental subscriptions: ${money(point.costs.subscriptions)}; consumables / goods / perks: ${money(point.costs.consumables)} (${point.consumed}).`;
     };
     container.querySelectorAll('.plot-point').forEach(element => {
       element.onclick = () => show(Number(element.dataset.point));
