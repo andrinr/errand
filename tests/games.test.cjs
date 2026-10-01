@@ -326,6 +326,9 @@ test('management invoices include luxury spending and fit the cursed scale', () 
   f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
   f.d.querySelector('[data-filter="management"]').click();
   assert.equal(f.d.querySelectorAll('#results tr').length, 7);
+  const completions = [...f.d.querySelectorAll('#results .score .participant-type')].map(e => e.textContent);
+  assert.ok(completions.every(text => /^(1|2)\/7 levels$/.test(text)));
+  assert.equal(new Set(completions).size, 2);
   assert.match(f.d.querySelector('#results').textContent, /Private jet/);
   f.d.querySelector('[data-filter="engineering"]').click();
   assert.equal(f.d.querySelectorAll('#results tr').length, 3);
@@ -372,7 +375,7 @@ test('model effort lines join the correct points in preset order on the cursed s
   f.close();
 });
 
-test('human roles credit only hands-on engineers and include their AI assistance costs', () => {
+test('engineering roles include their AI assistance costs', () => {
   const f = fixture(0);
   f.w.eval(fs.readFileSync('site/app.js', 'utf8'));
   f.d.querySelector('[data-filter="engineering"]').click();
