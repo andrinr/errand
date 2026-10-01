@@ -271,7 +271,7 @@ test('leaderboard and Pareto plot always include every invoice component, with A
     assert.equal(Math.round((values[0] + values[1] + values[2]) * 100), Math.round(values[3] * 100));
     assert.equal(row.querySelector('.invoice-total b').textContent, cells[5].textContent);
     assert.ok(row.querySelector('.consumed').textContent.length > 0);
-    assert.match(row.querySelector('.participant-type').textContent, i < 32 ? /fictional LLM/ : /Human/);
+    assert.match(row.querySelector('.participant-type').textContent, i < 32 ? /LLM/ : /Human/);
   });
   const scores = rows.map(row => Number(row.querySelector('.score b').textContent.split('/')[0]));
   assert.ok(Math.min(...scores.slice(0, 32)) > Math.max(...scores.slice(32)));

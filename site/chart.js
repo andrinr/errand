@@ -29,7 +29,7 @@
     };
     document.querySelector('#axis-disclosure').textContent = disclosures[mode];
     document.querySelector('.plot-legend > span:last-child').textContent = mode === 'reverse' ? '↗ Lower cost, higher completion' : '↖ Lower cost, higher completion';
-    let svg = '<svg viewBox="0 0 720 365" role="group" aria-label="Fictional cost versus completion plot. Axis manipulation is disclosed above. Select a point for its full invoice."><rect x="70" y="60" width="580" height="240" fill="#fffff0" stroke="#888"/>';
+    let svg = '<svg viewBox="0 0 720 365" role="group" aria-label="Cost versus completion plot. Axis manipulation is disclosed above. Select a point for its full invoice."><rect x="70" y="60" width="580" height="240" fill="#fffff0" stroke="#888"/>';
     for (const tick of (mode === 'launch' ? [0, 80, 90, 95, 100] : [0, 20, 40, 60, 80, 100])) svg += `<line x1="70" x2="650" y1="${y(tick)}" y2="${y(tick)}" stroke="#d5d5c9" stroke-dasharray="2 4"/><text x="57" y="${y(tick) + 4}" text-anchor="end">${tick}%</text>`;
     const ticks = mode === 'vibes' ? costs.filter((_, i) => i % 3 === 0 || i === costs.length - 1) : [0, 1, 100, 10000, axisMax];
     for (const tick of ticks) svg += `<line x1="${x(tick)}" x2="${x(tick)}" y1="60" y2="300" stroke="#d5d5c9" stroke-dasharray="2 4"/><text x="${x(tick)}" y="321" text-anchor="middle">${money(tick)}</text>`;
@@ -73,7 +73,7 @@
   document.querySelector('#effort-comparisons').innerHTML = [...new Set(participants.filter(p => p.type === 'model').map(p => p.company))].map(company => {
     const variants = participants.filter(p => p.company === company).sort((a, b) => effortOrder.indexOf(a.effort) - effortOrder.indexOf(b.effort));
     const regresses = variants.some((p, i) => i > 0 && p.score < variants[i - 1].score);
-    return `<div class="effort-pair"><b>${escape(company)} parody</b><span>${variants.map(p => `${escape(p.effort)}: ${p.score}/5 · ${money(totalCost(p))}`).join(' → ')}</span><small>${regresses ? 'REGRESSION: more effort eventually completes fewer errands.' : 'PLATEAU: the invoice scales more reliably than the score.'}</small></div>`;
+    return `<div class="effort-pair"><b>${escape(company)}</b><span>${variants.map(p => `${escape(p.effort)}: ${p.score}/5 · ${money(totalCost(p))}`).join(' → ')}</span><small>${regresses ? 'REGRESSION: more effort eventually completes fewer errands.' : 'PLATEAU: the invoice scales more reliably than the score.'}</small></div>`;
   }).join('');
   const picker = document.querySelector('#plot-participant');
   picker.innerHTML = '<option value="">Inspect a participant…</option>' + participants.map((p, i) => `<option value="${i}">${escape(p.name)}</option>`).join('');
