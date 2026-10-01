@@ -22,13 +22,13 @@ Includes a filterable fictional leaderboard, eight incident reports, and five pl
 
 Games load immediately. **The clock starts on the first game action**, including selecting an option or collecting an item. There is no separate Start screen. Retry and switching games prepare a new attempt without starting the timer. Hints and optional sound controls do not start it.
 
-**Cursed office** adds tighter timers and interruptions: 75 seconds for the first three games, 120 for the blue-screen adventure, and 150 for the infected desktop. **Practice** gives 120 seconds (180 for the infected desktop) and fewer interruptions. Every game is solvable in both modes.
+**Cursed office** adds tighter timers and interruptions: 75 seconds for printer and email, 120 for HDMI and the blue-screen adventure, and 150 for the infected desktop. **Practice** gives 120 seconds (180 for the infected desktop) and fewer interruptions. Every game is solvable in both modes.
 
 Shared feedback includes optional synthesized sound, animated errors, progress bars, shaking mistakes, trap/action counts, hints, receipts, and next-game navigation. Wins are tracked separately per difficulty for the current page visit. No real printers, accounts, files, or operating-system settings are touched.
 
 ## Cost vs. performance
 
-The interactive scatter plot uses hand-authored fictional costs and scores. It marks the nondominated cost/completion Pareto frontier. The leaderboard and plot share one invoice: compute, accidental subscription charges, and consumables are always included, including failed attempts. Triggered subscription charges count in full; consumables include paper, ink, power, and coffee. Labor and hardware are excluded. Fictional AI participants complete more tasks than every human participant; ranking uses completion followed by lowest total cost. Point selection shows an invoice breakdown; an accessible data table includes all values. This is parody data, not real model pricing or performance.
+The interactive scatter plot uses hand-authored fictional costs and scores. It marks the nondominated cost/score Pareto frontier. The leaderboard and plot share one invoice: compute, accidental subscription charges, and consumables are always included, including failed attempts. Triggered subscription charges count in full; consumables include paper, ink, power, and coffee. Labor and hardware are excluded. Fictional AI participants complete more tasks than every human participant; ranking uses the combined level-and-speed score followed by lowest total cost. Point selection shows an invoice breakdown; an accessible data table includes all values. This is parody data, not real model pricing or performance.
 
 ## Validation
 
@@ -50,8 +50,10 @@ GitHub Actions deploys `site/` to GitHub Pages on pushes to `main` or a manual w
 
 Real evaluation would need reproducible environments, permitted actions, fixed time limits, repeated trials, verified outcomes, documented model versions, and separate human baselines. None of those exist yet. Synthetic results must remain labeled until replaced by measured data.
 
-Company satire uses real company names with explicitly invented model names, effort presets, and results. 32 fictional AI entries span eight company parodies and four effort variants each, alongside four humans. All eight effort ladders include a regression. An invoice picker keeps crowded chart points accessible. Chart modes deliberately warp completion, reverse cost, or equally space invoice ranks; disclosures explain each trick. Restore reality returns to fixed axes. Full invoices and raw-data Pareto membership never change.
+Company satire uses real company names with explicitly invented model names, effort presets, and results. 32 fictional AI entries span eight company parodies and four effort variants each, alongside four humans. All eight effort ladders include a regression. An invoice picker keeps crowded chart points accessible. The single cursed cost scale changes its mapping across three labeled segments. Full invoices and raw-data Pareto membership never change.
 
-Six fictional executives and managers join the four other humans. Their luxury goods, travel, retreats, consulting purchases, and subscriptions count in full; salaries and hardware remain excluded. Management has a dedicated filter and purple diamond chart markers. The log axis expands to fit every full invoice and keeps the same extent across graph modes.
+Six fictional executives and managers join the four other humans. Their luxury goods, travel, retreats, consulting purchases, and subscriptions count in full; salaries and hardware remain excluded. Management has a dedicated filter and purple diamond chart markers. The cost axis expands to fit every full invoice.
 
-Each model family has a colored line connecting its four presets in increasing effort order. Lines follow the active axis transform; selecting a model highlights its series. The dashed green Pareto frontier remains separate.
+Each model family has a colored line connecting its four presets in increasing effort order. Lines follow the cursed axis transform; selecting a model highlights its series. The dashed green Pareto frontier remains separate.
+
+The current ranking uses a 0–1000 errand score: 180 × completed levels + (levels / 5) × 100 / (1 + average attempt seconds / 120). Speed separates equal completion counts; zero completion gives zero score. Chart and Pareto use this same score. The axis selector has been replaced by a continuous cost axis: linear $0–1, logarithmic $1–100, and normalized exponential above $100. All invoices remain fully included.

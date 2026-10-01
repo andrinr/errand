@@ -4,7 +4,6 @@
   const detail = document.querySelector('#plot-detail');
   const money = value => `$${value.toFixed(2)}`;
   const escape = value => String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
-  const modeControl = document.querySelector('#axis-mode');
   const effortOrder = ['low', 'medium', 'high', 'xhigh', 'ultra', 'max', 'unhinged'];
   const familyOf = point => point.type === 'model' ? point.name.split(' / ')[0] : '';
   const families = [...new Set(participants.filter(p => p.type === 'model').map(familyOf))];
@@ -12,28 +11,18 @@
   const familyColor = family => palette[families.indexOf(family) % palette.length];
   let selected = null;
   function render() {
-    const points = participants.map((participant, i) => ({ ...participant, id: i, cost: totalCost(participant), performance: participant.score / tasks.length * 100 }));
+    const points = participants.map((participant, i) => ({ ...participant, id: i, cost: totalCost(participant), performance: benchmarkScore(participant) }));
     const frontier = points.filter(point => !points.some(other => other.id !== point.id && other.cost <= point.cost && other.performance >= point.performance && (other.cost < point.cost || other.performance > point.performance))).sort((a, b) => a.cost - b.cost);
     const efficient = new Set(frontier.map(p => p.id));
-    const mode = modeControl.value;
-    const axisMax = 10 ** Math.ceil(Math.log10(Math.max(150, ...points.map(p => p.cost))));
-    const logX = value => Math.log10(1 + value) / Math.log10(1 + axisMax);
-    const costs = [...new Set(points.map(p => p.cost))].sort((a, b) => a - b);
-    const x = value => 70 + (mode === 'reverse' ? 1 - logX(value) : mode === 'vibes' ? costs.indexOf(value) / (costs.length - 1) : logX(value)) * 580;
-    const y = value => 300 - (mode === 'launch' ? Math.pow(value / 100, 8) : value / 100) * 240;
-    const disclosures = {
-      honest: 'Fixed axes. Full invoice. No gradient was harmed to improve this result.',
-      launch: 'AXIS TRICK: completion is raised to the 8th power. 80% lands at 16.8% of the chart height. Scores are unchanged. The gap has a launch budget.',
-      reverse: 'AXIS TRICK: cost runs backwards. Expensive models move left. Lower cost is now RIGHT. The invoice has not decreased.',
-      vibes: 'AXIS TRICK: invoices are equally spaced by rank, regardless of dollar gaps. Distance has no monetary meaning. npm install credibility.'
-    };
-    document.querySelector('#axis-disclosure').textContent = disclosures[mode];
-    document.querySelector('.plot-legend > span:last-child').textContent = mode === 'reverse' ? '↗ Lower cost, higher completion' : '↖ Lower cost, higher completion';
-    let svg = '<svg viewBox="0 0 720 365" role="group" aria-label="Cost versus completion plot. Axis manipulation is disclosed above. Select a point for its full invoice."><rect x="70" y="60" width="580" height="240" fill="#fffff0" stroke="#888"/>';
-    for (const tick of (mode === 'launch' ? [0, 80, 90, 95, 100] : [0, 20, 40, 60, 80, 100])) svg += `<line x1="70" x2="650" y1="${y(tick)}" y2="${y(tick)}" stroke="#d5d5c9" stroke-dasharray="2 4"/><text x="57" y="${y(tick) + 4}" text-anchor="end">${tick}%</text>`;
-    const ticks = mode === 'vibes' ? costs.filter((_, i) => i % 3 === 0 || i === costs.length - 1) : [0, 1, 100, 10000, axisMax];
-    for (const tick of ticks) svg += `<line x1="${x(tick)}" x2="${x(tick)}" y1="60" y2="300" stroke="#d5d5c9" stroke-dasharray="2 4"/><text x="${x(tick)}" y="321" text-anchor="middle">${money(tick)}</text>`;
-    svg += `<text x="70" y="29" class="axis-title">${mode === 'launch' ? 'Completion ↑ (warped: eighth-power scale)' : 'Errands completed ↑'}</text><text x="360" y="350" text-anchor="middle" class="axis-title">${mode === 'vibes' ? 'Invoice rank → (NOT proportional to cost)' : mode === 'reverse' ? '← Cost per attempt (US$, reversed log scale)' : 'Cost per attempt → (US$, log scale)'}</text>`;
+    const axisMax = Math.max(200, Math.ceil(Math.max(...points.map(p => p.cost)) / 10000) * 10000);
+    // Continuous, strictly increasing segments; the budget committee changed units twice.
+    const x = value => 70 + 580 * (value <= 1 ? .35 * value : value <= 100 ? .35 + .35 * Math.log10(value) / 2 : .70 + .30 * Math.expm1(3 * (value - 100) / (axisMax - 100)) / Math.expm1(3));
+    const y = value => 300 - value / 1000 * 240;
+    let svg = '<svg viewBox="0 0 720 390" role="group" aria-label="Cost versus errand score. Cost axis switches from linear to logarithmic to exponential. Select a point for its invoice."><rect x="70" y="60" width="580" height="240" fill="#fffff0" stroke="#888"/>';
+    for (const tick of [0, 200, 400, 600, 800, 1000]) svg += `<line x1="70" x2="650" y1="${y(tick)}" y2="${y(tick)}" stroke="#d5d5c9" stroke-dasharray="2 4"/><text x="57" y="${y(tick) + 4}" text-anchor="end">${tick}</text>`;
+    for (const tick of [0, .5, 1, 10, 100, axisMax / 2, axisMax]) svg += `<line x1="${x(tick)}" x2="${x(tick)}" y1="60" y2="300" stroke="#d5d5c9" stroke-dasharray="2 4"/><text x="${x(tick)}" y="321" text-anchor="middle">${tick >= 1000 ? '$' + Math.round(tick / 1000) + 'k' : '$' + tick}</text>`;
+    for (const boundary of [1, 100]) svg += `<line x1="${x(boundary)}" x2="${x(boundary)}" y1="48" y2="300" stroke="#b06000" stroke-dasharray="4 3"/>`;
+    svg += '<text x="70" y="22" class="axis-title">Errand score ↑ (levels + speed)</text><text x="170" y="48" text-anchor="middle">LINEAR</text><text x="375" y="48" text-anchor="middle">LOGARITHMIC</text><text x="570" y="48" text-anchor="middle">EXPONENTIAL</text><text x="360" y="352" text-anchor="middle" class="axis-title">Total cost → (US$, three incompatible opinions)</text><text x="360" y="376" text-anchor="middle">$0–1: linear · $1–100: log · $100+: exponential</text>';
     for (const family of families) {
       const variants = points.filter(p => familyOf(p) === family).sort((a, b) => effortOrder.indexOf(a.effort) - effortOrder.indexOf(b.effort));
       svg += `<polyline class="effort-path" data-family="${escape(family)}" data-point-ids="${variants.map(p => p.id).join(',')}" points="${variants.map(p => `${x(p.cost)},${y(p.performance)}`).join(' ')}" fill="none" stroke="${familyColor(family)}" stroke-width="1.8" stroke-opacity="0.6" pointer-events="none"><title>${escape(family)}: ${variants.map(p => escape(p.effort)).join(' → ')} (increasing effort)</title></polyline>`;
@@ -42,11 +31,11 @@
     // Draw low performers first so frontier markers remain visible at crowded low costs.
     for (const point of [...points].sort((a, b) => a.performance - b.performance)) {
       const px = x(point.cost), py = y(point.performance), color = point.role === 'management' ? '#800080' : point.type === 'human' ? '#008080' : familyColor(familyOf(point));
-      const label = `${point.name}: ${money(point.cost)}, ${point.performance.toFixed(0)}% completion${efficient.has(point.id) ? ', Pareto-efficient' : ''}`;
+      const label = `${point.name}: ${money(point.cost)}, ${point.performance.toFixed(1)} points${efficient.has(point.id) ? ', Pareto-efficient' : ''}`;
       svg += `<g class="plot-point ${efficient.has(point.id) ? 'efficient' : ''} ${selected === point.id ? 'selected' : ''}" data-point="${point.id}" tabindex="0" role="button" aria-label="${escape(label)}"><title>${escape(label)}</title><circle cx="${px}" cy="${py}" r="14" fill="transparent"/>`;
       if (efficient.has(point.id)) svg += `<circle cx="${px}" cy="${py}" r="10" fill="none" stroke="#008000" stroke-width="2"/>`;
       svg += point.role === 'management' ? `<path d="M ${px} ${py - 7} l 7 7 l -7 7 l -7 -7 Z" fill="${color}" stroke="white"/>` : point.type === 'human' ? `<rect x="${px - 5}" y="${py - 5}" width="10" height="10" fill="${color}" stroke="white"/>` : `<circle cx="${px}" cy="${py}" r="5.5" fill="${color}" stroke="white"/>`;
-      if (efficient.has(point.id)) svg += `<text x="${px + 13}" y="${py + (point.performance === 100 ? -13 : -11)}" class="point-label">${escape(point.name)}</text>`;
+      if (efficient.has(point.id)) svg += `<text x="${px + 13}" y="${py + (point.performance >= 900 ? -13 : -11)}" class="point-label">${escape(point.name)}</text>`;
       svg += '</g>';
     }
     svg += '</svg>'; container.innerHTML = svg;
@@ -58,7 +47,7 @@
         path.setAttribute('stroke-width', active ? '3.5' : '1.8');
         path.setAttribute('stroke-opacity', active ? '1' : point.type === 'model' ? '0.18' : '0.6');
       });
-      detail.textContent = `${point.name} · ${point.performance.toFixed(0)}% complete · ${money(point.cost)} total. Compute: ${money(point.costs.compute)}; accidental subscriptions: ${money(point.costs.subscriptions)}; consumables / goods / perks: ${money(point.costs.consumables)} (${point.consumed}). Every charge counts, including failed attempts.`;
+      detail.textContent = `${point.name} · ${point.performance.toFixed(1)} points · ${point.score}/5 levels · ${point.time} per attempt · ${money(point.cost)} total. Compute: ${money(point.costs.compute)}; accidental subscriptions: ${money(point.costs.subscriptions)}; consumables / goods / perks: ${money(point.costs.consumables)} (${point.consumed}). Every charge counts, including failed attempts.`;
     };
     container.querySelectorAll('.plot-point').forEach(element => {
       element.onclick = () => show(Number(element.dataset.point));
@@ -66,19 +55,17 @@
     });
     document.querySelector('#frontier-summary').textContent = `Pareto frontier: ${frontier.map(point => point.name).join(' → ')}. Billing is a side effect. Side effects count.`;
     document.querySelector('#invoice-status').textContent = 'Invoice: subscriptions + consumables always included';
-    document.querySelector('#cost-data').innerHTML = points.map(point => `<tr><td>${escape(point.name)}</td><td>${point.performance.toFixed(0)}%</td><td>${money(point.costs.compute)}</td><td>${money(point.costs.subscriptions)}</td><td>${money(point.costs.consumables)}</td><td>${money(point.cost)}</td></tr>`).join('');
+    document.querySelector('#cost-data').innerHTML = points.map(point => `<tr><td>${escape(point.name)}</td><td>${point.performance.toFixed(1)}</td><td>${money(point.costs.compute)}</td><td>${money(point.costs.subscriptions)}</td><td>${money(point.costs.consumables)}</td><td>${money(point.cost)}</td></tr>`).join('');
     if (selected !== null) show(selected);
   }
   document.querySelector('#effort-legend').innerHTML = families.map(family => `<span><i style="border-color:${familyColor(family)}"></i>${escape(family)}</span>`).join('');
   document.querySelector('#effort-comparisons').innerHTML = [...new Set(participants.filter(p => p.type === 'model').map(p => p.company))].map(company => {
     const variants = participants.filter(p => p.company === company).sort((a, b) => effortOrder.indexOf(a.effort) - effortOrder.indexOf(b.effort));
     const regresses = variants.some((p, i) => i > 0 && p.score < variants[i - 1].score);
-    return `<div class="effort-pair"><b>${escape(company)}</b><span>${variants.map(p => `${escape(p.effort)}: ${p.score}/5 · ${money(totalCost(p))}`).join(' → ')}</span><small>${regresses ? 'REGRESSION: more effort eventually completes fewer errands.' : 'PLATEAU: the invoice scales more reliably than the score.'}</small></div>`;
+    return `<div class="effort-pair"><b>${escape(company)}</b><span>${variants.map(p => `${escape(p.effort)}: ${benchmarkScore(p).toFixed(1)} pts · ${money(totalCost(p))}`).join(' → ')}</span><small>${regresses ? 'REGRESSION: more effort eventually completes fewer errands.' : 'PLATEAU: the invoice scales more reliably than the score.'}</small></div>`;
   }).join('');
   const picker = document.querySelector('#plot-participant');
   picker.innerHTML = '<option value="">Inspect a participant…</option>' + participants.map((p, i) => `<option value="${i}">${escape(p.name)}</option>`).join('');
   picker.addEventListener('change', () => { selected = picker.value === '' ? null : Number(picker.value); render(); if (selected === null) detail.textContent = 'Select a participant to inspect the invoice.'; });
-  modeControl.addEventListener('change', render);
-  document.querySelector('#reset-axes').addEventListener('click', () => { modeControl.value = 'honest'; render(); });
   render();
 })();

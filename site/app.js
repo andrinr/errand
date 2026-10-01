@@ -743,6 +743,11 @@ const participants = [
   }
 ];
 const totalCost = participant => Math.round(Object.values(participant.costs).reduce((sum, cost) => sum + cost, 0) * 100) / 100;
+const benchmarkScore = participant => {
+ const [minutes, seconds] = participant.time.split(':').map(Number);
+ return Math.round((180 * participant.score + (participant.score / 5) * 100 / (1 + (minutes * 60 + seconds) / 120)) * 10) / 10;
+};
+participants.sort((a, b) => benchmarkScore(b) - benchmarkScore(a) || totalCost(a) - totalCost(b));
 const formatCost = value => `$${value.toFixed(2)}`;
 const tasks = [
  ['01','▣','Just Print It','One page. Black and white. On the printer in this room.','Requires: cyan. Somehow.'],
@@ -754,7 +759,7 @@ const tasks = [
 const results = document.querySelector('#results');
 function renderResults(filter='all') {
  const visible=participants.filter(p=>filter==='all'||p.type===filter||(filter==='management'&&p.role==='management'));
- results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${p.name}</button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${p.score}/${tasks.length}</b><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td>${p.accounts}</td><td class="invoice-total"><b>${formatCost(totalCost(p))}</b><span class="participant-type">Compute ${formatCost(p.costs.compute)} · subscriptions ${formatCost(p.costs.subscriptions)} · goods/perks ${formatCost(p.costs.consumables)}</span></td><td class="consumed">${p.consumed}</td><td class="observation">${p.note}</td></tr>`}).join('');
+ results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${p.name}</button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${benchmarkScore(p).toFixed(1)}</b><span class="participant-type">${p.score}/${tasks.length} levels</span><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td>${p.accounts}</td><td class="invoice-total"><b>${formatCost(totalCost(p))}</b><span class="participant-type">Compute ${formatCost(p.costs.compute)} · subscriptions ${formatCost(p.costs.subscriptions)} · goods/perks ${formatCost(p.costs.consumables)}</span></td><td class="consumed">${p.consumed}</td><td class="observation">${p.note}</td></tr>`}).join('');
  document.querySelector('#result-count').textContent=`${visible.length} participants`;
 }
 renderResults();

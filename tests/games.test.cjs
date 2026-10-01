@@ -254,8 +254,8 @@ test('leaderboard and Pareto plot always include every invoice component, with A
   f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
   assert.equal(f.d.querySelector('#include-subscriptions'), null);
   const frontier = [...f.d.querySelectorAll('.plot-point.efficient')].map(el => Number(el.dataset.point)).sort();
-  assert.equal(frontier.length, 2);
-  assert.match(f.d.querySelector('#frontier-summary').textContent, /Gemini Tab Ultra \/ low → GPT-Paperclip \/ low/);
+  assert.ok(frontier.length >= 2);
+
   const rows = [...f.d.querySelectorAll('#results tr')];
   const costs = [...f.d.querySelectorAll('#cost-data tr')];
   assert.equal(rows.length, 42);
@@ -283,33 +283,33 @@ test('leaderboard and Pareto plot always include every invoice component, with A
   f.close();
 });
 
-test('axis tricks change geometry without changing invoices or Pareto membership', () => {
+test('combined scores reward speed within a level and Pareto uses full raw values', () => {
   const f = fixture(0);
   f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
-  const mode = f.d.querySelector('#axis-mode');
-  const data = f.d.querySelector('#cost-data').innerHTML;
-  const path = () => f.d.querySelector('.pareto-path').getAttribute('points');
-  const original = path();
-  const efficient = () => [...f.d.querySelectorAll('.efficient')].map(p => p.dataset.point).sort();
-  const originalFrontier = efficient();
-  for (const value of ['launch', 'reverse', 'vibes']) {
-    mode.value = value;
-    mode.dispatchEvent(new f.w.Event('change'));
-    assert.notEqual(path(), original);
-    assert.equal(f.d.querySelector('#cost-data').innerHTML, data);
-    assert.deepEqual(efficient(), originalFrontier);
-    assert.match(f.d.querySelector('#axis-disclosure').textContent, /AXIS TRICK/);
-    assert.doesNotMatch(f.d.querySelector('#cost-plot').innerHTML, /NaN|Infinity/);
+  assert.equal(f.d.querySelector('#axis-mode'), null);
+  assert.equal(f.d.querySelector('#reset-axes'), null);
+  const rows = [...f.d.querySelectorAll('#results tr')];
+  const points = rows.map((row, id) => ({ id, score: Number(row.querySelector('.score b').textContent), levels: Number(row.querySelector('.score .participant-type').textContent.split('/')[0]), cost: Number(row.querySelector('.invoice-total b').textContent.slice(1)), time: row.children[3].textContent.split(':').map(Number).reduce((m, v) => m * 60 + v, 0) }));
+  for (const point of points) {
+    assert.ok(point.score >= point.levels * 180 && point.score <= point.levels * 200);
+    if (!point.levels) assert.equal(point.score, 0);
+    for (const other of points) if (point.levels === other.levels && point.levels > 0 && point.time < other.time) assert.ok(point.score > other.score);
+    assert.equal(Number(f.d.querySelectorAll('#cost-data tr')[point.id].children[1].textContent), point.score);
   }
-  f.d.querySelector('#reset-axes').click();
-  assert.equal(mode.value, 'honest');
-  assert.equal(path(), original);
-  assert.equal(f.d.querySelectorAll('.effort-pair').length, 8);
-  assert.equal((f.d.querySelector('#effort-comparisons').textContent.match(/REGRESSION/g) || []).length, 8);
+  assert.ok(new Set(points.slice(0, 32).map(p => p.score)).size > 20);
+  const expected = points.filter(p => !points.some(q => q.cost <= p.cost && q.score >= p.score && (q.cost < p.cost || q.score > p.score))).map(p => p.id).sort((a,b) => a-b);
+  assert.deepEqual([...f.d.querySelectorAll('.efficient')].map(p => Number(p.dataset.point)).sort((a,b) => a-b), expected);
+  const byCost = [...points].sort((a,b) => a.cost-b.cost);
+  let previous = -Infinity;
+  for (const point of byCost) {
+    const x = Number(f.d.querySelector(`[data-point="${point.id}"] circle`).getAttribute('cx'));
+    assert.ok(x >= previous); previous = x;
+  }
+  assert.match(f.d.querySelector('#cost-plot').textContent, /LINEAR.*LOGARITHMIC.*EXPONENTIAL/);
   f.close();
 });
 
-test('management invoices include luxury spending and fit every chart mode', () => {
+test('management invoices include luxury spending and fit the cursed scale', () => {
   const f = fixture(0);
   f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
   f.d.querySelector('[data-filter="management"]').click();
@@ -321,9 +321,7 @@ test('management invoices include luxury spending and fit every chart mode', () 
   picker.value = [...picker.options].find(o => o.textContent === 'Chief Executive Bottleneck').value;
   picker.dispatchEvent(new f.w.Event('change'));
   assert.match(f.d.querySelector('#plot-detail').textContent, /\$186999\.00 total/);
-  const mode = f.d.querySelector('#axis-mode');
-  for (const value of ['honest', 'launch', 'reverse', 'vibes']) {
-    mode.value = value; mode.dispatchEvent(new f.w.Event('change'));
+  {
     for (const point of f.d.querySelectorAll('.plot-point')) {
       const hit = point.querySelector('circle');
       const x = Number(hit.getAttribute('cx')), y = Number(hit.getAttribute('cy'));
@@ -333,14 +331,12 @@ test('management invoices include luxury spending and fit every chart mode', () 
   f.close();
 });
 
-test('model effort lines join the correct points in preset order in every axis mode', () => {
+test('model effort lines join the correct points in preset order on the cursed scale', () => {
   const f = fixture(0);
   f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
-  const mode = f.d.querySelector('#axis-mode');
   const names = [...f.d.querySelector('#plot-participant').options].slice(1).map(o => o.textContent);
   const order = ['low', 'medium', 'high', 'xhigh', 'ultra', 'max', 'unhinged'];
-  for (const value of ['honest', 'launch', 'reverse', 'vibes']) {
-    mode.value = value; mode.dispatchEvent(new f.w.Event('change'));
+  {
     const lines = [...f.d.querySelectorAll('.effort-path')];
     assert.equal(lines.length, 8);
     for (const line of lines) {
