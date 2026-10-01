@@ -473,3 +473,12 @@ test('neuron estimates share a human reference, preserve architecture across eff
  assert.equal(f.d.querySelectorAll('.animal-marker').length, 3);
  f.close();
  });
+
+test('shipped stylesheet contains CSS instead of an HTML document', () => {
+ const css = fs.readFileSync('site/style.css', 'utf8');
+ assert.doesNotMatch(css, /<!doctype|<html|<script/i);
+ const dom = new JSDOM('<style>' + css + '</style><body></body>');
+ assert.ok(dom.window.document.styleSheets[0].cssRules.length > 20);
+ assert.equal(dom.window.getComputedStyle(dom.window.document.body).margin, '0px');
+ dom.window.close();
+});
