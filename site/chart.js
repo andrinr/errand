@@ -41,7 +41,7 @@
     }
     svg += '</svg>'; container.innerHTML = svg;
     const show = id => {
-      selected = id; const point = points[id];
+      selected = id; document.querySelector('#plot-participant').value = String(id); const point = points[id];
       container.querySelectorAll('.plot-point').forEach(el => el.classList.toggle('selected', Number(el.dataset.point) === id));
       detail.textContent = `${point.name} · ${point.performance.toFixed(0)}% complete · ${money(point.cost)} total. Compute: ${money(point.costs.compute)}; accidental subscriptions: ${money(point.costs.subscriptions)}; consumables: ${money(point.costs.consumables)} (${point.consumed}). Every charge counts, including failed attempts.`;
     };
@@ -54,12 +54,15 @@
     document.querySelector('#cost-data').innerHTML = points.map(point => `<tr><td>${escape(point.name)}</td><td>${point.performance.toFixed(0)}%</td><td>${money(point.costs.compute)}</td><td>${money(point.costs.subscriptions)}</td><td>${money(point.costs.consumables)}</td><td>${money(point.cost)}</td></tr>`).join('');
     if (selected !== null) show(selected);
   }
+  const effortOrder = ['low', 'medium', 'high', 'xhigh', 'ultra', 'max', 'unhinged'];
   document.querySelector('#effort-comparisons').innerHTML = [...new Set(participants.filter(p => p.type === 'model').map(p => p.company))].map(company => {
-    const pair = participants.filter(p => p.company === company);
-    const ordered = pair.sort((a, b) => a.costs.compute - b.costs.compute);
-    const [low, high] = ordered;
-    return `<div class="effort-pair"><b>${escape(company)} parody</b><span>${escape(low.effort)}: ${low.score}/5 · ${money(totalCost(low))} → ${escape(high.effort)}: ${high.score}/5 · ${money(totalCost(high))}</span><small>${high.score < low.score ? 'REGRESSION: more compute, fewer completed errands.' : 'SCALING CONFIRMED: one extra errand. Please ignore the invoice.'}</small></div>`;
+    const variants = participants.filter(p => p.company === company).sort((a, b) => effortOrder.indexOf(a.effort) - effortOrder.indexOf(b.effort));
+    const regresses = variants.some((p, i) => i > 0 && p.score < variants[i - 1].score);
+    return `<div class="effort-pair"><b>${escape(company)} parody</b><span>${variants.map(p => `${escape(p.effort)}: ${p.score}/5 · ${money(totalCost(p))}`).join(' → ')}</span><small>${regresses ? 'REGRESSION: more effort eventually completes fewer errands.' : 'PLATEAU: the invoice scales more reliably than the score.'}</small></div>`;
   }).join('');
+  const picker = document.querySelector('#plot-participant');
+  picker.innerHTML = '<option value="">Inspect a participant…</option>' + participants.map((p, i) => `<option value="${i}">${escape(p.name)}</option>`).join('');
+  picker.addEventListener('change', () => { selected = picker.value === '' ? null : Number(picker.value); render(); if (selected === null) detail.textContent = 'Select a participant to inspect the invoice.'; });
   modeControl.addEventListener('change', render);
   document.querySelector('#reset-axes').addEventListener('click', () => { modeControl.value = 'honest'; render(); });
   render();

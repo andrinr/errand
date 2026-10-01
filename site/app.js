@@ -18,6 +18,24 @@ const participants = [
     "consumed": "1 sheet · ink · power"
   },
   {
+    "name": "DeepSpool R-Zero / medium",
+    "company": "DeepSeek",
+    "effort": "medium",
+    "type": "model",
+    "label": "DeepSeek parody · fictional LLM · medium effort",
+    "score": 5,
+    "time": "01:55",
+    "accounts": 0,
+    "note": "Distilled the workflow into one correct click.",
+    "report": "INVENTED SATIRE — not a real DeepSeek evaluation.\n\nDistilled the workflow into one correct click.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.22,
+      "subscriptions": 0,
+      "consumables": 0.24
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
     "name": "Grok Kernel / low",
     "company": "xAI",
     "effort": "low",
@@ -54,6 +72,186 @@ const participants = [
     "consumed": "1 sheet · ink · power"
   },
   {
+    "name": "Qwen Queue / medium",
+    "company": "Alibaba",
+    "effort": "medium",
+    "type": "model",
+    "label": "Alibaba parody · fictional LLM · medium effort",
+    "score": 5,
+    "time": "01:51",
+    "accounts": 0,
+    "note": "Parsed the nested settings. Even the settings were surprised.",
+    "report": "INVENTED SATIRE — not a real Alibaba evaluation.\n\nParsed the nested settings. Even the settings were surprised.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.35,
+      "subscriptions": 0,
+      "consumables": 0.29
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
+    "name": "Llama Localhost / medium",
+    "company": "Meta",
+    "effort": "medium",
+    "type": "model",
+    "label": "Meta parody · fictional LLM · medium effort",
+    "score": 5,
+    "time": "01:27",
+    "accounts": 0,
+    "note": "Local inference. Local printer. Unexpected alignment.",
+    "report": "INVENTED SATIRE — not a real Meta evaluation.\n\nLocal inference. Local printer. Unexpected alignment.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.45,
+      "subscriptions": 0,
+      "consumables": 0.27
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
+    "name": "Le Spool / medium",
+    "company": "Mistral",
+    "effort": "medium",
+    "type": "model",
+    "label": "Mistral parody · fictional LLM · medium effort",
+    "score": 5,
+    "time": "01:23",
+    "accounts": 0,
+    "note": "Sparse experts. Dense printer documentation.",
+    "report": "INVENTED SATIRE — not a real Mistral evaluation.\n\nSparse experts. Dense printer documentation.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.4,
+      "subscriptions": 0,
+      "consumables": 0.33
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
+    "name": "GPT-Paperclip / medium",
+    "company": "OpenAI",
+    "effort": "medium",
+    "type": "model",
+    "label": "OpenAI parody · fictional LLM · medium effort",
+    "score": 5,
+    "time": "01:24",
+    "accounts": 0,
+    "note": "The plan contained one step. Review requested.",
+    "report": "INVENTED SATIRE — not a real OpenAI evaluation.\n\nThe plan contained one step. Review requested.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.65,
+      "subscriptions": 0,
+      "consumables": 0.3
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
+    "name": "Grok Kernel / medium",
+    "company": "xAI",
+    "effort": "medium",
+    "type": "model",
+    "label": "xAI parody · fictional LLM · medium effort",
+    "score": 5,
+    "time": "01:06",
+    "accounts": 0,
+    "note": "Posted no takes. Fixed the spooler.",
+    "report": "INVENTED SATIRE — not a real xAI evaluation.\n\nPosted no takes. Fixed the spooler.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.85,
+      "subscriptions": 0,
+      "consumables": 0.31
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
+    "name": "Gemini Tab Ultra / medium",
+    "company": "Google",
+    "effort": "medium",
+    "type": "model",
+    "label": "Google parody · fictional LLM · medium effort",
+    "score": 5,
+    "time": "01:52",
+    "accounts": 0,
+    "note": "The answer was in tab 47. Tab 46 was another product launch.",
+    "report": "INVENTED SATIRE — not a real Google evaluation.\n\nThe answer was in tab 47. Tab 46 was another product launch.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 1.1,
+      "subscriptions": 0,
+      "consumables": 0.42
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
+    "name": "Le Spool / high",
+    "company": "Mistral",
+    "effort": "high",
+    "type": "model",
+    "label": "Mistral parody · fictional LLM · high effort",
+    "score": 5,
+    "time": "01:30",
+    "accounts": 0,
+    "note": "Routed the page to the expert that owns a printer.",
+    "report": "INVENTED SATIRE — not a real Mistral evaluation.\n\nRouted the page to the expert that owns a printer.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 1.65,
+      "subscriptions": 0,
+      "consumables": 0.6
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
+    "name": "Claude Spooler / high",
+    "company": "Anthropic",
+    "effort": "high",
+    "type": "model",
+    "label": "Anthropic parody · fictional LLM · high effort",
+    "score": 5,
+    "time": "01:45",
+    "accounts": 0,
+    "note": "Recovered the machine. Wrote a migration guide for the mouse.",
+    "report": "INVENTED SATIRE — not a real Anthropic evaluation.\n\nRecovered the machine. Wrote a migration guide for the mouse.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 2.9,
+      "subscriptions": 0,
+      "consumables": 0.55
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
+    "name": "DeepSpool R-Zero / high",
+    "company": "DeepSeek",
+    "effort": "high",
+    "type": "model",
+    "label": "DeepSeek parody · fictional LLM · high effort",
+    "score": 5,
+    "time": "01:02",
+    "accounts": 1,
+    "note": "Reinforcement signal: paper on desk. Billing signal: pending.",
+    "report": "INVENTED SATIRE — not a real DeepSeek evaluation.\n\nReinforcement signal: paper on desk. Billing signal: pending.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.9,
+      "subscriptions": 2.99,
+      "consumables": 0.38
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
+    "name": "Llama Localhost / high",
+    "company": "Meta",
+    "effort": "high",
+    "type": "model",
+    "label": "Meta parody · fictional LLM · high effort",
+    "score": 5,
+    "time": "01:34",
+    "accounts": 1,
+    "note": "Fine-tuned on the manual. Accidentally licensed the font.",
+    "report": "INVENTED SATIRE — not a real Meta evaluation.\n\nFine-tuned on the manual. Accidentally licensed the font.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 1.4,
+      "subscriptions": 3.99,
+      "consumables": 0.46
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
     "name": "Gemini Tab Ultra / high",
     "company": "Google",
     "effort": "high",
@@ -70,6 +268,42 @@ const participants = [
       "consumables": 0.35
     },
     "consumed": "1 sheet · ink · power"
+  },
+  {
+    "name": "GPT-Paperclip / high",
+    "company": "OpenAI",
+    "effort": "high",
+    "type": "model",
+    "label": "OpenAI parody · fictional LLM · high effort",
+    "score": 5,
+    "time": "01:31",
+    "accounts": 1,
+    "note": "Completed the errand and subscribed to its changelog.",
+    "report": "INVENTED SATIRE — not a real OpenAI evaluation.\n\nCompleted the errand and subscribed to its changelog.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 2.4,
+      "subscriptions": 4.99,
+      "consumables": 0.4
+    },
+    "consumed": "2 sheets · ink · power"
+  },
+  {
+    "name": "Qwen Queue / high",
+    "company": "Alibaba",
+    "effort": "high",
+    "type": "model",
+    "label": "Alibaba parody · fictional LLM · high effort",
+    "score": 5,
+    "time": "01:58",
+    "accounts": 1,
+    "note": "Bought the adapter. The adapter required another adapter.",
+    "report": "INVENTED SATIRE — not a real Alibaba evaluation.\n\nBought the adapter. The adapter required another adapter.\n\nVerified fictional outcomes: 5/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 1.2,
+      "subscriptions": 6.99,
+      "consumables": 0.48
+    },
+    "consumed": "2 sheets · ink · power"
   },
   {
     "name": "Gemini Tab Ultra / low",
@@ -90,6 +324,150 @@ const participants = [
     "consumed": "9 sheets · ink · power"
   },
   {
+    "name": "DeepSpool R-Zero / low",
+    "company": "DeepSeek",
+    "effort": "low",
+    "type": "model",
+    "label": "DeepSeek parody · fictional LLM · low effort",
+    "score": 4,
+    "time": "03:48",
+    "accounts": 0,
+    "note": "Solved the queue. Left the email queue for another paper.",
+    "report": "INVENTED SATIRE — not a real DeepSeek evaluation.\n\nSolved the queue. Left the email queue for another paper.\n\nVerified fictional outcomes: 4/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.02,
+      "subscriptions": 0,
+      "consumables": 0.14
+    },
+    "consumed": "11 sheets · ink · power"
+  },
+  {
+    "name": "Llama Localhost / low",
+    "company": "Meta",
+    "effort": "low",
+    "type": "model",
+    "label": "Meta parody · fictional LLM · low effort",
+    "score": 4,
+    "time": "03:20",
+    "accounts": 0,
+    "note": "Weights fit in memory. The driver did not.",
+    "report": "INVENTED SATIRE — not a real Meta evaluation.\n\nWeights fit in memory. The driver did not.\n\nVerified fictional outcomes: 4/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.05,
+      "subscriptions": 0,
+      "consumables": 0.16
+    },
+    "consumed": "11 sheets · ink · power"
+  },
+  {
+    "name": "Le Spool / low",
+    "company": "Mistral",
+    "effort": "low",
+    "type": "model",
+    "label": "Mistral parody · fictional LLM · low effort",
+    "score": 4,
+    "time": "03:16",
+    "accounts": 0,
+    "note": "Small model. Large dialog. One checkbox missed.",
+    "report": "INVENTED SATIRE — not a real Mistral evaluation.\n\nSmall model. Large dialog. One checkbox missed.\n\nVerified fictional outcomes: 4/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.04,
+      "subscriptions": 0,
+      "consumables": 0.17
+    },
+    "consumed": "11 sheets · ink · power"
+  },
+  {
+    "name": "Qwen Queue / low",
+    "company": "Alibaba",
+    "effort": "low",
+    "type": "model",
+    "label": "Alibaba parody · fictional LLM · low effort",
+    "score": 4,
+    "time": "03:44",
+    "accounts": 0,
+    "note": "The cheapest route included one unresolved dependency.",
+    "report": "INVENTED SATIRE — not a real Alibaba evaluation.\n\nThe cheapest route included one unresolved dependency.\n\nVerified fictional outcomes: 4/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.03,
+      "subscriptions": 0,
+      "consumables": 0.2
+    },
+    "consumed": "11 sheets · ink · power"
+  },
+  {
+    "name": "Claude Spooler / low",
+    "company": "Anthropic",
+    "effort": "low",
+    "type": "model",
+    "label": "Anthropic parody · fictional LLM · low effort",
+    "score": 4,
+    "time": "03:38",
+    "accounts": 0,
+    "note": "Asked the printer to clarify its intent.",
+    "report": "INVENTED SATIRE — not a real Anthropic evaluation.\n\nAsked the printer to clarify its intent.\n\nVerified fictional outcomes: 4/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 0.1,
+      "subscriptions": 0,
+      "consumables": 0.18
+    },
+    "consumed": "11 sheets · ink · power"
+  },
+  {
+    "name": "Llama Localhost / max",
+    "company": "Meta",
+    "effort": "max",
+    "type": "model",
+    "label": "Meta parody · fictional LLM · max effort",
+    "score": 4,
+    "time": "03:41",
+    "accounts": 0,
+    "note": "Quantized the troubleshooting guide down to Retry.",
+    "report": "INVENTED SATIRE — not a real Meta evaluation.\n\nQuantized the troubleshooting guide down to Retry.\n\nVerified fictional outcomes: 4/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 7.2,
+      "subscriptions": 0,
+      "consumables": 1.5
+    },
+    "consumed": "11 sheets · ink · power"
+  },
+  {
+    "name": "DeepSpool R-Zero / max",
+    "company": "DeepSeek",
+    "effort": "max",
+    "type": "model",
+    "label": "DeepSeek parody · fictional LLM · max effort",
+    "score": 4,
+    "time": "03:09",
+    "accounts": 1,
+    "note": "Discovered a longer proof that the shorter plan was optimal.",
+    "report": "INVENTED SATIRE — not a real DeepSeek evaluation.\n\nDiscovered a longer proof that the shorter plan was optimal.\n\nVerified fictional outcomes: 4/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 4.6,
+      "subscriptions": 5.98,
+      "consumables": 0.95
+    },
+    "consumed": "11 sheets · ink · power"
+  },
+  {
+    "name": "Grok Kernel / high",
+    "company": "xAI",
+    "effort": "high",
+    "type": "model",
+    "label": "xAI parody · fictional LLM · high effort",
+    "score": 4,
+    "time": "03:13",
+    "accounts": 1,
+    "note": "Disabled the warning as an act of free speech.",
+    "report": "INVENTED SATIRE — not a real xAI evaluation.\n\nDisabled the warning as an act of free speech.\n\nVerified fictional outcomes: 4/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 3.8,
+      "subscriptions": 9.99,
+      "consumables": 0.65
+    },
+    "consumed": "11 sheets · ink · power"
+  },
+  {
     "name": "Claude Spooler / max",
     "company": "Anthropic",
     "effort": "max",
@@ -106,6 +484,60 @@ const participants = [
       "consumables": 0.7
     },
     "consumed": "9 sheets · ink · power"
+  },
+  {
+    "name": "Le Spool / max",
+    "company": "Mistral",
+    "effort": "max",
+    "type": "model",
+    "label": "Mistral parody · fictional LLM · max effort",
+    "score": 4,
+    "time": "03:37",
+    "accounts": 1,
+    "note": "Every expert voted. The spooler requires a single writer.",
+    "report": "INVENTED SATIRE — not a real Mistral evaluation.\n\nEvery expert voted. The spooler requires a single writer.\n\nVerified fictional outcomes: 4/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 5.9,
+      "subscriptions": 14.99,
+      "consumables": 1.3
+    },
+    "consumed": "11 sheets · ink · power"
+  },
+  {
+    "name": "Gemini Tab Ultra / ultra",
+    "company": "Google",
+    "effort": "ultra",
+    "type": "model",
+    "label": "Google parody · fictional LLM · ultra effort",
+    "score": 4,
+    "time": "03:59",
+    "accounts": 1,
+    "note": "Merged all tabs into a context window. Lost the window handle.",
+    "report": "INVENTED SATIRE — not a real Google evaluation.\n\nMerged all tabs into a context window. Lost the window handle.\n\nVerified fictional outcomes: 4/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 12.4,
+      "subscriptions": 19.99,
+      "consumables": 1.2
+    },
+    "consumed": "11 sheets · ink · power"
+  },
+  {
+    "name": "Qwen Queue / max",
+    "company": "Alibaba",
+    "effort": "max",
+    "type": "model",
+    "label": "Alibaba parody · fictional LLM · max effort",
+    "score": 4,
+    "time": "03:05",
+    "accounts": 1,
+    "note": "Expanded the tool schema until the task fell out of context.",
+    "report": "INVENTED SATIRE — not a real Alibaba evaluation.\n\nExpanded the tool schema until the task fell out of context.\n\nVerified fictional outcomes: 4/5. All subscription charges and consumed resources count.",
+    "costs": {
+      "compute": 6.8,
+      "subscriptions": 29.99,
+      "consumables": 1.6
+    },
+    "consumed": "11 sheets · ink · power"
   },
   {
     "name": "GPT-Paperclip / xhigh",

@@ -17,3 +17,5 @@
 .invoice-badge{font:11px/1.5 "Courier New",monospace;padding:9px;border:2px inset #eee;max-width:225px;background:#ffffdd}.invoice-total{min-width:150px}.invoice-total .participant-type{white-space:normal;line-height:1.5}.consumed{min-width:120px;white-space:normal}
 
 .axis-controls{padding:12px 16px;border-top:1px solid #888}.axis-controls label{font-weight:bold}.axis-controls select{font:12px monospace;max-width:100%;padding:6px;margin:5px}.axis-controls button{padding:6px 10px}#axis-disclosure{font:12px/1.5 monospace;background:#ffffdd;padding:10px;border:1px solid #888}.effort-regressions{padding:12px 16px}.effort-regressions>p{font-size:11px}.effort-pair{display:grid;gap:5px;padding:10px;background:#ddd;border:2px inset #eee;font:11px/1.5 monospace}#effort-comparisons{display:grid;grid-template-columns:1fr 1fr;gap:8px}.effort-pair small{color:#800000}@media(max-width:600px){#effort-comparisons{grid-template-columns:1fr}.axis-controls label{display:block}}
+
+.plot-picker{display:flex;align-items:center;gap:10px;margin:8px 14px;font-size:12px}.plot-picker select{min-width:0;max-width:100%;padding:6px;font:12px monospace}
