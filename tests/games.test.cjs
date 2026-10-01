@@ -533,3 +533,16 @@ test('Chaton-fat retains first place with its full large compute bill', () => {
  assert.equal(f.d.querySelector('#results .invoice-total b').textContent, '$50000.12');
  f.close();
 });
+
+test('social previews expose an absolute PNG URL and matching image dimensions', () => {
+ const dom = new JSDOM(html);
+ const d = dom.window.document;
+ const image = d.querySelector('meta[property="og:image"]').content;
+ assert.equal(image, 'https://andrinr.github.io/errand/assets/social-preview.png');
+ assert.equal(d.querySelector('meta[name="twitter:image"]').content, image);
+ assert.equal(d.querySelector('meta[name="twitter:card"]').content, 'summary_large_image');
+ const png = fs.readFileSync('site/assets/social-preview.png');
+ assert.equal(png.readUInt32BE(16), Number(d.querySelector('meta[property="og:image:width"]').content));
+ assert.equal(png.readUInt32BE(20), Number(d.querySelector('meta[property="og:image:height"]').content));
+ dom.window.close();
+});
