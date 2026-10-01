@@ -10,7 +10,7 @@ https://andrinr.github.io/errand/
 
 The static site lives in `site/`: no build step, external fonts, dependencies, analytics, or backend. Serve that folder with any static web server. For example, `python3 -m http.server 8000 --directory site`.
 
-Includes a filterable fictional leaderboard, eight incident reports, and seven playable mini-games inspired by interactive reasoning benchmarks. Unaffiliated with ARC Prize or ARC-AGI-3.
+Includes a filterable fictional leaderboard, eight incident reports, and eight playable mini-games inspired by interactive reasoning benchmarks. Unaffiliated with ARC Prize or ARC-AGI-3.
 
 ## Games
 
@@ -21,6 +21,7 @@ Includes a filterable fictional leaderboard, eight incident reports, and seven p
 5. **Return the Parcel:** hold to dispatch a painfully slow parcel. Cursed mode gives you 8 seconds for a minimum 25-second journey, making it deliberately impossible.
 6. **Make It One Page:** click tiny paragraph marks; misses add pages and reset progress.
 7. **Find the Attachment:** inspect nearly identical files to find Linda’s approved version.
+8. **Fix the Blue Screen:** enter recovery, disable three conflicting settings, clear a recovery error, and restart past the 99% progress stall. Cursed mode re-enables settings and gives you 28 seconds.
 
 **Cursed office** is intentionally frustrating and sometimes impossible. **Practice** gives 60 seconds, larger targets or fewer obstacles, and a solvable version of every task. All games have timers, action counts, retries, and session-only completion tracking. Closing or changing the game stops its active loop. Nothing touches real printers, accounts, memberships, or files.
 
@@ -33,7 +34,7 @@ GitHub Actions deploys `site/` to GitHub Pages on pushes to `main` or a manual w
 - `site/index.html`: page structure and methodology
 - `site/style.css`: responsive retro desktop styling
 - `site/app.js`: fictional participants, task catalog, and page interactions
-- `site/games.js`: seven games, timers, difficulty modes, and session scoring
+- `site/games.js`: eight games, timers, difficulty modes, and session scoring
 
 ## Future real benchmark
 

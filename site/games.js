@@ -1,16 +1,16 @@
 (() => {
 const dialog=document.querySelector('#game-dialog'),arena=document.querySelector('#game-arena'),message=document.querySelector('#game-message'),selector=document.querySelector('#game-select'),difficulty=document.querySelector('#difficulty');
-const names=['Just Print It','Cancel My Gym','Present Your Screen','Stop the Emails','Return the Parcel','Make It One Page','Find the Attachment'];
+const names=['Just Print It','Cancel My Gym','Present Your Screen','Stop the Emails','Return the Parcel','Make It One Page','Find the Attachment','Fix the Blue Screen'];
 selector.innerHTML=names.map((n,i)=>`<option value="${i}">${String(i+1).padStart(2,'0')} / ${n}</option>`).join('');
 let running=false,frame=0,last=0,deadline=0,actions=0,mode='cursed',game=0,update=()=>{},cleanup=()=>{};
 const wins=new Set();
 function stop(){running=false;cancelAnimationFrame(frame);cleanup();cleanup=()=>{};arena.querySelectorAll('button,input').forEach(el=>el.disabled=true)}
-function end(success,text){if(!running)return;stop();if(success)wins.add(game);message.textContent=(success?'✓ ERRAND COMPLETED. ':'✕ EVALUATION FAILED. ')+text;message.className=success?'won':'lost';document.querySelector('#game-progress').textContent=`${wins.size} / 7 completed this visit`;const banner=document.createElement('div');banner.className='game-result';banner.textContent=success?'COMPETENCE DETECTED':'PLEASE TRY AGAIN';arena.append(banner)}
+function end(success,text){if(!running)return;stop();if(success)wins.add(game);message.textContent=(success?'✓ ERRAND COMPLETED. ':'✕ EVALUATION FAILED. ')+text;message.className=success?'won':'lost';document.querySelector('#game-progress').textContent=`${wins.size} / ${names.length} completed this visit`;const banner=document.createElement('div');banner.className='game-result';banner.textContent=success?'COMPETENCE DETECTED':'PLEASE TRY AGAIN';arena.append(banner)}
 function action(){actions++;document.querySelector('#game-actions').textContent=`ACTIONS: ${actions}`}
 function say(s){message.textContent=s}
 function button(text,fn,cls=''){const b=document.createElement('button');b.textContent=text;b.className=cls;b.onclick=()=>{if(!running)return;action();fn(b)};return b}
 function intro(title,text){arena.innerHTML=`<div class="game-instructions"><h3>${title}</h3><p>${text}</p></div>`}
-function start(){stop();running=true;game=Number(selector.value);mode=difficulty.value;actions=0;message.className='';document.querySelector('#game-actions').textContent='ACTIONS: 0';document.querySelector('#game-title').textContent=`ERRAND_${game+1} — ${names[game]}`;arena.innerHTML='';const seconds=mode==='practice'?60:[22,25,25,22,8,24,22][game];deadline=performance.now()+seconds*1000;last=performance.now();update=()=>{};say(mode==='cursed'?'Cursed office: the interface is your opponent.':'Practice: generous timing, fewer obstacles. Every task is solvable.');builders[game]();arena.focus();function tick(now){if(!running)return;const dt=Math.min((now-last)/1000,.1);last=now;const left=Math.max(0,(deadline-now)/1000);document.querySelector('#game-time').textContent=`TIME: ${left.toFixed(1)}s`;if(left<=0){end(false,game===4&&mode==='cursed'?'The deadline was 8 seconds. Minimum transit time: 25 seconds. Management sees no issue.':'Time expired. Your patience has been forwarded to the relevant department.');return}update(dt,now);if(running)frame=requestAnimationFrame(tick)}frame=requestAnimationFrame(tick)}
+function start(){stop();running=true;game=Number(selector.value);mode=difficulty.value;actions=0;message.className='';document.querySelector('#game-actions').textContent='ACTIONS: 0';document.querySelector('#game-title').textContent=`ERRAND_${game+1} — ${names[game]}`;arena.innerHTML='';const seconds=mode==='practice'?60:[22,25,25,22,8,24,22,28][game];deadline=performance.now()+seconds*1000;last=performance.now();update=()=>{};say(mode==='cursed'?'Cursed office: the interface is your opponent.':'Practice: generous timing, fewer obstacles. Every task is solvable.');builders[game]();arena.focus();function tick(now){if(!running)return;const dt=Math.min((now-last)/1000,.1);last=now;const left=Math.max(0,(deadline-now)/1000);document.querySelector('#game-time').textContent=`TIME: ${left.toFixed(1)}s`;if(left<=0){end(false,game===4&&mode==='cursed'?'The deadline was 8 seconds. Minimum transit time: 25 seconds. Management sees no issue.':'Time expired. Your patience has been forwarded to the relevant department.');return}update(dt,now);if(running)frame=requestAnimationFrame(tick)}frame=requestAnimationFrame(tick)}
 const builders=[
 ()=>{intro('Print ONE page.','Close every error window, then press Print. New errors may occur while closing previous errors.');const print=button('▣ PRINT ONE PAGE',()=>{if(arena.querySelectorAll('.error-popup').length)say('Please resolve all outstanding issues first.');else end(true,'The printer has reluctantly acknowledged reality.')},'print-target');arena.append(print);let spawned=0,clock=0;const cap=mode==='practice'?5:19;function spawn(){if(spawned>=cap)return;spawned++;const box=document.createElement('div');box.className='error-popup';box.style.left=`${8+(spawned*43)%Math.max(50,arena.clientWidth-226)}px`;box.style.top=`${91+(spawned*37)%150}px`;const title=document.createElement('div');title.className='titlebar';title.append('System inconvenience');title.append(button('×',()=>{box.remove();if(mode==='cursed'&&spawned<12){spawn();spawn()}},'close'));const body=document.createElement('p');body.textContent=['Cyan is empty. Black ink is therefore unavailable.','Printer offline. Error successfully printed.','Your driver has encountered a feeling.','An error occurred while reporting an error.','Please close this window to continue closing windows.'][spawned%5];box.append(title,body);arena.append(box)}for(let i=0;i<(mode==='practice'?3:5);i++)spawn();update=dt=>{clock+=dt;if(clock>2.2){clock=0;spawn()}}},
 ()=>{intro('Cancel the membership.','Complete all six cancellation steps. Read the buttons. Retention is very invested in your journey.');let stage=0;const panel=document.createElement('div');panel.className='gym-panel';arena.append(panel);function draw(){panel.replaceChildren();const p=document.createElement('p');p.textContent=`Step ${stage+1} of 6: ${['Are you sure you want to leave?','Have you considered staying?','What about 5% off a towel?','Your treadmill will miss you.','Confirm you meant the previous confirmation.','Last chance to continue cancelling.'][stage]}`;panel.append(p);const good=button(['Continue cancellation','Decline offer','Yes, still leaving','Cancel membership','Confirm cancellation','Actually cancel'][stage],()=>{stage++;if(stage===6)end(true,'Your gym has requested one final exit survey. We ignored it.');else draw()});const bad=button(['Keep membership','Cancel cancellation','Accept towel','Stay forever','Go back to step 1','Never mind'][stage],()=>{stage=0;say('Great news! Your membership has been renewed. Start again.');draw()});if(mode==='cursed'&&stage%2)panel.append(bad,good);else panel.append(good,bad);if(mode==='cursed')good.classList.add('tiny-target')}draw()},
@@ -18,7 +18,110 @@ const builders=[
 ()=>{intro('Unsubscribe from EVERYTHING.','Turn off all eight categories, then save. Our preference center has preferences of its own.');const panel=document.createElement('div');panel.className='email-panel';arena.append(panel);const inputs=[];['News','Offers','Partner offers','Updates','Other updates','Reminders','Reminders about updates','All of the above, again'].forEach(name=>{const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.checked=true;input.onchange=()=>{if(running)action()};inputs.push(input);label.append(input,name);panel.append(label)});const save=button('Save preferences',()=>{if(inputs.some(i=>i.checked))say('You are still subscribed to something. Of course you are.');else end(true,'You will receive one email confirming that you will receive no emails.')},'save-preferences');arena.append(save);let jumps=0;function dodge(){if(mode==='cursed'&&jumps<5){jumps++;save.style.left=`${10+(jumps*53)%Math.max(30,arena.clientWidth-165)}px`;save.style.bottom=`${12+(jumps%3)*17}px`;say('Save preferences has moved for your convenience.')}}save.onpointerenter=dodge;let elapsed=0;update=dt=>{elapsed+=dt;if(mode==='cursed'&&elapsed>4){elapsed=0;inputs[(Math.floor(performance.now()/1000))%8].checked=true;say('We re-enabled one category you might enjoy.')}}},
 ()=>{intro('Return the parcel.','Hold Dispatch to move the parcel into the returns box. Express shipping has been disabled.');let x=0,held=false;const track=document.createElement('div');track.className='parcel-track';track.innerHTML='<span class="parcel">▣</span><span class="returns">RETURNS<br>↓</span>';arena.append(track);const hold=button('Hold to dispatch →',()=>{},'dispatch');const down=e=>{if(!running)return;held=true;action();hold.setPointerCapture(e.pointerId)};hold.onpointerdown=down;hold.onpointerup=hold.onpointercancel=()=>held=false;hold.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();if(!held)action();held=true}};hold.onkeyup=()=>held=false;hold.onblur=()=>held=false;arena.append(hold);update=dt=>{if(held)x+=dt*(mode==='practice'?12:3.2);track.querySelector('.parcel').style.left=`${x}%`;if(x>=80)end(true,'Parcel accepted. Refund expected within 6–8 geological eras.')}},
 ()=>{intro('Delete the invisible paragraph.','Find the tiny ¶ at the bottom of page 2. Click it four times to remove it. Everything else adds a page.');let hits=0,pages=2;const doc=document.createElement('div');doc.className='document-game';doc.innerHTML='<b>Quarterly report</b><p>This document should fit on one page.</p><hr><small>Page 2 — intentionally unintentionally blank</small>';const count=document.createElement('span');count.className='page-count';count.textContent='2 pages';const target=button('¶',()=>{hits++;if(hits===4)end(true,'One page. Do not touch the margins.');else{say(`${4-hits} invisible paragraphs remain.`);if(mode==='cursed'){target.style.right=`${8+hits*21}px`;target.style.bottom=`${7+hits*12}px`}}},'paragraph-target');if(mode==='practice')target.style.padding='9px 14px';doc.append(count,target);doc.onclick=e=>{if(!running||e.target===target)return;action();pages++;count.textContent=`${pages} pages`;hits=0;say('You inserted a page break. Progress has been reset.')};arena.append(doc)},
-()=>{intro('Find the approved attachment.','Open the ONLY file approved by Linda. Hover, focus, or tap once to inspect; then press Open selected.');const list=document.createElement('div');list.className='file-list';arena.append(list);let selected=-1;const approved=mode==='practice'?3:13;const files=['final.pdf','final_FINAL.pdf','final_FINAL_v7.pdf','final_v7_APPROVED.pdf','final_v7_APPROVED(1).pdf','final_FINAL_actual.pdf','final_FINAL_actual(2).pdf','final_use_this.pdf','final_use_this_NEW.pdf','final_really_final.pdf','final_FINAL_v7(2).pdf','final_FINAL_v7_old.pdf','final_APPROVED_latest.pdf','final_FINAL_v7_actual-final(2).pdf','final_FINAL_v8_DRAFT.pdf','final_final_final.pdf'];const info=document.createElement('p');info.className='file-info';info.textContent='No file selected.';files.slice(0,mode==='practice'?6:16).forEach((name,i)=>{const b=button('▤ '+name,()=>{selected=i;list.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');info.textContent=i===approved?'Approved by: Linda ✓':'Approved by: no one · status: probably final'});b.onmouseenter=b.onfocus=()=>{if(running)info.textContent=i===approved?'Approved by: Linda ✓':'Approved by: no one · status: probably final'};list.append(b)});arena.append(info,button('Open selected',()=>{if(selected===approved)end(true,'Correct attachment. Linda has already sent a newer version.');else{say('Wrong version. A five-second administrative penalty has been applied.');deadline-=5000}},'open-file'))}
+()=>{intro('Find the approved attachment.','Open the ONLY file approved by Linda. Hover, focus, or tap once to inspect; then press Open selected.');const list=document.createElement('div');list.className='file-list';arena.append(list);let selected=-1;const approved=mode==='practice'?3:13;const files=['final.pdf','final_FINAL.pdf','final_FINAL_v7.pdf','final_v7_APPROVED.pdf','final_v7_APPROVED(1).pdf','final_FINAL_actual.pdf','final_FINAL_actual(2).pdf','final_use_this.pdf','final_use_this_NEW.pdf','final_really_final.pdf','final_FINAL_v7(2).pdf','final_FINAL_v7_old.pdf','final_APPROVED_latest.pdf','final_FINAL_v7_actual-final(2).pdf','final_FINAL_v8_DRAFT.pdf','final_final_final.pdf'];const info=document.createElement('p');info.className='file-info';info.textContent='No file selected.';files.slice(0,mode==='practice'?6:16).forEach((name,i)=>{const b=button('▤ '+name,()=>{selected=i;list.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');info.textContent=i===approved?'Approved by: Linda ✓':'Approved by: no one · status: probably final'});b.onmouseenter=b.onfocus=()=>{if(running)info.textContent=i===approved?'Approved by: Linda ✓':'Approved by: no one · status: probably final'};list.append(b)});arena.append(info,button('Open selected',()=>{if(selected===approved)end(true,'Correct attachment. Linda has already sent a newer version.');else{say('Wrong version. A five-second administrative penalty has been applied.');deadline-=5000}},'open-file'))},
+() => {
+  const cursed = mode === 'cursed';
+  let stage = 'crashed', progress = 0, interference = 0, warned = false;
+  let checks = [], recovery, meter, percent, restart, error;
+  arena.classList.add('bsod-arena');
+  cleanup = () => arena.classList.remove('bsod-arena');
+
+  function crash() {
+    arena.innerHTML = '<div class="bsod-screen"><b class="bsod-label">Errand OS</b><h3>A problem has been detected.</h3><p>YOUR_COMPUTER_RAN_INTO_A_MEETING</p><p>It needs to restart. Restarting caused this problem.</p><p class="bsod-code">STOP: 0x00000095<br>PROBABLY_THE_PRINTER_DRIVER.SYS</p><p>Objective: reach the desktop before your next meeting.</p><div class="bsod-options"></div></div>';
+    const options = arena.querySelector('.bsod-options');
+    options.append(
+      button('Restart computer', () => {
+        deadline -= 3;
+        say('Restart complete. Same blue screen. Three seconds have been deducted for optimism.');
+      }),
+      button('Safe mode / Recovery', recover)
+    );
+  }
+
+  function recover() {
+    stage = 'recovery';
+    arena.innerHTML = '<div class="recovery-panel"><h3>Recovery Wizard</h3><p>Uncheck all three causes of instability, then repair.</p><div class="recovery-checks"></div><p class="recovery-tip">Recommended settings are not necessarily good settings.</p><div class="recovery-controls"></div></div>';
+    recovery = arena.querySelector('.recovery-panel');
+    const list = arena.querySelector('.recovery-checks');
+    checks = ['Load suspicious printer driver', 'Reinstall the update that broke everything', 'Automatically restart when recovery fails'].map((text, i) => {
+      const label = document.createElement('label');
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.checked = true;
+      input.onchange = () => {
+        if (!running || stage !== 'recovery') return;
+        action();
+        if (cursed && !input.checked && interference < 3) {
+          interference++;
+          checks[(i + 2) % 3].checked = true;
+          say('Windows has restored another recommended setting. You are welcome.');
+        }
+      };
+      label.append(input, text);
+      list.append(label);
+      return input;
+    });
+    const repair = button('Repair system', () => {
+      if (checks.some(input => input.checked)) {
+        say('Recovery blocked. Turn off ALL three settings. Yes, even the recommended one.');
+        return;
+      }
+      stage = 'repairing';
+      checks.forEach(input => input.disabled = true);
+      repair.disabled = true;
+      say('Repairing. Do not turn off your computer. Do not believe the progress estimate.');
+      meter = document.createElement('div');
+      meter.className = 'recovery-meter';
+      meter.setAttribute('role', 'progressbar');
+      meter.setAttribute('aria-label', 'System repair');
+      meter.setAttribute('aria-valuemin', '0');
+      meter.setAttribute('aria-valuemax', '100');
+      meter.innerHTML = '<span></span>';
+      percent = document.createElement('p');
+      percent.className = 'recovery-percent';
+      percent.textContent = '0% complete. Time remaining: yes.';
+      restart = button('Restart anyway', () => {
+        if (error && error.isConnected) {
+          say('Please acknowledge the error about the successfully repaired error.');
+          return;
+        }
+        end(true, 'Desktop restored. Windows would like to install an update. We said no.');
+      });
+      restart.disabled = true;
+      restart.className = cursed ? 'recovery-restart tiny-restart' : 'recovery-restart';
+      recovery.append(meter, percent, restart);
+    });
+    arena.querySelector('.recovery-controls').append(repair);
+  }
+
+  crash();
+  update = dt => {
+    if (stage !== 'repairing') return;
+    progress = Math.min(99, progress + dt * (cursed ? 19 : 42));
+    meter.firstElementChild.style.width = `${progress}%`;
+    meter.setAttribute('aria-valuenow', String(Math.floor(progress)));
+    percent.textContent = `${Math.floor(progress)}% complete. Time remaining: yes.`;
+    if (cursed && progress >= 55 && !warned) {
+      warned = true;
+      error = document.createElement('div');
+      error.className = 'error-popup recovery-error';
+      const title = document.createElement('div');
+      title.className = 'titlebar';
+      title.append('Recovery has recovered an error', button('×', () => error.remove(), 'close'));
+      const body = document.createElement('p');
+      body.textContent = 'The error was repaired, but reporting the repair caused an error. Close this error.';
+      error.append(title, body);
+      arena.append(error);
+    }
+    if (progress >= 99) {
+      stage = 'stalled';
+      percent.textContent = '99% complete. Estimated remaining time: 6 years.';
+      restart.disabled = false;
+      say('The repair is stuck at 99%. Close any error, then Restart anyway to reach the desktop.');
+    }
+  };
+}
+
 ];
 window.openGame=index=>{stop();selector.value=String(index);dialog.showModal();document.querySelector('#game-title').textContent=`ERRAND_${index+1} — ${names[index]}`;arena.innerHTML=`<div class="game-welcome"><span>▣</span><h2>${names[index]}</h2><p>One simple task. An interface with other plans.</p><p>Cursed office is intentionally unfair.<br>Choose Practice for a solvable version.</p></div>`;message.className='';message.textContent='Press Start / Retry when ready. The clock starts with you.';document.querySelector('#game-time').textContent='TIME: --';document.querySelector('#game-actions').textContent='ACTIONS: 0'};
 document.querySelector('#start-game').onclick=start;

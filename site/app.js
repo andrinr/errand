@@ -15,12 +15,13 @@ const tasks = [
  ['04','✉','Stop the Emails','Unsubscribe from all marketing emails.','You have unsubscribed from Tuesdays.'],
  ['05','↩','Return the Parcel','Move your parcel to the returns desk before closing time.','Transit: 25 seconds. Deadline: 8 seconds.'],
  ['06','¶','Make It One Page','Remove the blank second page from a document.','An invisible paragraph has entered the chat.'],
- ['07','▤','Find the Attachment','Locate the final, approved version of the file.','final_FINAL_v7_actual-final(2).pdf']
+ ['07','▤','Find the Attachment','Locate the final, approved version of the file.','final_FINAL_v7_actual-final(2).pdf'],
+ ['08','☠','Fix the Blue Screen','Get back to the desktop before your next meeting.','Recovery failed successfully. Restart?']
 ];
 const results = document.querySelector('#results');
 function renderResults(filter='all') {
  const visible=participants.filter(p=>filter==='all'||p.type===filter);
- results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${p.name}</button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${p.score}/7</b><span class="meter" aria-hidden="true">${Array.from({length:7},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td>${p.accounts}</td><td class="observation">${p.note}</td></tr>`}).join('');
+ results.innerHTML=visible.map(p=>{const index=participants.indexOf(p);return `<tr><td>${String(index+1).padStart(2,'0')}</td><td><button class="participant" data-report="${index}">${p.name}</button><span class="participant-type">${p.label}</span></td><td><div class="score"><b>${p.score}/${tasks.length}</b><span class="meter" aria-hidden="true">${Array.from({length:tasks.length},(_,i)=>`<i class="${i<p.score?'on':''}"></i>`).join('')}</span></div></td><td>${p.time}</td><td>${p.accounts}</td><td class="observation">${p.note}</td></tr>`}).join('');
  document.querySelector('#result-count').textContent=`${visible.length} participants · fictional results`;
 }
 renderResults();
