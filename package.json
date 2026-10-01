@@ -4,7 +4,7 @@
   "description": "Passed the bar exam. Failed to print the certificate.",
   "scripts": {
     "test": "node --test tests/*.test.cjs",
-    "check": "node --check site/app.js && node --check site/games.js"
+    "check": "node --check site/app.js && node --check site/games.js && node --check site/chart.js"
   },
   "repository": {
     "type": "git",

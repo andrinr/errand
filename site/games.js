@@ -6,23 +6,20 @@
   const message = $('#game-message');
   const selector = $('#game-select');
   const difficulty = $('#difficulty');
-  const names = ['Just Print It', 'Cancel My Gym', 'Present Your Screen', 'Stop the Emails', 'Return the Parcel', 'Make It One Page', 'Find the Attachment', 'Fix the Blue Screen'];
+  const names = ['Just Print It', 'Present Your Screen', 'Stop the Emails', 'Fix the Blue Screen', 'Remove the Virus'];
   const clues = [
-    'The sticky note is your specification. A PDF is not paper. Clear errors using ×; “Fix automatically” is an excellent way to get more errors.',
-    'Cancellation is not the same as pausing. Decline the towel, read both checkboxes, and hold the final button until the receipt appears.',
-    'The sticker on the screen tells you the input. Align the cable tip with that socket, connect, and duplicate your display.',
-    'First disable personalized recommendations. “Do not send partner offers” is the one checkbox that should stay ON. Mandatory receipts are not marketing.',
-    'Use the RETURNS label, stamp it, and start the belt. Practice has enough time; Cursed mode intentionally gives 8 seconds for at least 25 seconds of travel.',
-    'Show formatting marks. Remove the page break, not the ordinary paragraph. Set the table paragraph to 1 pt. Undo reverses the last mistake.',
-    'Names lie. Match the three details on Linda’s note: approver, version, and page count. A filename ending in .exe is not a PDF.',
-    'Move the mug, take the paperclip, select it and open the drawer. Take the floppy and read the note (code 095). Select the floppy and click the PC. In safe mode, find yesterday’s PRINT95 backup, select it, and install it in the broken slot. Disable automatic updates, close errors, restart at 99%, and postpone the update.'
+    'Driver: disable automatic recovery, use Application-managed, K channel only, Tray 1, Force single-sided. Document: local printer, page 1, one copy, A4, portrait, Raw 100%. Hardware: clear the crumpled sheet. After crashes, restart spooler and recheck profile/copies. Diagnostics reveals the real payload. Print, release with PIN 042, then collect.',
+    'Connect at HDMI 2 (the right socket), select HDMI 2 and Duplicate. Then share release_demo.ppt, disable notifications, close any overlays or optional update prompts, and Go live.',
+    'Disable personalization and marketing. “Do not send partner offers” should stay ON. Keep receipts. Save and close the confirmation popup. Open Spam, open the confirmation email, choose Entire account, all devices, and Confirm unsubscribe.',
+    'Move the mug, take the paperclip, select it and open the drawer. Take the floppy and read the note (code 095). Select the floppy and click the PC. In safe mode, find yesterday’s PRINT95 backup, select it, and install it in the broken slot. Disable automatic updates, close errors, restart at 99%, and postpone the update.',
+    'In Task Manager, disable Updatr at startup, stop Updatr, then stop AdBuddy. In My Files, show extensions, select invoice.pdf.exe, and quarantine it. Close every fake Virus detected window (minimizing does not count). Open Security and Verify cleanup. Never trust the red antivirus ads.'
   ];
   selector.innerHTML = names.map((name, i) => `<option value="${i}">${String(i + 1).padStart(2, '0')} / ${name}</option>`).join('');
   let running = false, frame = 0, previous = 0, deadline = 0, began = 0;
   let actions = 0, traps = 0, game = 0, cursed = true, clockStarted = false, update = () => {};
   let disposers = [], sounds = false, audioContext;
   const wins = { cursed: new Set(), practice: new Set() };
-  const durations = [60, 65, 60, 60, 8, 60, 60, 120];
+  const durations = [75, 75, 75, 120, 150];
   const mode = () => cursed ? 'cursed' : 'practice';
   const node = (tag, className, text) => {
     const element = document.createElement(tag);
@@ -54,7 +51,7 @@
     element.classList.add(className);
   }
   function say(text) { message.textContent = text; animate(message, 'message-pop'); }
-  function action() { if (!clockStarted) { clockStarted = true; began = previous = performance.now(); deadline = began + (cursed ? durations[game] : 120) * 1000; } actions++; $('#game-actions').textContent = `ACTIONS: ${actions}`; sound('tap'); }
+  function action() { if (!clockStarted) { clockStarted = true; began = previous = performance.now(); deadline = began + (cursed ? durations[game] : game === 4 ? 180 : 120) * 1000; $('#game-time').textContent = `TIME: ${((deadline - began) / 1000).toFixed(1)}s`; say('Clock running. Inspect the details before committing the next action.'); } actions++; $('#game-actions').textContent = `ACTIONS: ${actions}`; sound('tap'); }
   function trap(text, penalty = 0) {
     traps++; $('#game-traps').textContent = `TRAPS: ${traps}`;
     if (cursed) deadline -= penalty * 1000;
@@ -126,9 +123,9 @@
     say((success ? '✓ ERRAND COMPLETED. ' : '✕ EVALUATION FAILED. ') + text);
     const result = node('div', `result-overlay ${success ? 'success' : 'failure'}`);
     const card = node('div', 'result-card window');
-    card.append(node('div', 'titlebar', success ? 'Competence detected' : 'Management would like a word'));
+    card.append(node('div', 'titlebar', success ? 'Competence detected' : 'Assertion failed'));
     const body = node('div', 'result-body');
-    body.append(node('div', 'result-symbol', success ? '✓' : '⌛'), node('h3', '', success ? 'You did one thing.' : 'It was supposed to be easy.'), node('p', '', text));
+    body.append(node('div', 'result-symbol', success ? '✓' : '⌛'), node('h3', '', success ? 'Task resolved.' : 'Trivial task. Nontrivial failure.'), node('p', '', text));
     body.append(node('p', 'result-receipt', `${elapsed}s elapsed · ${actions} actions · ${traps} traps`));
     const again = node('button', '', 'Try again'); again.onclick = start;
     const next = node('button', '', 'Next errand →'); next.onclick = () => { selector.value = String((game + 1) % names.length); start(); };
@@ -143,7 +140,7 @@
     $('#game-time').textContent = `TIME: ${left.toFixed(1)}s`;
     $('#game-time').classList.toggle('time-danger', left < 10);
     if (!left) {
-      end(false, game === 4 && cursed ? 'Transit takes 25 seconds. You were given eight. This one is deliberately impossible. Try Practice to actually return the parcel.' : 'Time ran out. The system has classified this as a you problem. The Hint button explains the trick.');
+      end(false, 'Deadline exceeded. The error has been routed to the human layer. Hint contains the repro steps.');
       return;
     }
     update(dt, now); if (running) frame = requestAnimationFrame(beginFrame);
@@ -156,112 +153,123 @@
     $('#game-actions').textContent = 'ACTIONS: 0'; $('#game-traps').textContent = 'TRAPS: 0'; progressLabel();
     $('#game-title').textContent = `ERRAND_${String(game + 1).padStart(2, '0')} — ${names[game]}`;
     began = previous = performance.now(); deadline = 0;
-    $('#game-time').textContent = `TIME: ${cursed ? durations[game] : 120}s · ready`;
+    $('#game-time').textContent = `TIME: ${cursed ? durations[game] : game === 4 ? 180 : 120}s · ready`;
     $('#game-time').classList.remove('time-danger');
     say('Ready to play. Your first game action starts the clock.');
     builders[game](); arena.focus(); frame = requestAnimationFrame(beginFrame);
   }
 
-  // 01 — Inspect the print specification, survive the queue, then produce paper.
+  // 01 — The visible controls and the driver payload intentionally disagree.
   function printGame() {
-    const office = panel('Print — certificate.pdf', 'A confident success message is not a sheet of paper.');
-    note(office, 'Linda: 1 copy · page 1 only · A4 · black & white · printer beside you.');
-    const fields = node('div', 'field-grid');
-    const printer = select('Printer', [['pdf', 'Save to PDF (recommended)'], ['remote', 'Office LaserJet — floor 6'], ['local', 'Desk LaserJet (Copy 2) — this room']]);
-    const pages = select('Pages', [['all', 'All (includes blank page 2)'], ['one', 'Page 1 only']]);
+    const office = panel('Print — benchmark.pdf', 'The application has settings. The driver has opinions. Only the final payload matters.');
+    note(office, 'JOB SPEC / Desk LaserJet · page 1 · 1 copy · A4 · portrait · 100% · black ink only · single-sided. Release PIN: 042.');
+    const tabs = node('div', 'printer-tabs'); office.append(tabs);
+    const panes = {};
+    for (const name of ['Document', 'Driver', 'Diagnostics', 'Hardware']) {
+      const pane = node('div', 'printer-pane'); pane.hidden = name !== 'Document'; panes[name] = pane; office.append(pane);
+      const tab = button(name, () => {
+        for (const [key, item] of Object.entries(panes)) item.hidden = key !== name;
+        tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.textContent === name)));
+        if (name === 'Diagnostics') renderDiagnostics();
+      }); tab.setAttribute('aria-pressed', String(name === 'Document')); tabs.append(tab);
+    }
+    let jammed = true, spooler = true, printing = false, progress = 0, held = false, released = false, finished = false;
+    const log = ['Driver loaded: UniversalPrint_95_beta_FINAL.dll', 'INFO: UI values may differ from effective settings.'];
+    const target = select('Printer', [['pdf', 'Save to PDF (recommended)'], ['remote', 'Office LaserJet — floor 6'], ['local', 'Desk LaserJet (Copy 2) — this room']]);
+    const pages = select('Pages', [['all', 'All pages (2)'], ['one', 'Page 1 only'], ['current', 'Current page (page 2, blank)']]);
     const paper = select('Paper size', [['letter', 'Letter'], ['a4', 'A4']]);
-    const copies = select('Copies', [['2', '2'], ['1', '1']]);
-    fields.append(printer.label, pages.label, paper.label, copies.label); office.append(fields);
-    const color = checkbox('Print in color (cyan currently unavailable)', true); office.append(color.label);
-    const queue = node('div', 'queue-status', 'Queue: empty · Printer: emotionally unavailable'); office.append(queue);
-    let printing = false, progress = 0, errorsStarted = false;
+    const copies = select('Copies', [['2', '2'], ['1', '1'], ['99', '99 (stress test)']]);
+    const orientation = select('Orientation', [['landscape', 'Landscape'], ['portrait', 'Portrait']]);
+    const scale = select('Scaling', [['fit', 'Fit to page'], ['actual', 'Actual size (driver optimized)'], ['raw', 'Raw 100% — disable fit']]);
+    const docGrid = node('div', 'field-grid'); docGrid.append(target.label, pages.label, paper.label, copies.label, orientation.label, scale.label); panes.Document.append(docGrid);
+    const profile = select('Driver profile', [['auto', 'Recommended / automatic'], ['photo', 'Photo enhancement'], ['app', 'Application-managed / no overrides']]);
+    const ink = select('Color mode', [['bw', 'Black & white (composite CMY)'], ['gray', 'Grayscale (photo pipeline)'], ['k', 'Advanced: K channel only']]);
+    const tray = select('Paper source', [['auto', 'Auto select'], ['tray1', 'Tray 1 — A4']]);
+    const sides = select('Duplex', [['auto', 'Off (inherit driver default)'], ['simplex', 'Force single-sided'], ['double', 'Long-edge duplex']]);
+    const recovery = checkbox('Automatic driver recovery (recommended)', true);
+    const preserve = checkbox('Preserve settings after a spooler crash', false);
+    const driverGrid = node('div', 'field-grid'); driverGrid.append(profile.label, ink.label, tray.label, sides.label); panes.Driver.append(driverGrid, recovery.label, preserve.label);
+    panes.Driver.append(node('p', 'fine-print', '“Recommended” is a configuration source, not a quality guarantee. Auto recovery reloads the same broken driver.'));
+    const diagnostic = node('pre', 'effective-settings'); panes.Diagnostics.append(node('h4', '', 'Effective device payload'), diagnostic);
+    const crashLog = node('pre', 'printer-crash-log'); panes.Diagnostics.append(node('h4', '', 'Spooler log'), crashLog);
+    const effective = () => ({
+      destination: target.input.value,
+      pages: pages.input.value === 'one' ? '1' : pages.input.value === 'current' ? '2 (blank)' : '1–2',
+      copies: profile.input.value === 'auto' ? '2' : copies.input.value,
+      paper: profile.input.value === 'auto' || tray.input.value === 'auto' ? 'Letter' : paper.input.value === 'a4' ? 'A4' : 'Letter',
+      orientation: orientation.input.value,
+      scale: scale.input.value === 'raw' && profile.input.value === 'app' ? '100%' : '97%',
+      ink: ink.input.value === 'k' && profile.input.value === 'app' ? 'K only' : 'CMY composite',
+      sides: sides.input.value === 'simplex' && profile.input.value === 'app' ? 'single-sided' : 'duplex'
+    });
+    function renderDiagnostics() {
+      diagnostic.textContent = Object.entries(effective()).map(([key, value]) => `${key.padEnd(13)} ${value}`).join('\n');
+      crashLog.textContent = log.slice(-6).join('\n');
+    }
+    const hardware = node('div', 'printer-hardware');
+    hardware.innerHTML = '<div class="hardware-printer">▣<span>DESK LASERJET / TRAY 1</span></div><p>Paper path: <b class="jam-state">BLOCKED</b></p>';
+    hardware.append(button('Open paper tray', () => {
+      if (arena.querySelector('.tray-dialog')) return;
+      const box = popup('Paper tray', 'The flat sheet is the supply. The crumpled sheet is stuck in the feed rollers.'); box.classList.add('tray-dialog');
+      box.append(button('Pull the flat sheet', () => trap('Paper supply removed and reloaded. The jam is a different sheet.', 2)));
+      const clear = button('Remove crumpled sheet', b => { jammed = false; b.textContent = '✓ Jam cleared'; b.disabled = true; hardware.querySelector('.jam-state').textContent = 'CLEAR'; say('Physical obstruction removed. The driver remains a separate problem.'); });
+      clear.disabled = !jammed; box.append(clear);
+    })); panes.Hardware.append(hardware);
+    const queue = node('div', 'queue-status', 'Job not submitted · spooler running · effective settings unverified'); office.append(queue);
     const progressBar = meter(office, 'Print queue');
-    const output = node('div', 'paper-output'); output.innerHTML = '<span class="output-slot"></span><span class="printed-sheet">CERTIFICATE<br>ONE PAGE.<br><small>Finally.</small></span>'; office.append(output);
+    const output = node('div', 'paper-output'); output.innerHTML = '<span class="output-slot"></span><span class="printed-sheet">BENCHMARK<br>ONE PAGE.<br><small>VERIFIED</small></span>'; office.append(output);
+    const controls = node('div', 'inline-controls'); office.append(controls);
+    function crash(reason) {
+      spooler = false; printing = false;
+      const reset = !preserve.input.checked;
+      if (reset) { profile.input.value = 'auto'; copies.input.value = '2'; }
+      log.push(`CRASH: ${reason}`, reset ? 'RESET: profile=auto, copies=2. Preserve settings was off.' : 'RECOVER: settings preserved.'); renderDiagnostics();
+      queue.textContent = 'spoolsv.exe has stopped. Manual restart required.';
+      popup('spoolsv.exe crashed', 'Automatic recovery reloads the broken driver. Disable it in Driver, inspect Diagnostics, then restart the spooler.', () => {}, true);
+      trap('Spooler crash. ' + (reset ? 'Driver profile and copies silently reverted to defaults.' : 'Your settings survived.'), 2);
+    }
+    controls.append(button('Restart spooler', () => {
+      if (recovery.input.checked) return crash('RECOVERY_LOOP');
+      spooler = true; log.push('SERVICE: manual restart OK'); renderDiagnostics(); queue.textContent = 'Spooler running. Recheck settings after the crash.'; say('Service restarted. Disabled auto recovery breaks the crash loop.');
+    }));
     const print = button('Print', () => {
-      if (printing) return;
-      if (arena.querySelector('.office-error')) return trap('The printer refuses to print while being complained about. Close the errors.');
-      if (printer.input.value === 'pdf') return trap('Saved certificate.pdf as certificate(1).pdf. Paper remains theoretical.', 2);
-      if (printer.input.value === 'remote') return trap('Your document is now upstairs. You are not upstairs.', 2);
-      if (pages.input.value !== 'one' || copies.input.value !== '1') return trap('You queued extra pages. Read Linda’s note. Queue cleared.', 2);
-      if (paper.input.value !== 'a4') return trap('LOAD LETTER. The tray contains A4. One of these facts must change.', 2);
-      if (color.input.checked) return trap('Cyan has resigned. Black & white is still technically available.', 2);
-      if (!errorsStarted) {
-        errorsStarted = true;
-        popup('Printer offline', 'It is visibly online. Close this message to reject its version of events.', () => {
-          if (cursed) popup('Error reporting error', 'The previous error has filed an appeal. Close that too.');
-        }, true);
-        if (cursed) popup('Driver has feelings', 'Acknowledge by closing. Automatic repair only makes this worse.', () => {}, true);
-        say('Settings correct. The error department would like to speak to you.'); return;
-      }
-      printing = true; print.disabled = true; queue.textContent = 'Spooling… please maintain unreasonable optimism.';
-    }, 'primary'); office.append(print);
+      if (printing || held || finished) return say('One job is already active. Queue duplication is not progress.');
+      if (arena.querySelector('.office-error')) return trap('Close the modal stack before submitting another job.');
+      if (!spooler) return trap('Service stopped. Use Restart spooler after disabling automatic recovery.');
+      if (recovery.input.checked) return crash('AUTO_RECOVERY_REENTERED_ITSELF');
+      const e = effective();
+      if (e.destination === 'pdf') return trap('Exported benchmark.pdf to benchmark(1).pdf. E_PAPER_NOT_FOUND.', 2);
+      if (e.destination !== 'local') return trap('Job routed to the wrong environment. Diagnostics shows the resolved destination.', 2);
+      const wrong = [];
+      if (e.pages !== '1') wrong.push('pages'); if (e.copies !== '1') wrong.push('copies'); if (e.paper !== 'A4') wrong.push('paper');
+      if (e.orientation !== 'portrait') wrong.push('orientation'); if (e.scale !== '100%') wrong.push('scale'); if (e.ink !== 'K only') wrong.push('ink'); if (e.sides !== 'single-sided') wrong.push('sides');
+      if (wrong.length) { log.push('PREFLIGHT_MISMATCH: ' + wrong.join(', ')); renderDiagnostics(); return trap('Output does not match the spec. Check the effective payload in Diagnostics. Visible labels are not authoritative.', 1); }
+      if (jammed) return trap('PAPER_JAM. Hardware tab. No software setting can uncrumple a sheet.');
+      printing = true; queue.textContent = 'Job accepted. Spooling…';
+    }, 'primary'); controls.append(print);
+    const release = node('div', 'secure-release'); release.hidden = true;
+    release.append(node('h4', '', 'Secure release / one more gate'));
+    const pinLabel = node('label', 'game-field', 'Release PIN');
+    const pin = document.createElement('input'); pin.type = 'text'; pin.inputMode = 'numeric'; pin.maxLength = 3; pin.setAttribute('aria-label', 'Release PIN'); pin.oninput = () => { if (running) action(); }; pinLabel.append(pin); release.append(pinLabel);
+    release.append(button('Release print job', () => {
+      if (pin.value !== '042') return trap('PIN mismatch. The note includes the leading zero.', 2);
+      released = true; held = false; printing = true; progress = 70; release.hidden = true; say('Release accepted. Collect the page when it actually exits the printer.');
+    })); office.append(release);
+    office.append(button('Collect output', () => {
+      if (!finished) return trap('Output tray empty. A successful RPC is not proof of paper.');
+      end(true, 'One page. Every parameter correct. No CMY used. The physical world finally passed an assertion.');
+    }));
+    renderDiagnostics();
     update = dt => {
-      if (!printing) return;
+      if (!printing || held || finished) return;
       progress = Math.min(100, progress + dt * 36); progressBar(progress);
-      queue.textContent = `${Math.floor(progress)}% · ${progress > 70 ? 'Paper has entered physical reality.' : 'Negotiating with printer…'}`;
-      output.style.setProperty('--paper-progress', String(progress / 100));
-      if (progress >= 100) end(true, 'Exactly one correct page came out. Nobody knows why it worked this time.');
+      queue.textContent = `${Math.floor(progress)}% · ${released ? 'Hardware producing output' : 'Spooling to device'}`;
+      output.style.setProperty('--paper-progress', released ? String((progress - 70) / 30) : '0');
+      if (!released && progress >= 99) { held = true; release.hidden = false; queue.textContent = 'Job held. Secure release required.'; release.scrollIntoView?.({ block: 'nearest' }); say('Payload is correct. Enter the PIN from the job spec, then collect output.'); }
+      if (released && progress >= 100) { finished = true; queue.textContent = 'Output tray: 1 correct page. Collect to complete.'; }
     };
   }
-
-  // 02 — Different retention tricks, ending in a hold-to-confirm cancellation.
-  function gymGame() {
-    const office = panel('FitForever — membership settings', 'Your membership is easy to join and character-building to leave.');
-    const steps = node('div', 'wizard-steps'); office.append(steps);
-    const body = node('div', 'wizard-body'); office.append(body);
-    let step = 0, held = false, holdProgress = 0;
-    const draw = () => {
-      body.replaceChildren(); steps.textContent = ['1. Intent', '2. Reason', '3. Fine print', '4. Escape'].map((s, i) => (i === step ? '▸ ' : i < step ? '✓ ' : '') + s).join('  /  ');
-      if (step === 0) {
-        body.append(node('h4', '', 'What would you like to do?'));
-        body.append(button('Pause membership', () => trap('Paused billing for zero days. This is not cancellation.', 3)), button('Cancel membership', () => { step++; draw(); }, 'primary'));
-      } else if (step === 1) {
-        body.append(node('h4', '', 'Tell us why you’re leaving.'));
-        const reason = select('Reason', [['price', 'It costs too much'], ['time', 'No time'], ['cancel', 'I simply wish to cancel']]); body.append(reason.label);
-        body.append(button('Continue', () => {
-          if (reason.input.value !== 'cancel') {
-            trap('Your reason has qualified you for an offer you did not request.');
-            popup('A very special towel', 'Stay for another year and save 5% on a towel. Close this offer to keep leaving.', () => { step++; draw(); }, false);
-            return;
-          }
-          step++; draw();
-        }));
-      } else if (step === 2) {
-        body.append(node('h4', '', 'Just two final preferences.'));
-        const confirm = checkbox('I understand my access will end', false);
-        const renew = checkbox('Keep my benefits by renewing for 12 months', true);
-        body.append(confirm.label, renew.label); note(body, 'Read every word. “Keep my benefits” means “keep charging me”.');
-        body.append(button('Cancel cancellation', () => { step = 0; trap('Cancellation cancelled. Your gym is delighted.', 3); draw(); }), button('Continue cancelling', () => {
-          if (!confirm.input.checked || renew.input.checked) return trap('The form still authorizes your membership. Check your checkboxes.', 2);
-          step++; draw();
-        }, 'primary'));
-      } else {
-        body.append(node('h4', '', 'Hold to actually cancel.'));
-        body.append(node('p', '', 'Keep pressing the button (or Space) until the receipt prints. Letting go slowly restores your membership.'));
-        const fill = meter(body, 'Cancellation confirmation');
-        const hold = button('Hold to cancel', () => {}); body.append(hold);
-        bindHold(hold, value => held = value);
-        update = dt => {
-          holdProgress = Math.max(0, Math.min(100, holdProgress + dt * (held ? 34 : cursed ? -48 : -15)));
-          fill(holdProgress); hold.textContent = held ? `Cancelling… ${Math.floor(holdProgress)}%` : 'Hold to cancel';
-          if (holdProgress >= 100) end(true, 'Cancellation receipt issued. You have escaped cardio through administrative endurance.');
-        };
-      }
-    };
-    draw();
-  }
-  function bindHold(element, handler) {
-    let held = false;
-    const change = value => { if (held === value) return; held = value; if (value) action(); handler(value); };
-    element.onpointerdown = event => { if (!running) return; element.setPointerCapture(event.pointerId); change(true); };
-    element.onpointerup = element.onpointercancel = () => change(false);
-    element.onkeydown = event => { if ([' ', 'Enter'].includes(event.key)) { event.preventDefault(); if (running) change(true); } };
-    element.onkeyup = event => { if ([' ', 'Enter'].includes(event.key)) change(false); };
-    element.onblur = () => change(false); listen(window, 'blur', () => change(false));
-    disposers.push(() => change(false));
-  }
-
-  // 03 — Source selection, cable alignment, and the classic extended-desktop trap.
+  // 02 — Source selection, cable alignment, and the classic extended-desktop trap.
   function projectorGame() {
     const office = panel('Meeting room B — display settings', 'Connect the cable, choose the correct input, then show the slide.');
     const screen = node('div', 'projector-screen'); screen.innerHTML = '<span>NO SIGNAL</span><small>ROOM B · USE HDMI 2 · DUPLICATE DISPLAY</small>'; office.append(screen);
@@ -281,12 +289,42 @@
     const display = select('Display mode', [['extend', 'Extend (empty second desktop)'], ['duplicate', 'Duplicate']]);
     const fields = node('div', 'field-grid'); fields.append(source.label, display.label); office.append(fields);
     office.append(button('Present slide', () => {
-      if (!connected) return trap('The software cannot fix an unplugged cable. Yet.');
+      if (!connected) return trap('No physical connection. Adding more abstraction layers will not help.');
       if (source.input.value !== '2') { screen.firstElementChild.textContent = 'SEARCHING… WRONG INPUT'; return trap('Connected to HDMI 2. Listening to something else.', 2); }
       if (display.input.value !== 'duplicate') { screen.firstElementChild.textContent = 'A BEAUTIFUL EMPTY DESKTOP'; return trap('You are presenting your wallpaper. Try duplicating your display.', 2); }
-      screen.firstElementChild.textContent = 'Q3: PLEASE CLAP'; screen.classList.add('has-signal');
-      end(true, 'The slide is visible. The meeting can now have been an email.');
+      screen.firstElementChild.textContent = 'SIGNAL ACQUIRED. CONTENT UNVERIFIED.'; screen.classList.add('has-signal');
+      openSharing();
     }, 'primary'));
+    let sharing = false;
+    function openSharing() {
+      if (sharing) return;
+      sharing = true;
+      office.querySelectorAll('button,select').forEach(el => el.disabled = true);
+      const sharePanel = node('div', 'share-panel');
+      sharePanel.append(node('h4', '', 'Step 2 / audience view'));
+      note(sharePanel, 'Share release_demo.ppt only. No speaker notes. No notification overlays. The audience preview is the source of truth.');
+      const content = select('Content to share', [['desktop', 'Entire desktop (recommended)'], ['notes', 'speaker_notes.txt'], ['slides', 'release_demo.ppt']], input => {
+        screen.firstElementChild.textContent = input.value === 'slides' ? 'HELLO, WORLD. / RELEASE DEMO' : input.value === 'notes' ? 'PRIVATE: THE DEMO ONLY WORKS LOCALLY' : '17 TABS. 4 TERMINALS. ONE .ENV FILE.';
+      });
+      const notifications = checkbox('Show desktop notifications while presenting', true);
+      sharePanel.append(content.label, notifications.label);
+      let blockedOnce = false;
+      sharePanel.append(button('Go live', () => {
+        if (content.input.value !== 'slides') return trap('The audience preview contains the wrong window. Share the deck, not your entire working directory.', 3);
+        if (notifications.input.checked) {
+          popup('Notification preview', 'build-bot: deployment failed. Again. This would appear over your slide.');
+          return trap('Disable notifications before going live. The audience does not need production telemetry.', 2);
+        }
+        if (arena.querySelector('.office-error')) return trap('A notification is still covering the display. Close it.');
+        if (cursed && !blockedOnce) {
+          blockedOnce = true; const alert = popup('Driver update available', 'An optional update wants to restart your display mid-demo. Close to defer.');
+          alert.append(button('Install & restart now', () => { alert.remove(); content.input.value = 'desktop'; trap('Display settings reset by update. The defaults are wrong again.', 4); })); return;
+        }
+        end(true, 'Correct slide, correct screen, no overlays. The live demo has passed its only reproducible test.');
+      }, 'primary'));
+      office.append(sharePanel); sharePanel.scrollIntoView?.({ block: 'nearest' });
+      say('Signal works. Now inspect what the audience will actually see.');
+    }
     const key = event => {
       if (!['ArrowLeft', 'ArrowRight'].includes(event.key) || /SELECT|INPUT/.test(event.target.tagName)) return;
       event.preventDefault(); if (event.type === 'keydown') { if (!direction) action(); direction = event.key === 'ArrowRight' ? 1 : -1; } else direction = 0;
@@ -296,7 +334,7 @@
     paint();
   }
 
-  // 04 — Negative wording, recommendation sabotage, and a button with escape plans.
+  // 03 — Negative wording, recommendation sabotage, and a button with escape plans.
   function emailGame() {
     const office = panel('Email preference centre', 'Stop marketing. Keep essential account receipts. Read the negative wording.');
     const recommender = checkbox('Automatically personalize my preferences', true); office.append(recommender.label);
@@ -315,117 +353,55 @@
       if (prefs.slice(0, 5).some((pref, i) => pref.input.checked !== (i === 3))) return trap('At least one marketing permission is still enabled. Read “do not” very carefully.', 2);
       popup('Final confirmation', 'Stop receiving offers? Close this box to confirm. The button below does the opposite.');
       const box = arena.querySelector('.office-error');
-      box.querySelector('.close').onclick = () => { if (!running) return; action(); box.remove(); end(true, 'Marketing disabled. A confirmation email has been sent. It contains marketing.'); };
+      box.querySelector('.close').onclick = () => { if (!running) return; action(); box.remove(); openConfirmationInbox(); };
       box.append(button('Keep me unsubscribed from unsubscribing', () => { box.remove(); prefs[0].input.checked = true; trap('Double negative detected. Weekly deals restored.', 3); }));
     }, 'save-preferences'); saveArea.append(save);
+    let inboxOpened = false;
+    function openConfirmationInbox() {
+      if (inboxOpened) return;
+      inboxOpened = true;
+      office.querySelectorAll('input,button').forEach(el => el.disabled = true);
+      const mail = node('div', 'confirmation-mail');
+      mail.append(node('h4', '', 'Step 2 / confirm by email'));
+      note(mail, 'Preferences are staged, not committed. The confirmation email was classified as spam by our own filter.');
+      const folders = node('div', 'inline-controls');
+      const messages = node('div', 'mock-inbox');
+      const showFolder = spam => {
+        messages.replaceChildren();
+        if (!spam) {
+          messages.append(node('p', '', 'Inbox (1): “Before you go: 20% off!”'));
+          messages.append(button('Claim farewell offer', () => trap('That link would create a new marketing subscription. Request rejected. Try the Spam folder.', 3)));
+        } else {
+          messages.append(button('Open: confirm unsubscribe request', () => {
+            messages.replaceChildren(node('p', '', 'From: preferences@errand.invalid'), node('b', '', 'Your request is ready to commit.'));
+            const scope = select('Apply unsubscribe to', [['browser', 'This browser only'], ['account', 'Entire account, all devices']]);
+            messages.append(scope.label);
+            messages.append(button('Keep my account subscribed', () => trap('That is the rollback link. You still have a chance to read the other button.', 2)));
+            messages.append(button('Confirm unsubscribe', () => {
+              if (scope.input.value !== 'account') return trap('Local preference saved. Every other device remains subscribed. Choose the account-wide scope.', 2);
+              end(true, 'Account-wide unsubscribe committed. All marketing channels off. Transactional receipts still enabled.');
+            }, 'primary'));
+          }));
+        }
+      };
+      folders.append(button('Inbox (1)', () => showFolder(false)), button('Spam (1)', () => showFolder(true)));
+      mail.append(folders, messages); office.append(mail); showFolder(false); mail.scrollIntoView?.({ block: 'nearest' });
+      say('One more verification step. Open the confirmation email; inspect the folder and scope.');
+    }
     save.onpointerenter = () => {
       if (!running || !cursed || dodges >= 3) return;
       dodges++; save.style.left = `${dodges % 2 ? 48 : 2}%`; save.style.top = `${dodges % 2 ? 33 : 0}px`;
-      say('The Save button has moved for your convenience. It gets tired after three escapes.');
+      say('Save changed coordinates. The avoidance handler has a retry budget of three.');
     };
     update = dt => {
       elapsed += dt;
-      if (recommender.input.checked && elapsed >= (cursed ? 3 : 7)) { elapsed = 0; const target = prefs.slice(0, 3).find(pref => !pref.input.checked); if (target) { target.input.checked = true; animate(target.label, 'restored-setting'); say('Personalization has restored a subscription. Disable it to stop this.'); } }
+      if (!inboxOpened && recommender.input.checked && elapsed >= (cursed ? 3 : 7)) { elapsed = 0; const target = prefs.slice(0, 3).find(pref => !pref.input.checked); if (target) { target.input.checked = true; animate(target.label, 'restored-setting'); say('Personalization has restored a subscription. Disable it to stop this.'); } }
       const enabled = prefs.slice(0, 5).filter((pref, i) => pref.input.checked !== (i === 3)).length;
       counter.textContent = `${enabled} marketing permissions active · 1 required receipt channel`;
     };
   }
 
-  // 05 — Label, stamp, conveyor, a tempting reverse button, and the impossible deadline.
-  function parcelGame() {
-    const office = panel('Returns desk — closes in a moment', cursed ? '8 seconds allocated. 25 seconds minimum transit. Yes, management approved this.' : 'Label it, stamp it, and deliver it to Returns. Beware the express lane.');
-    const label = select('Shipping label', [['home', 'Ship to: your own address'], ['returns', 'Ship to: RETURNS DEPARTMENT'], ['warehouse', 'Ship to: sales warehouse']]); office.append(label.label);
-    let stamped = false, rolling = false, x = 0;
-    const controls = node('div', 'inline-controls');
-    const stamp = button('Stamp label', () => { stamped = true; stamp.textContent = '✓ STAMPED'; animate(stamp, 'stamp-impact'); });
-    const dispatch = button('Start conveyor →', () => {
-      if (!stamped) return trap('Parcel rejected: no stamp. Bureaucracy must leave a physical mark.');
-      if (label.input.value !== 'returns') return trap('Wrong destination. You were about to mail your return back to yourself.', 1);
-      rolling = !rolling; dispatch.textContent = rolling ? 'Pause conveyor' : 'Start conveyor →'; say(rolling ? 'Parcel in motion. It is being paid by the hour.' : 'Conveyor paused. The deadline has not been paused.');
-    });
-    label.input.addEventListener('change', () => { stamped = false; stamp.textContent = 'Stamp label'; rolling = false; dispatch.textContent = 'Start conveyor →'; });
-    controls.append(stamp, dispatch); office.append(controls);
-    const track = node('div', 'conveyor'); track.innerHTML = '<span class="moving-box">▣<small>RETURN</small></span><span class="return-bin">RETURNS<br>▾</span>'; office.append(track);
-    const box = track.querySelector('.moving-box');
-    const readout = node('div', 'queue-status', '0% delivered · optimism: 100%'); office.append(readout);
-    const express = button('Express lane ⚡', () => { rolling = false; x = 0; box.style.left = '0%'; dispatch.textContent = 'Start conveyor →'; trap('Express DELIVERY. It delivered the parcel back to you. Read the small print.', 2); });
-    office.append(express, node('small', 'fine-print', 'Express lane: outbound delivery only. Returns excluded.'));
-    update = dt => {
-      track.classList.toggle('rolling', rolling);
-      if (!rolling) return;
-      x = Math.min(80, x + dt * (cursed ? 3.2 : 13)); box.style.left = `${x}%`;
-      readout.textContent = `${Math.floor(x / 80 * 100)}% delivered · ${((80 - x) / (cursed ? 3.2 : 13)).toFixed(1)}s transit remaining`;
-      if (x >= 80) end(true, 'Return accepted. Refund due in 6–8 geological eras. Keep the receipt forever.');
-    };
-  }
-
-  // 06 — Actual document-formatting clues with an Undo path for mistakes.
-  function documentGame() {
-    const office = panel('report_final.doc — Word-ish', 'Make it one page without deleting the report. The layout marks know what happened.');
-    let marks = false, pageBreak = true, size = '12', damage = 0;
-    const history = [];
-    const snapshot = () => history.push({ pageBreak, size, damage });
-    const toolbar = node('div', 'document-toolbar');
-    const show = button('¶ Show formatting', () => { marks = !marks; show.setAttribute('aria-pressed', String(marks)); draw(); }); show.setAttribute('aria-pressed', 'false');
-    const undo = button('↶ Undo', () => { const old = history.pop(); if (old) { ({ pageBreak, size, damage } = old); sizeSelect.input.value = size; draw(); say('Last mistake undone. Your dignity is outside the scope of this command.'); } else say('Nothing to undo. Suspiciously good start.'); });
-    toolbar.append(show, undo); office.append(toolbar);
-    const doc = node('div', 'paper-document'); office.append(doc);
-    const sizeSelect = select('Table’s final paragraph size', [['12', '12 pt'], ['1', '1 pt'], ['72', '72 pt (maximum confidence)']], input => { snapshot(); size = input.value; if (size === '72') trap('The invisible paragraph is now larger than the quarterly profit.'); draw(); });
-    office.append(sizeSelect.label);
-    const status = node('div', 'queue-status'); office.append(status);
-    function draw() {
-      doc.replaceChildren();
-      doc.append(node('b', '', 'Quarterly report'), node('p', '', 'Revenue: fine. Formatting: haunted.'));
-      const table = node('div', 'mock-table', 'Q1  |  Q2  |  Q3  |  Q4'); doc.append(table);
-      if (marks) {
-        if (pageBreak) doc.append(button('··· Page break ···', () => { snapshot(); pageBreak = false; sound('win'); draw(); say('Page break removed. One stubborn table paragraph remains.'); }, 'format-mark page-break-mark'));
-        doc.append(button('¶ Normal paragraph', () => { snapshot(); damage++; trap('That was part of the report. Undo it. The page break is a different mark.'); draw(); }, 'format-mark normal-mark'));
-        doc.append(node('small', 'table-mark', `¶ End-of-table paragraph: ${size} pt (cannot be deleted)`));
-      } else doc.append(node('div', 'invisible-gap', 'This space is mysteriously taking up a whole page.'));
-      const pages = 1 + Number(pageBreak) + Number(size !== '1');
-      status.textContent = `${pages} pages · ${damage ? 'Report content damaged — Undo required' : 'Report content intact'}`;
-      doc.style.setProperty('--page-stack', `${Math.min(3, pages) * 3}px`);
-    }
-    office.append(button('Save one-page document', () => {
-      if (damage) return trap('You deleted content. Undo that before saving.');
-      if (pageBreak || size !== '1') return trap('Still too many pages. Show formatting and inspect the table’s final paragraph.', 2);
-      end(true, 'One page, all content intact. Please never open this in a different version of Word.');
-    }, 'primary')); draw();
-  }
-
-  // 07 — A metadata puzzle instead of guessing the most convincing filename.
-  function attachmentGame() {
-    const office = panel('Shared drive — FINAL files', 'Select a file to inspect its properties. Names are not evidence.');
-    note(office, 'Linda: send the PDF I approved. Version 7. Exactly 2 pages. — Linda (not Linda-bot)');
-    const files = [
-      ['final_FINAL.pdf', 'Linda', '6', '2', 'pdf'], ['final_v7_APPROVED.pdf', 'Linda-bot', '7', '2', 'pdf'],
-      ['final_really_final.pdf', 'Linda', '7', '3', 'pdf'], ['final_APPROVED.pdf.exe', 'Linda', '7', '2', 'exe'],
-      ['final_FINAL_v7_actual-final(2).pdf', 'Linda', '7', '2', 'pdf'], ['use_this_one.pdf', 'Nobody', '8', '2', 'pdf'],
-      ['final_v7_actual-final.pdf', 'Linda', '7', '12', 'pdf'], ['final_APPROVED_NEW.pdf', 'Pending', '7', '2', 'pdf']
-    ];
-    let selected = null, ascending = true;
-    const columns = node('div', 'file-browser'); const list = node('div', 'file-browser-list'); const preview = node('div', 'file-preview', 'Select a file to inspect.'); columns.append(list, preview);
-    office.append(button('Sort by name ↕', () => { ascending = !ascending; draw(); say('File order changed. Your selection still refers to the same file.'); }), columns);
-    function inspect(file, element) {
-      selected = file; list.querySelectorAll('button').forEach(b => b.classList.toggle('selected', b === element));
-      preview.replaceChildren(node('div', 'file-preview-icon', file[4] === 'exe' ? '⚠' : '▤'));
-      const details = node('dl');
-      [['Approved by', file[1]], ['Version', file[2]], ['Pages', file[3]], ['Type', file[4] === 'exe' ? 'Application (.exe)' : 'PDF document']].forEach(([key, value]) => details.append(node('dt', '', key), node('dd', '', value)));
-      preview.append(details); animate(preview, 'message-pop');
-    }
-    function draw() {
-      list.replaceChildren(); const ordered = [...files].sort((a, b) => ascending ? a[0].localeCompare(b[0]) : b[0].localeCompare(a[0]));
-      ordered.forEach(file => { const b = button('▤ ' + file[0], el => inspect(file, el)); b.classList.toggle('selected', file === selected); list.append(b); });
-    }
-    office.append(button('Send selected attachment', () => {
-      if (!selected) return say('Select a file first. Blind confidence is not a file format.');
-      if (selected[4] === 'exe') { trap('That is an application wearing a PDF costume. It has not been opened.', 4); popup('Nice try, final.pdf.exe', 'Filename extensions are part of the puzzle. Nothing was executed.'); return; }
-      if (selected !== files[4]) return trap('Rejected. The approver, version, or page count does not match Linda’s note.', 3);
-      end(true, 'Correct attachment sent in this simulation. Linda has already requested a minor revision.');
-    }, 'primary')); draw();
-  }
-
-  // 08 — A four-room recovery adventure. Inventory and clues unlock each room.
+  // 04 — A four-room recovery adventure. Inventory and clues unlock each room.
   function bluescreenGame() {
     let room = 0, selectedItem = '', mugMoved = false, drawerOpen = false;
     let progress = 0, repairing = false, stalled = false, recoveryError = null, warned = false;
@@ -479,7 +455,7 @@
       }, 'desk-object desk-monitor');
       const mug = button(mugMoved ? '☕\nCold coffee' : '☕\nCoffee mug', () => {
         if (!mugMoved) { mugMoved = true; say('You moved the mug. There is a bent paperclip underneath.'); drawDesk(); }
-        else say('The coffee predates the operating system. Better leave it.');
+        else say('Caffeine cache expired. The paperclip underneath was the useful dependency.');
       }, 'desk-object desk-mug');
       const drawer = button(drawerOpen ? '▱\nOpen drawer' : '▰\nStuck drawer', () => {
         if (drawerOpen) { showDrawer(); return; }
@@ -488,7 +464,7 @@
       }, 'desk-object desk-drawer');
       desk.append(monitor, mug, drawer);
       if (mugMoved && !inventory.has('clip')) desk.append(button('⌁ Paperclip', () => { collect('clip', 'Found a paperclip underneath the coffee mug.'); drawDesk(); }, 'desk-object desk-clip'));
-      scene.append(button('Power off / on', () => trap('Same blue screen, freshly rebooted. Exploration might help more than optimism.', 3), 'tempting-shortcut'));
+      scene.append(button('Power off / on', () => trap('Rebooted into the same failure state. This bug is deterministic.', 3), 'tempting-shortcut'));
       note(scene, 'Nothing here controls your actual computer. This entire disaster is simulated.');
     }
     function showDrawer() {
@@ -547,10 +523,10 @@
     }
     function drawDesktop() {
       room = 3; repairing = false; header('The desktop. Almost.', 'You made it back. One notification stands between you and the meeting.');
-      const restored = node('div', 'restored-desktop'); restored.innerHTML = '<span>▥</span><h3>Welcome back.</h3><p>Your files are exactly where you left them.<br>Your problems are also exactly where you left them.</p>'; scene.append(restored);
+      const restored = node('div', 'restored-desktop'); restored.innerHTML = '<span>▥</span><h3>Welcome back.</h3><p>User session restored.<br>Windows Update has rejoined the incident.</p>'; scene.append(restored);
       const card = node('div', 'update-notification');
       card.append(node('b', '', '⚠ The latest printer driver is ready to install.'), node('p', '', 'This is the same update that caused the crash. We remain very excited about it.'));
-      card.append(button('Install now (recommended)', () => { trap('You reinstalled the villain. Back to the driver vault.', 4); drawVault(); }), button('Remind me in 2095', () => end(true, 'You found the tools, recovered the machine, and postponed the villain until 2095. Meeting survived.'), 'primary')); scene.append(card);
+      card.append(button('Install now (recommended)', () => { trap('You reinstalled the villain. Back to the driver vault.', 4); drawVault(); }), button('Remind me in 2095', () => end(true, 'Recovery chain complete. Known-good driver restored. Regression deferred until 2095.'), 'primary')); scene.append(card);
     }
     remember('The computer is blue. Your meeting starts soon.'); renderInventory(); drawDesk();
     update = dt => {
@@ -561,7 +537,200 @@
       if (progress === 99) { repairing = false; stalled = true; repairText.textContent = '99% · Estimated time remaining: 6 years'; reboot.disabled = false; say('Repair has reached the traditional 99% stopping point. Check the update checkbox, then Restart anyway.'); }
     };
   }
-  const builders = [printGame, gymGame, projectorGame, emailGame, parcelGame, documentGame, attachmentGame, bluescreenGame];
+  // 05 — A sandboxed desktop; every file, process, warning and scan is fictional.
+  function virusGame() {
+    let startup = true, guardian = true, adware = true, quarantined = false;
+    let extensions = false, chosen = null, z = 10, alertSerial = 0, spawnClock = 0;
+    let scanning = false, scanProgress = 0, renderScan = () => {};
+    const windows = new Map();
+    const alerts = new Set();
+    const desktop = node('div', 'infected-desktop');
+    desktop.innerHTML = '<div class="virus-wallpaper"><b>Errand 95</b><span>Unauthorized background tasks. Authorized suffering.</span></div>';
+    const hud = node('div', 'virus-hud'); desktop.append(hud);
+    const icons = node('div', 'virus-icons'); desktop.append(icons);
+    const taskbar = node('div', 'virus-taskbar');
+    const tasks = node('div', 'virus-running-apps');
+    const tray = node('span', 'virus-tray', '☣ Infected');
+    const startMenu = node('div', 'virus-start-menu window'); startMenu.hidden = true;
+    const startButton = button('▦ Start', () => { startMenu.hidden = !startMenu.hidden; startButton.setAttribute('aria-expanded', String(!startMenu.hidden)); });
+    startButton.setAttribute('aria-expanded', 'false');
+    taskbar.append(startButton, tasks, tray); desktop.append(startMenu, taskbar); arena.append(desktop);
+    const targets = [
+      ['notes', '▤', 'READ ME', openNotes], ['tasks', '▥', 'Task Manager', openTasks],
+      ['files', '▰', 'My Files', openFiles], ['security', '♜', 'Security', openSecurity],
+      ['bin', '▧', 'Recycle Bin', () => openWindow('bin', 'Recycle Bin', body => { body.append(node('p', '', 'Empty. Malware does not implement garbage collection.')); })]
+    ];
+    for (const [, symbol, label, handler] of targets) {
+      const icon = button(`${symbol}\n${label}`, handler, 'virus-desktop-icon'); icons.append(icon);
+      startMenu.append(button(`${symbol} ${label}`, () => { startMenu.hidden = true; startButton.setAttribute('aria-expanded', 'false'); handler(); }));
+    }
+    function renderHUD() {
+      const stopped = !guardian && !adware;
+      hud.textContent = `${startup ? '□' : '✓'} Startup  ${stopped ? '✓' : '□'} Processes  ${quarantined ? '✓' : '□'} Quarantine  ${alerts.size ? '□' : '✓'} Alerts`;
+      tray.textContent = quarantined ? '♜ Contained' : '☣ Infected';
+      desktop.classList.toggle('virus-contained', quarantined);
+    }
+    function openWindow(id, title, draw, options = {}) {
+      if (windows.has(id)) {
+        const existing = windows.get(id); existing.element.hidden = false; existing.element.style.zIndex = String(++z); return existing;
+      }
+      const element = node('section', `virus-window window ${options.rogue ? 'rogue-window' : ''}`);
+      element.setAttribute('aria-label', title);
+      const bar = node('div', 'titlebar');
+      const caption = node('span', '', title), controls = node('div', 'virus-window-controls');
+      const body = node('div', 'virus-window-body');
+      const task = button(title, () => { element.hidden = !element.hidden; if (!element.hidden) element.style.zIndex = String(++z); }, 'virus-task');
+      task.title = title; tasks.append(task);
+      let maximized = false;
+      const minimize = button('_', () => element.hidden = true, 'close'); minimize.setAttribute('aria-label', `Minimize ${title}`);
+      const maximize = button('□', () => { maximized = !maximized; element.classList.toggle('maximized', maximized); }, 'close'); maximize.setAttribute('aria-label', `Maximize ${title}`);
+      const close = button('×', () => closeWindow(id), 'close'); close.setAttribute('aria-label', `Close ${title}`);
+      controls.append(minimize, maximize, close); bar.append(caption, controls); element.append(bar, body);
+      const offset = windows.size * 17;
+      element.style.left = `${Math.min(95 + offset % 70, Math.max(7, desktop.clientWidth - 295))}px`;
+      element.style.top = `${51 + offset % 80}px`; element.style.zIndex = String(++z);
+      const win = { element, body, task, draw }; windows.set(id, win); desktop.append(element);
+      element.onpointerdown = () => element.style.zIndex = String(++z);
+      element.addEventListener('focusin', () => element.style.zIndex = String(++z));
+      let drag = null;
+      bar.onpointerdown = event => {
+        if (!running || event.target.closest('button') || maximized) return;
+        action(); bar.setPointerCapture(event.pointerId);
+        drag = { x: event.clientX, y: event.clientY, left: element.offsetLeft, top: element.offsetTop };
+      };
+      bar.onpointermove = event => {
+        if (!drag || !running) return;
+        element.style.left = `${Math.max(0, Math.min(desktop.clientWidth - element.offsetWidth, drag.left + event.clientX - drag.x))}px`;
+        element.style.top = `${Math.max(32, Math.min(desktop.clientHeight - 64, drag.top + event.clientY - drag.y))}px`;
+      };
+      bar.onpointerup = bar.onpointercancel = () => drag = null;
+      draw(body); animate(element, 'window-pop'); return win;
+    }
+    function closeWindow(id) {
+      const win = windows.get(id); if (!win) return;
+      win.element.remove(); win.task.remove(); windows.delete(id);
+      if (alerts.delete(id)) { say(adware ? 'Alert closed. The process that made it is still running.' : 'One less fake warning on your desktop.'); renderHUD(); }
+    }
+    function redraw(id) {
+      const win = windows.get(id); if (!win) return;
+      win.body.replaceChildren(); win.draw(win.body);
+    }
+    function makeAlert() {
+      if (!adware || alerts.size >= (cursed ? 3 : 2)) return;
+      const id = `alert-${++alertSerial}`;
+      alerts.add(id);
+      openWindow(id, `Virus detected! (${alertSerial})`, body => {
+        body.append(node('div', 'rogue-symbol', '⚠'), node('b', '', 'YOUR COMPUTER HAS 847 VIRUSES'), node('p', '', 'AdBuddy™ Total Security recommends installing AdBuddy™ Total Security.'));
+        body.append(button('REMOVE EVERYTHING NOW', () => {
+          trap('The fake cleaner installed another fake cleaner. The real Security app is on your desktop.', 3);
+          makeAlert();
+        }, 'scam-button'));
+        body.append(node('small', 'fine-print', 'Publisher: AdBuddy. File protection: mostly theatrical. Close using the title-bar ×.'));
+      }, { rogue: true });
+      renderHUD();
+    }
+    function openNotes() {
+      openWindow('notes', 'READ ME — Notepad', body => {
+        body.append(node('h4', '', 'mira@ops / incident response notes'));
+        const lines = [
+          '1. The red “antivirus” windows ARE the infection. Use the desktop Security app.',
+          '2. Updatr.exe launches at startup and restarts AdBuddy.exe. Stop it first.',
+          '3. My Files hides extensions. “invoice.pdf” may not be a PDF.',
+          '4. Do not delete System32. That is where the computer keeps being a computer.',
+          '5. Quarantine the file, close leftover scam alerts, then verify in Security.'
+        ];
+        lines.forEach(line => body.append(node('p', '', line)));
+      });
+    }
+    function openTasks() {
+      openWindow('tasks', 'Task Manager', body => {
+        body.append(node('h4', '', 'Startup & running processes'));
+        const boot = checkbox('Launch Updatr.exe when this PC starts', startup, input => {
+          startup = input.checked; renderHUD();
+          say(startup ? 'Automatic reinfection has been helpfully restored.' : 'Startup disabled. Now stop Updatr, then AdBuddy.');
+        }); body.append(boot.label);
+        const processes = node('div', 'virus-processes'); body.append(processes);
+        for (const [name, alive, description, handler] of [
+          ['Updatr.exe', guardian, 'Restarts AdBuddy', () => {
+            if (startup) return trap('Updatr immediately restarted from Startup. Uncheck its startup entry first.', 2);
+            guardian = false; say('Updatr stopped. AdBuddy no longer has a respawn supervisor.'); renderHUD(); redraw('tasks');
+          }],
+          ['AdBuddy.exe', adware, 'Generates pop-up ads', () => {
+            if (guardian) return trap('Updatr restarted AdBuddy. Stop the parent process first.', 2);
+            adware = false; say('AdBuddy stopped. No new pop-ups. The infected file still needs quarantine.'); renderHUD(); redraw('tasks');
+          }],
+          ['explorer.exe', true, 'Your desktop', () => trap('explorer.exe is the desktop shell. Ending it does not remediate the infection.', 2)]
+        ]) {
+          const row = node('div', 'virus-process');
+          const detail = node('div'); detail.append(node('b', '', name), node('small', '', alive ? description : 'Stopped ✓'));
+          const kill = button('End task', handler); kill.setAttribute('aria-label', `End ${name}`); kill.disabled = !alive;
+          row.append(detail, kill); processes.append(row);
+        }
+      });
+    }
+    function openFiles() {
+      openWindow('files', 'My Files', body => {
+        const show = checkbox('Show file extensions', extensions, input => { extensions = input.checked; redraw('files'); }); body.append(show.label);
+        const fileList = node('div', 'virus-file-list'); body.append(fileList);
+        for (const [id, icon, short, full, type] of [
+          ['invoice', '▤', 'invoice.pdf', 'invoice.pdf.exe', 'Application disguised as a PDF'],
+          ['report', '▤', 'report', 'report.pdf', 'PDF document'],
+          ['system', '▰', 'System32', 'System32', 'Essential system folder']
+        ]) {
+          if (id === 'invoice' && quarantined) continue;
+          const b = button(`${icon} ${extensions ? full : short}`, () => {
+            chosen = id; redraw('files'); say(extensions ? `${full} — ${type}.` : `${short} selected. The extension is hidden. Check before you trust it.`);
+          }, chosen === id ? 'selected' : ''); fileList.append(b);
+        }
+        const detail = node('p', 'virus-file-detail', !chosen ? 'Select a file to inspect it.' : chosen === 'invoice' ? (extensions ? 'Type: Application (.exe) · Publisher: AdBuddy · Suspicious' : 'Type: hidden · Looks reassuringly like a PDF') : chosen === 'report' ? 'Type: PDF · Actual work. Please leave it alone.' : 'Type: System folder · Required for this computer to exist.'); body.append(detail);
+        body.append(button('Quarantine selected file', () => {
+          if (!chosen) return say('No target selected. Quarantine(null) is not a remediation strategy.');
+          if (chosen !== 'invoice') return trap(chosen === 'system' ? 'System32 is not malware. Delete request rejected: dependency of literally everything.' : 'The report is innocent. The fake PDF has a longer extension.', 3);
+          if (!extensions) return trap('Show extensions first. Security needs evidence, not vibes.');
+          if (guardian || adware) return trap('File in use by Updatr / AdBuddy. Stop both processes before quarantining.', 2);
+          if (startup) return trap('The startup entry would reinstall this file. Disable it in Task Manager.');
+          quarantined = true; chosen = null; renderHUD(); redraw('files');
+          say('invoice.pdf.exe quarantined. Close remaining fake warnings, then verify cleanup in Security.'); sound('win');
+        }, 'primary'));
+      });
+    }
+    function openSecurity() {
+      openWindow('security', 'Security — actual protection', body => {
+        body.append(node('h4', '', 'Errand Defender'), node('p', '', 'This scanner checks your work. It does not ask for your credit card.'));
+        const status = node('div', 'security-checklist'); body.append(status);
+        const progress = meter(body, 'Virus scan');
+        renderScan = () => {
+          status.textContent = scanning ? `Checking processes and files… ${Math.floor(scanProgress)}%` : 'Ready to verify cleanup.';
+          progress(scanProgress);
+        }; renderScan();
+        body.append(button('Verify cleanup', () => {
+          if (scanning) return;
+          scanning = true; scanProgress = 0; renderScan();
+          say('Scanning the simulated desktop. Real computer: completely uninvolved.');
+        }, 'primary'));
+      });
+    }
+    renderHUD();
+    say('Infected desktop ready. Open an app to start the clock. All files and processes are simulated.');
+    let greeted = false;
+    update = dt => {
+      if (!greeted) { greeted = true; makeAlert(); }
+      spawnClock += dt;
+      if (spawnClock > (cursed ? 4 : 9)) { spawnClock = 0; makeAlert(); }
+      if (!scanning) return;
+      scanProgress = Math.min(100, scanProgress + dt * 55); renderScan();
+      if (scanProgress < 100) return;
+      scanning = false;
+      const issues = [startup && 'Startup entry active', (guardian || adware) && 'Malware processes running', !quarantined && 'Disguised executable still present', alerts.size > 0 && `${alerts.size} fake warning(s) still open`].filter(Boolean);
+      if (issues.length) {
+        const status = windows.get('security')?.body.querySelector('.security-checklist');
+        if (status) status.textContent = issues.map(issue => '✕ ' + issue).join('\n');
+        trap('Scan incomplete: ' + issues.join('; ') + '.');
+      } else end(true, 'Persistence removed. Processes stopped. Payload quarantined. The remaining bugs are vendor-approved.');
+    };
+  }
+
+  const builders = [printGame, projectorGame, emailGame, bluescreenGame, virusGame];
   window.openGame = index => { selector.value = String(index); start(); if (!dialog.open) dialog.showModal(); };
   $('#start-game').onclick = start;
   $('#close-game').onclick = () => dialog.close();

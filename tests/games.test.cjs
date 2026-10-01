@@ -47,74 +47,65 @@ function fixture(index, mode = 'practice') {
 
 test('opening, changing and retrying games arms the timer; only the first action starts it', () => {
   const f = fixture(0, 'cursed');
-  f.step(200); assert.match(f.d.querySelector('#game-time').textContent, /60s · ready/);
+  f.step(200); assert.match(f.d.querySelector('#game-time').textContent, /75s · ready/);
   assert.equal(f.d.querySelector('#game-actions').textContent, 'ACTIONS: 0');
   f.d.querySelector('#hint-button').click(); f.step(3);
   assert.match(f.d.querySelector('#game-time').textContent, /ready/);
-  f.click('Print'); f.step(2); assert.match(f.d.querySelector('#game-time').textContent, /56\.0s/);
+  f.click('Print'); f.step(2); assert.match(f.d.querySelector('#game-time').textContent, /71\.0s/);
   f.d.querySelector('#start-game').click(); f.step(150);
   assert.match(f.d.querySelector('#game-time').textContent, /ready/);
-  const selector = f.d.querySelector('#game-select'); selector.value = '7'; selector.dispatchEvent(new f.w.Event('change'));
+  const selector = f.d.querySelector('#game-select'); selector.value = '3'; selector.dispatchEvent(new f.w.Event('change'));
   assert.ok(f.d.querySelector('.desk-scene')); assert.match(f.d.querySelector('#game-time').textContent, /120s · ready/);
   f.close();
 });
 
-test('printer: false PDF success does not win; correct settings plus cleared errors produce one page', () => {
-  const f = fixture(0);
-  f.click('Print'); assert.equal(f.d.querySelector('#game-traps').textContent, 'TRAPS: 1');
+function configurePrinter(f) {
   f.choose('Printer', 'local'); f.choose('Pages', 'one'); f.choose('Paper size', 'a4'); f.choose('Copies', '1');
-  f.check('Print in color (cyan currently unavailable)', false);
-  f.click('Print'); f.closeErrors(); f.click('Print'); f.step(4); f.won(); f.close();
-});
+  f.choose('Orientation', 'portrait'); f.choose('Scaling', 'raw'); f.choose('Driver profile', 'app');
+  f.choose('Color mode', 'k'); f.choose('Paper source', 'tray1'); f.choose('Duplex', 'simplex');
+  f.check('Automatic driver recovery (recommended)', false);
+  f.click('Open paper tray'); f.click('Remove crumpled sheet'); f.closeErrors();
+}
+function releaseAndCollect(f) {
+  f.step(3); assert.ok(!f.d.querySelector('.success'));
+  const pin = f.d.querySelector('[aria-label="Release PIN"]'); pin.value = '042'; pin.dispatchEvent(new f.w.Event('input'));
+  f.click('Release print job'); f.step(1); assert.ok(!f.d.querySelector('.success'));
+  f.click('Collect output'); f.won();
+}
 
-test('gym: pause is a trap, renewal must be unchecked, releasing confirmation loses progress', () => {
-  const f = fixture(1);
-  f.click('Pause membership'); f.click('Cancel membership'); f.choose('Reason', 'cancel'); f.click('Continue');
-  f.check('I understand my access will end', true); f.check('Keep my benefits by renewing for 12 months', false);
-  f.click('Continue cancelling'); const hold = f.find('Hold to cancel');
-  hold.dispatchEvent(new f.w.KeyboardEvent('keydown', { key: ' ' })); f.step(1);
-  hold.dispatchEvent(new f.w.KeyboardEvent('keyup', { key: ' ' })); f.step(1);
-  assert.ok(Number(f.d.querySelector('[role=progressbar]').getAttribute('aria-valuenow')) < 34);
-  hold.dispatchEvent(new f.w.KeyboardEvent('keydown', { key: ' ' })); f.step(3); f.won(); f.close();
+test('printer: crash recovery, effective settings, physical jam, secure release and collection all matter', () => {
+  const f = fixture(0);
+  f.click('Print'); assert.match(f.d.querySelector('#game-message').textContent, /Spooler crash/); f.closeErrors();
+  configurePrinter(f); f.click('Restart spooler');
+  f.choose('Color mode', 'bw'); f.click('Print'); assert.ok(!f.d.querySelector('.success'));
+  f.click('Diagnostics'); assert.match(f.d.querySelector('.effective-settings').textContent, /CMY composite/);
+  f.choose('Color mode', 'k'); f.click('Print'); releaseAndCollect(f); f.close();
 });
 
 test('projector: cable, input and duplicate mode are all required', () => {
-  const f = fixture(2);
+  const f = fixture(1);
   f.click('Present slide'); for (let i = 0; i < 14; i++) f.click('Nudge →'); f.click('Connect cable');
   f.choose('Input source', '2'); f.click('Present slide'); assert.ok(!f.d.querySelector('.success'));
-  f.choose('Display mode', 'duplicate'); f.click('Present slide'); f.won(); f.close();
+  f.choose('Display mode', 'duplicate'); f.click('Present slide');
+  f.click('Go live'); assert.ok(!f.d.querySelector('.success'));
+  f.choose('Content to share', 'slides'); f.check('Show desktop notifications while presenting', false); f.click('Go live'); f.won(); f.close();
 });
 
 test('email: negative wording and mandatory receipts are honored', () => {
-  const f = fixture(3);
+  const f = fixture(2);
   f.check('Automatically personalize my preferences', false);
   for (const label of ['Weekly deals', 'Daily deals', 'Deals about other deals', 'Product announcements']) f.check(label, false);
   f.click('Save preferences'); assert.ok(!f.d.querySelector('.success'));
-  f.check('Do not send partner offers', true); f.click('Save preferences'); f.closeErrors(); f.won();
+  f.check('Do not send partner offers', true); f.click('Save preferences'); f.closeErrors();
+  f.click('Spam (1)'); f.click('Open: confirm unsubscribe request'); f.click('Confirm unsubscribe'); assert.ok(!f.d.querySelector('.success'));
+  f.choose('Apply unsubscribe to', 'account'); f.click('Confirm unsubscribe'); f.won();
   const receipt = [...f.d.querySelectorAll('.game-check')].find(label => label.textContent === 'Account receipts (required)').querySelector('input');
   assert.equal(receipt.checked, true); assert.equal(receipt.disabled, true);
   f.close();
 });
 
-test('parcel: stamp and correct destination required; Practice completes, Cursed deadline cannot', () => {
-  const f = fixture(4);
-  f.click('Start conveyor →'); f.choose('Shipping label', 'returns'); f.click('Stamp label'); f.click('Start conveyor →'); f.step(7); f.won(); f.close();
-  const c = fixture(4, 'cursed'); c.choose('Shipping label', 'returns'); c.click('Stamp label'); c.click('Start conveyor →'); c.step(8.1);
-  assert.ok(c.d.querySelector('.failure')); assert.match(c.d.querySelector('#game-message').textContent, /deliberately impossible/); c.close();
-});
 
-test('document: damage requires undo; page break and final paragraph size both matter', () => {
-  const f = fixture(5);
-  f.click('¶ Show formatting'); f.click('¶ Normal paragraph'); f.click('↶ Undo');
-  f.click('··· Page break ···'); f.choose('Table’s final paragraph size', '1'); f.click('Save one-page document'); f.won(); f.close();
-});
 
-test('attachment: deceptive executable and wrong approver rejected; metadata-matched PDF wins', () => {
-  const f = fixture(6);
-  f.click('▤ final_APPROVED.pdf.exe'); f.click('Send selected attachment'); f.closeErrors();
-  f.click('▤ final_v7_APPROVED.pdf'); f.click('Send selected attachment'); assert.ok(!f.d.querySelector('.success'));
-  f.click('▤ final_FINAL_v7_actual-final(2).pdf'); f.click('Sort by name ↕'); f.click('Send selected attachment'); f.won(); f.close();
-});
 
 function solveAdventure(f) {
   f.click('▰\nStuck drawer'); assert.match(f.d.querySelector('#game-message').textContent, /thin piece of metal/);
@@ -127,30 +118,21 @@ function solveAdventure(f) {
   f.step(5); f.closeErrors(); f.click('Restart anyway'); f.click('Remind me in 2095'); f.won();
 }
 test('blue-screen adventure: inventory gates four rooms; Practice and Cursed both solvable', () => {
-  for (const mode of ['practice', 'cursed']) { const f = fixture(7, mode); solveAdventure(f); f.close(); }
+  for (const mode of ['practice', 'cursed']) { const f = fixture(3, mode); solveAdventure(f); f.close(); }
 });
 
-test('closing a running game cancels timers; separate difficulty scores do not mix', () => {
-  const f = fixture(6);
-  f.click('▤ final_FINAL_v7_actual-final(2).pdf'); f.click('Send selected attachment');
-  assert.match(f.d.querySelector('#game-progress').textContent, /1 \/ 8 practice/);
-  const difficulty = f.d.querySelector('#difficulty'); difficulty.value = 'cursed'; difficulty.dispatchEvent(new f.w.Event('change'));
-  assert.match(f.d.querySelector('#game-progress').textContent, /0 \/ 8 cursed/);
-  f.click('Sort by name ↕'); f.d.querySelector('#game-dialog').close(); const before = f.d.querySelector('#game-time').textContent;
-  f.step(200); assert.equal(f.d.querySelector('#game-time').textContent, before); assert.ok(!f.d.querySelector('.failure')); f.close();
-});
 
-test('Cursed printer grows extra errors but still has a real completion path', () => {
+test('printer crashes reset defaults unless preservation is enabled; Cursed mode remains solvable', () => {
   const f = fixture(0, 'cursed');
-  f.choose('Printer', 'local'); f.choose('Pages', 'one'); f.choose('Paper size', 'a4'); f.choose('Copies', '1');
-  f.check('Print in color (cyan currently unavailable)', false); f.click('Print');
-  assert.equal(f.d.querySelectorAll('.office-error').length, 2);
-  f.d.querySelector('.office-error .close').click(); assert.equal(f.d.querySelectorAll('.office-error').length, 2);
-  f.closeErrors(); f.click('Print'); f.step(4); f.won(); f.close();
+  f.choose('Driver profile', 'app'); f.choose('Copies', '1'); f.click('Print'); f.closeErrors();
+  f.click('Diagnostics'); assert.match(f.d.querySelector('.printer-crash-log').textContent, /RESET: profile=auto, copies=2/);
+  f.choose('Driver profile', 'app'); f.choose('Copies', '1'); f.check('Preserve settings after a spooler crash', true);
+  f.click('Restart spooler'); f.closeErrors(); f.click('Diagnostics'); assert.match(f.d.querySelector('.printer-crash-log').textContent, /settings preserved/);
+  configurePrinter(f); f.click('Restart spooler'); f.click('Print'); releaseAndCollect(f); f.close();
 });
 
 test('recommendation sabotage stops when disabled, and the moving Save button has a bounded escape count', () => {
-  const f = fixture(3, 'cursed');
+  const f = fixture(2, 'cursed');
   f.check('Weekly deals', false); f.step(3.1);
   const weekly = () => [...f.d.querySelectorAll('.game-check')].find(e => e.textContent === 'Weekly deals').querySelector('input');
   assert.equal(weekly().checked, true);
@@ -162,11 +144,82 @@ test('recommendation sabotage stops when disabled, and the moving Save button ha
   assert.equal(save.style.cssText, position); f.close();
 });
 
-test('losing window focus releases a held confirmation control', () => {
+
+test('virus desktop: remove persistence, stop parent then child, quarantine disguised payload, and verify', () => {
+  for (const mode of ['practice', 'cursed']) {
+    const f = fixture(4, mode);
+    f.step(10); assert.match(f.d.querySelector('#game-time').textContent, /ready/);
+    f.click('▥\nTask Manager'); f.step(.1);
+    const kill = name => f.d.querySelector(`[aria-label="End ${name}"]`).click();
+    kill('AdBuddy.exe'); assert.match(f.d.querySelector('#game-message').textContent, /restarted AdBuddy/);
+    kill('Updatr.exe'); assert.match(f.d.querySelector('#game-message').textContent, /Startup/);
+    f.check('Launch Updatr.exe when this PC starts', false); kill('Updatr.exe'); kill('AdBuddy.exe');
+    f.click('▰\nMy Files'); f.check('Show file extensions', true);
+    f.click('▰ System32'); f.click('Quarantine selected file'); assert.ok(!f.d.querySelector('.success'));
+    f.click('▤ invoice.pdf.exe'); f.click('Quarantine selected file');
+    assert.ok(f.d.querySelector('.virus-contained'));
+    f.click('♜\nSecurity'); f.click('Verify cleanup'); f.step(2);
+    assert.ok(!f.d.querySelector('.success'), 'Unclosed scam alerts must block completion');
+    for (const close of [...f.d.querySelectorAll('[aria-label^="Close Virus detected!"]')]) close.click();
+    f.click('Verify cleanup'); f.step(2); f.won(); f.close();
+  }
+});
+
+test('virus desktop: fake antivirus spawns bounded extra warnings and app windows minimize/restore', () => {
+  const f = fixture(4, 'cursed'); f.click('▤\nREAD ME'); f.step(.1);
+  f.click('REMOVE EVERYTHING NOW'); assert.equal(f.d.querySelectorAll('.rogue-window').length, 2);
+  f.step(30); assert.equal(f.d.querySelectorAll('.rogue-window').length, 3);
+  const notes = f.d.querySelector('[aria-label="READ ME — Notepad"]');
+  f.d.querySelector('[aria-label="Minimize READ ME — Notepad"]').click(); assert.equal(notes.hidden, true);
+  f.click('READ ME — Notepad'); assert.equal(notes.hidden, false);
+  f.d.querySelector('[aria-label="Maximize READ ME — Notepad"]').click(); assert.equal(notes.classList.contains('maximized'), true);
+  f.d.querySelector('[aria-label="Close READ ME — Notepad"]').click(); assert.equal(notes.isConnected, false);
+  f.close();
+});
+
+test('all five games have launch cards and hints, with no dad references in shipped copy', () => {
+  const f = fixture(4);
+  assert.equal(f.d.querySelectorAll('#game-select option').length, 5);
+  f.d.querySelector('#hint-button').click(); assert.match(f.d.querySelector('#game-hint').textContent, /Updatr/);
+  const source = html + gameCode + fs.readFileSync('site/app.js', 'utf8'); assert.doesNotMatch(source, /\bdad\b/i);
+  f.close();
+});
+
+test('closing cancels the timer and scores stay separate by difficulty', () => {
   const f = fixture(1);
-  f.click('Cancel membership'); f.choose('Reason', 'cancel'); f.click('Continue');
-  f.check('I understand my access will end', true); f.check('Keep my benefits by renewing for 12 months', false); f.click('Continue cancelling');
-  const hold = f.find('Hold to cancel'); hold.dispatchEvent(new f.w.KeyboardEvent('keydown', { key: ' ' })); f.step(.5);
-  f.w.dispatchEvent(new f.w.Event('blur')); const value = Number(f.d.querySelector('[role=progressbar]').getAttribute('aria-valuenow'));
-  f.step(.5); assert.ok(Number(f.d.querySelector('[role=progressbar]').getAttribute('aria-valuenow')) < value); f.close();
+  for (let i = 0; i < 14; i++) f.click('Nudge →');
+  f.click('Connect cable'); f.choose('Input source', '2'); f.choose('Display mode', 'duplicate'); f.click('Present slide');
+  f.click('Go live'); assert.ok(!f.d.querySelector('.success'));
+  f.choose('Content to share', 'slides'); f.check('Show desktop notifications while presenting', false); f.click('Go live'); f.won();
+  assert.match(f.d.querySelector('#game-progress').textContent, /1 \/ 5 practice/);
+  const difficulty = f.d.querySelector('#difficulty'); difficulty.value = 'cursed'; difficulty.dispatchEvent(new f.w.Event('change'));
+  assert.match(f.d.querySelector('#game-progress').textContent, /0 \/ 5 cursed/);
+  f.click('Nudge →'); f.d.querySelector('#game-dialog').close(); const before = f.d.querySelector('#game-time').textContent;
+  f.step(200); assert.equal(f.d.querySelector('#game-time').textContent, before); assert.ok(!f.d.querySelector('.failure')); f.close();
+});
+
+test('removed games are absent from the playable catalog and runtime', () => {
+  const f = fixture(0); f.w.eval(fs.readFileSync('site/app.js', 'utf8'));
+  assert.equal(f.d.querySelectorAll('#benchmarks article').length, 5);
+  for (const name of ['Cancel My Gym', 'Return the Parcel', 'Make It One Page', 'Find the Attachment']) {
+    assert.ok(!f.d.querySelector('#benchmarks').textContent.includes(name));
+    assert.ok(!f.d.querySelector('#game-select').textContent.includes(name));
+  }
+  assert.doesNotMatch(gameCode, /gymGame|parcelGame|documentGame|attachmentGame/);
+  f.close();
+});
+
+test('cost chart marks the actual Pareto frontier and recomputes it when subscription costs are included', () => {
+  const f = fixture(0);
+  f.w.eval(fs.readFileSync('site/app.js', 'utf8') + '\n' + fs.readFileSync('site/chart.js', 'utf8'));
+  const ids = () => [...f.d.querySelectorAll('.plot-point.efficient')].map(el => Number(el.dataset.point)).sort();
+  assert.deepEqual(ids(), [0, 1, 4, 5]);
+  assert.equal(f.d.querySelectorAll('.plot-point').length, 8);
+  f.d.querySelector('#include-subscriptions').click();
+  assert.deepEqual(ids(), [0, 1]);
+  assert.match(f.d.querySelector('#frontier-summary').textContent, /ctrl-alt-defeat → root@localhost/);
+  f.d.querySelector('[data-point="7"]').dispatchEvent(new f.w.MouseEvent('click', { bubbles: true }));
+  assert.match(f.d.querySelector('#plot-detail').textContent, /\$120\.00/);
+  assert.equal(f.d.querySelectorAll('#cost-data tr').length, 8);
+  f.close();
 });
