@@ -276,7 +276,7 @@ test('leaderboard and Pareto plot always include every invoice component, with A
   const scores = rows.map(row => Number(row.querySelector('.score b').textContent.split('/')[0]));
   assert.ok(Math.min(...scores.slice(0, 32)) > Math.max(...scores.slice(32)));
   const picker = f.d.querySelector('#plot-participant');
-  picker.value = [...picker.options].find(o => o.textContent === 'Grok Kernel / unhinged').value;
+  picker.value = [...picker.options].find(o => o.textContent === 'Grok 4.20 / unhinged').value;
   picker.dispatchEvent(new f.w.Event('change'));
   assert.match(f.d.querySelector('#plot-detail').textContent, /\$122\.89 total/);
   assert.match(f.d.querySelector('#plot-detail').textContent, /consumables \/ goods \/ perks: \$1\.10/);
@@ -353,9 +353,9 @@ test('model effort lines join the correct points in preset order on the cursed s
     }
   }
   const picker = f.d.querySelector('#plot-participant');
-  picker.value = [...picker.options].find(o => o.textContent === 'GPT-Paperclip / high').value;
+  picker.value = [...picker.options].find(o => o.textContent === 'GPT-5.4 / high').value;
   picker.dispatchEvent(new f.w.Event('change'));
-  assert.equal(f.d.querySelector('[data-family="GPT-Paperclip"]').getAttribute('stroke-width'), '3.5');
+  assert.equal(f.d.querySelector('[data-family="GPT-5.4"]').getAttribute('stroke-width'), '3.5');
   assert.equal(f.d.querySelectorAll('#effort-legend span').length, 8);
   f.close();
 });
